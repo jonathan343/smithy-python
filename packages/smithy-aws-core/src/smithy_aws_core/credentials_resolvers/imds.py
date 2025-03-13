@@ -7,8 +7,9 @@ from datetime import datetime, timedelta, timezone
 from typing import Literal
 
 from smithy_core import URI
+from asyncio import sleep
 from smithy_core.aio.interfaces.identity import IdentityResolver
-from smithy_core.exceptions import SmithyIdentityException
+from smithy_core.exceptions import SmithyIdentityException, SmithyRetryException
 from smithy_core.interfaces.identity import IdentityProperties
 from smithy_core.interfaces.retries import RetryStrategy
 from smithy_core.retries import SimpleRetryStrategy
@@ -17,6 +18,57 @@ from smithy_http.aio import HTTPRequest
 from smithy_http.aio.interfaces import HTTPClient
 
 from smithy_aws_core.identity import AWSCredentialsIdentity
+
+
+@dataclass(init=False)
+class Config:
+    """Configuration for EC2Metadata."""
+
+    _HOST_MAPPING = {"IPv4": "169.254.169.254", "IPv6": "[fd00:ec2::254]"}
+    _MIN_TTL = 5
+    _MAX_TTL = 21600
+
+    retry_strategy: RetryStrategy
+    endpoint_uri: URI
+    endpoint_mode: Literal["IPv4", "IPv6"]
+    port: int
+    token_ttl: int
+
+    def __init__(
+        self,
+        *,
+        retry_strategy: RetryStrategy | None = None,
+        endpoint_uri: URI | None = None,
+        endpoint_mode: Literal["IPv4", "IPv6"] = "IPv4",
+        port: int = 80,
+        token_ttl: int = _MAX_TTL,
+        ec2_instance_profile_name: str | None = None,
+    ):
+        self.retry_strategy = retry_strategy or SimpleRetryStrategy(max_attempts=3)
+        self.endpoint_mode = endpoint_mode
+        self.endpoint_uri = self._resolve_endpoint(endpoint_uri, endpoint_mode)
+        self.port = port
+        self.token_ttl = self._validate_token_ttl(token_ttl)
+        self.ec2_instance_profile_name = ec2_instance_profile_name
+
+    def _validate_token_ttl(self, ttl: int) -> int:
+        """Validates the token TTL value."""
+        if not self._MIN_TTL <= ttl <= self._MAX_TTL:
+            raise ValueError(
+                f"Token TTL must be between {self._MIN_TTL} and {self._MAX_TTL} seconds."
+            )
+        return ttl
+
+    def _resolve_endpoint(
+        self, endpoint_uri: URI | None, endpoint_mode: Literal["IPv4", "IPv6"]
+    ) -> URI:
+        if endpoint_uri is not None:
+            return endpoint_uri
+
+        return URI(
+            scheme="http",
+            host=self._HOST_MAPPING.get(endpoint_mode, self._HOST_MAPPING["IPv4"]),
+        )
 
 
 class Token:
@@ -43,26 +95,14 @@ class TokenCache:
     In addition, it knows how to refresh itself.
     """
 
-    _MIN_TTL = 5
-    _MAX_TTL = 21600
     _TOKEN_PATH = "/latest/api/token"
 
-    def __init__(
-        self, http_client: HTTPClient, base_uri: URI, token_ttl: int = _MAX_TTL
-    ):
+    def __init__(self, http_client: HTTPClient, config: Config):
         self._http_client = http_client
-        self._base_uri = base_uri
-        self._token_ttl = self._validate_token_ttl(token_ttl)
+        self._config = config
+        self._base_uri = config.endpoint_uri
         self._refresh_lock = asyncio.Lock()
         self._token = None
-
-    def _validate_token_ttl(self, ttl: int) -> int:
-        """Validates the token TTL value."""
-        if not self._MIN_TTL <= ttl <= self._MAX_TTL:
-            raise ValueError(
-                f"Token TTL must be between {self._MIN_TTL} and {self._MAX_TTL} seconds."
-            )
-        return ttl
 
     def _should_refresh(self) -> bool:
         """Determines if the token should be refreshed."""
@@ -78,7 +118,7 @@ class TokenCache:
                     # TODO: Add user-agent
                     Field(
                         name="x-aws-ec2-metadata-token-ttl-seconds",
-                        values=[str(self._token_ttl)],
+                        values=[str(self._config.token_ttl)],
                     ),
                 ]
             )
@@ -91,9 +131,27 @@ class TokenCache:
                 ),
                 fields=headers,
             )
-            response = await self._http_client.send(request)
+
+            # Acquire the retry token
+            retry_strategy = self._config.retry_strategy
+            retry_token = retry_strategy.acquire_initial_retry_token()
+
+            while True:
+                response = await self._http_client.send(request)
+                if isinstance(response, Exception):
+                    try:
+                        retry_token = retry_strategy.refresh_retry_token_for_retry(
+                            token_to_renew=retry_token
+                        )
+                    except SmithyRetryException:
+                        raise response
+                    await sleep(retry_token.retry_delay)
+                else:
+                    retry_strategy.record_success(token=retry_token)
+                    break
+
             token_value = await response.consume_body_async()
-            self._token = Token(token_value, self._token_ttl)
+            self._token = Token(token_value, self._config.token_ttl)
 
     async def get_token(self) -> Token:
         """Get the current token, refreshing it if expired."""
@@ -103,55 +161,12 @@ class TokenCache:
         return self._token
 
 
-@dataclass(init=False)
-class Config:
-    """Configuration for EC2Metadata."""
-
-    _HOST_MAPPING = {"IPv4": "169.254.169.254", "IPv6": "[fd00:ec2::254]"}
-
-    retry_strategy: RetryStrategy
-    endpoint_uri: URI
-    endpoint_mode: Literal["IPv4", "IPv6"]
-    port: int
-    token_ttl: int
-
-    def __init__(
-        self,
-        *,
-        retry_strategy: RetryStrategy | None = None,
-        endpoint_uri: URI | None = None,
-        endpoint_mode: Literal["IPv4", "IPv6"] = "IPv4",
-        port: int = 80,
-        token_ttl: int = 21600,
-        ec2_instance_profile_name: str | None = None,
-    ):
-        self.retry_strategy = retry_strategy or SimpleRetryStrategy(max_attempts=3)
-        self.endpoint_mode = endpoint_mode
-        self.endpoint_uri = self._resolve_endpoint(endpoint_uri, endpoint_mode)
-        self.port = port
-        self.token_ttl = token_ttl
-        self.ec2_instance_profile_name = ec2_instance_profile_name
-
-    def _resolve_endpoint(
-        self, endpoint_uri: URI | None, endpoint_mode: Literal["IPv4", "IPv6"]
-    ) -> URI:
-        if endpoint_uri is not None:
-            return endpoint_uri
-
-        return URI(
-            scheme="http",
-            host=self._HOST_MAPPING.get(endpoint_mode, self._HOST_MAPPING["IPv4"]),
-        )
-
-
 class EC2Metadata:
     def __init__(self, http_client: HTTPClient, config: Config | None = None):
         self._http_client = http_client
         self._config = config or Config()
         self._token_cache = TokenCache(
-            http_client=self._http_client,
-            base_uri=self._config.endpoint_uri,
-            token_ttl=self._config.token_ttl,
+            http_client=self._http_client, config=self._config
         )
 
     async def get(self, *, path: str) -> str:
