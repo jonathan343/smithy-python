@@ -1,0 +1,1 @@
+--8<-- "designs/serialization.md"
