@@ -42,6 +42,9 @@ aiohttp = [
     "aiohttp>=3.11.12, <4.0",
     "yarl"
 ]
+httpx = [
+  "httpx[http2]~=0.28.1"
+]
 
 [build-system]
 requires = ["hatchling"]
