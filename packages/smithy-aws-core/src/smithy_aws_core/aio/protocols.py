@@ -16,10 +16,13 @@ from smithy_core.documents import TypeRegistry
 from smithy_core.exceptions import (
     CallError,
     DiscriminatorError,
+    ExpectationNotMetError,
     MissingDependencyError,
+    ModeledError,
     UnsupportedStreamError,
 )
 from smithy_core.interfaces import TypedProperties, URI
+from smithy_core.prelude import DOCUMENT
 from smithy_core.schemas import APIOperation, Schema
 from smithy_core.serializers import SerializeableShape
 from smithy_core.shapes import ShapeID, ShapeType
@@ -227,6 +230,163 @@ class RestJsonClientProtocol(HttpBindingClientProtocol):
             payload_codec=self.payload_codec,
             source=AsyncBytesReader(response.body),
             deserializer=event_deserializer,
+        )
+
+
+class AwsJsonClientProtocol(HttpClientProtocol):
+    """An implementation of the aws.protocols#awsJson1_0/1_1 protocols."""
+
+    _error_identifier: Final = AWSErrorIdentifier()
+
+    def __init__(
+        self, service_schema: Schema, protocol_id: ShapeID, content_type: str
+    ) -> None:
+        _assert_json()
+        self._default_namespace: Final = service_schema.id.namespace
+        self._service_name: Final = service_schema.id.name
+        self._id: Final = protocol_id
+        self._content_type: Final = content_type
+        self._codec: Final = JSONCodec(
+            document_class=AWSJSONDocument,
+            default_namespace=self._default_namespace,
+            default_timestamp_format=TimestampFormat.EPOCH_SECONDS,
+            use_json_name=False,
+        )
+
+    @property
+    def id(self) -> ShapeID:
+        return self._id
+
+    @property
+    def payload_codec(self) -> "JSONCodec":
+        return self._codec
+
+    @property
+    def content_type(self) -> str:
+        return self._content_type
+
+    @property
+    def error_identifier(self) -> HTTPErrorIdentifier:
+        return self._error_identifier
+
+    def serialize_request[
+        OperationInput: SerializeableShape,
+        OperationOutput: DeserializeableShape,
+    ](
+        self,
+        *,
+        operation: APIOperation[OperationInput, OperationOutput],
+        input: OperationInput,
+        endpoint: URI,
+        context: TypedProperties,
+    ) -> HTTPRequest:
+        sink = BytesIO()
+        serializer = self.payload_codec.create_serializer(sink)
+        input.serialize(serializer)
+        serializer.flush()
+        content_length = sink.tell()
+        sink.seek(0)
+        return _HTTPRequest(
+            method="POST",
+            destination=_URI(host="", path="/"),
+            fields=tuples_to_fields(
+                [
+                    ("content-type", self.content_type),
+                    ("content-length", str(content_length)),
+                    (
+                        "x-amz-target",
+                        f"{self._service_name}.{operation.schema.id.name}",
+                    ),
+                ]
+            ),
+            body=AsyncBytesReader(sink),
+        )
+
+    async def deserialize_response[
+        OperationInput: SerializeableShape,
+        OperationOutput: DeserializeableShape,
+    ](
+        self,
+        *,
+        operation: APIOperation[OperationInput, OperationOutput],
+        request: HTTPRequest,
+        response: HTTPResponse,
+        error_registry: TypeRegistry,
+        context: TypedProperties,
+    ) -> OperationOutput:
+        body = await response.consume_body_async()
+
+        if not self._is_success(operation, context, response):
+            raise await self._create_error(
+                operation=operation,
+                response=response,
+                response_body=body,
+                error_registry=error_registry,
+                context=context,
+            )
+
+        if len(body) == 0:
+            body = b"{}"
+        return operation.output.deserialize(self.payload_codec.create_deserializer(body))
+
+    def _is_success(
+        self,
+        operation: APIOperation[Any, Any],
+        context: TypedProperties,
+        response: HTTPResponse,
+    ) -> bool:
+        return 200 <= response.status < 300
+
+    async def _create_error(
+        self,
+        *,
+        operation: APIOperation[Any, Any],
+        response: HTTPResponse,
+        response_body: bytes,
+        error_registry: TypeRegistry,
+        context: TypedProperties,
+    ) -> CallError:
+        error_id = self.error_identifier.identify(operation=operation, response=response)
+
+        if error_id is None and len(response_body) > 0:
+            deserializer = self.payload_codec.create_deserializer(response_body)
+            document = deserializer.read_document(schema=DOCUMENT)
+            if document.discriminator in error_registry:
+                error_id = document.discriminator
+
+        if error_id is not None and error_id in error_registry:
+            error_shape = error_registry.get(error_id)
+            if not issubclass(error_shape, ModeledError):
+                raise ExpectationNotMetError(
+                    f"Modeled errors must be derived from 'ModeledError', "
+                    f"but got {error_shape}"
+                )
+            deserializer = HTTPResponseDeserializer(
+                payload_codec=self.payload_codec,
+                response=response,
+                body=response_body,
+            )
+            return error_shape.deserialize(deserializer)
+
+        message = (
+            f"Unknown error for operation {operation.schema.id} "
+            f"- status: {response.status}"
+        )
+        if error_id is not None:
+            message += f" - id: {error_id}"
+        if response.reason is not None:
+            message += f" - reason: {response.reason}"
+
+        is_timeout = response.status == 408
+        is_throttle = response.status == 429
+        fault = "client" if response.status < 500 else "server"
+
+        return CallError(
+            message=message,
+            fault=fault,
+            is_throttling_error=is_throttle,
+            is_timeout_error=is_timeout,
+            is_retry_safe=is_throttle or is_timeout or None,
         )
 
 

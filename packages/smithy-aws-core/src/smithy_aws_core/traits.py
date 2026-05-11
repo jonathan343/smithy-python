@@ -16,7 +16,7 @@ from smithy_core.traits import DynamicTrait, Trait
 
 
 @dataclass(init=False, frozen=True)
-class RestJson1Trait(Trait, id=ShapeID("aws.protocols#restJson1")):
+class _AWSProtocolTrait(Trait, id=ShapeID("smithy.python.synthetic#awsProtocol")):
     http: Sequence[str] = field(
         repr=False, hash=False, compare=False, default_factory=tuple
     )
@@ -44,6 +44,18 @@ class RestJson1Trait(Trait, id=ShapeID("aws.protocols#restJson1")):
             object.__setattr__(
                 self, "event_stream_http", tuple(event_stream_http_versions)
             )
+
+
+class RestJson1Trait(_AWSProtocolTrait, id=ShapeID("aws.protocols#restJson1")):
+    pass
+
+
+class AwsJson1_0Trait(_AWSProtocolTrait, id=ShapeID("aws.protocols#awsJson1_0")):
+    pass
+
+
+class AwsJson1_1Trait(_AWSProtocolTrait, id=ShapeID("aws.protocols#awsJson1_1")):
+    pass
 
 
 @dataclass(frozen=True)
