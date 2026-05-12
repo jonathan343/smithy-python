@@ -327,7 +327,9 @@ class AwsJsonClientProtocol(HttpClientProtocol):
 
         if len(body) == 0:
             body = b"{}"
-        return operation.output.deserialize(self.payload_codec.create_deserializer(body))
+        return operation.output.deserialize(
+            self.payload_codec.create_deserializer(body)
+        )
 
     def _is_success(
         self,
@@ -346,7 +348,9 @@ class AwsJsonClientProtocol(HttpClientProtocol):
         error_registry: TypeRegistry,
         context: TypedProperties,
     ) -> CallError:
-        error_id = self.error_identifier.identify(operation=operation, response=response)
+        error_id = self.error_identifier.identify(
+            operation=operation, response=response
+        )
 
         if error_id is None and len(response_body) > 0:
             deserializer = self.payload_codec.create_deserializer(response_body)
