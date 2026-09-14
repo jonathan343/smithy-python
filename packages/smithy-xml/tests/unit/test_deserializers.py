@@ -4,8 +4,10 @@ import math
 from datetime import datetime
 from decimal import Decimal
 from typing import Any
+from xml.etree.ElementTree import fromstring
 
 import pytest
+from smithy_core.exceptions import SmithyError
 from smithy_core.prelude import (
     BIG_DECIMAL,
     BLOB,
@@ -70,9 +72,7 @@ def test_xml_deserializer(expected: Any, given: bytes) -> None:
 def test_read_document_raises() -> None:
     """XML does not support document types."""
     deserializer = XMLCodec().create_deserializer(b"<doc>foo</doc>")
-    with pytest.raises(
-        NotImplementedError, match="XML does not support document types"
-    ):
+    with pytest.raises(SmithyError, match="XML does not support document types"):
         deserializer.read_document(DOCUMENT)
 
 
@@ -97,49 +97,40 @@ def test_deserialize_empty_blob_self_closed() -> None:
     assert XMLCodec().create_deserializer(b"<b/>").read_blob(BLOB) == b""
 
 
-def test_wrapper_elements() -> None:
-    """Deserializer can unwrap awsQuery-style response wrappers."""
+def test_element_source() -> None:
+    """A pre-parsed element can be deserialized as the document root.
+
+    Protocols use this to descend through transport wrappers, such as awsQuery's
+    ``<OpResponse><OpResult>``, without parsing the document twice.
+    """
     xml = (
         b"<OpResponse><OpResult>"
         b"<stringMember>hello</stringMember>"
         b"</OpResult></OpResponse>"
     )
-    deserializer = XMLCodec().create_deserializer(
-        xml, wrapper_elements=("OpResponse", "OpResult")
-    )
-    result = SerdeShape.deserialize(deserializer)
+    result_element = fromstring(xml)[0]
+    result = SerdeShape.deserialize(XMLCodec().create_deserializer(result_element))
     assert result.string_member == "hello"
 
 
 @pytest.mark.parametrize(
-    ("xml", "wrapper_elements"),
+    "xml",
     [
-        (
-            b'<Error xmlAttributeMember="modeled" />',
-            ("Error",),
-        ),
-        (
-            b'<ErrorResponse><Error xmlAttributeMember="modeled" /></ErrorResponse>',
-            ("ErrorResponse", "Error"),
-        ),
+        b'<Error xmlAttributeMember="modeled" />',
+        b'<ErrorResponse><Error xmlAttributeMember="modeled" /></ErrorResponse>',
     ],
 )
-def test_wrapper_element_attributes(
-    xml: bytes, wrapper_elements: tuple[str, ...]
-) -> None:
-    deserializer = XMLCodec().create_deserializer(
-        xml, wrapper_elements=wrapper_elements
-    )
-    result = SerdeShape.deserialize(deserializer)
+def test_element_source_attributes(xml: bytes) -> None:
+    element = fromstring(xml)
+    if element.tag == "ErrorResponse":
+        element = element[0]
+    result = SerdeShape.deserialize(XMLCodec().create_deserializer(element))
     assert result.xml_attribute_member == "modeled"
 
 
-def test_wrapper_elements_scalar_read() -> None:
-    xml = b"<OpResponse><OpResult>hello</OpResult></OpResponse>"
-    deserializer = XMLCodec().create_deserializer(
-        xml, wrapper_elements=("OpResponse", "OpResult")
-    )
-    assert deserializer.read_string(STRING) == "hello"
+def test_element_source_scalar_read() -> None:
+    element = fromstring(b"<OpResponse><OpResult>hello</OpResult></OpResponse>")[0]
+    assert XMLCodec().create_deserializer(element).read_string(STRING) == "hello"
 
 
 def test_flattened_list_interleaved_with_other_members() -> None:

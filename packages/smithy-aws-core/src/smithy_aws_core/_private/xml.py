@@ -2,24 +2,12 @@
 #  SPDX-License-Identifier: Apache-2.0
 """Helpers shared by the XML-based AWS protocols."""
 
-from typing import TYPE_CHECKING
+from importlib.util import find_spec
 from xml.etree.ElementTree import Element, ParseError, fromstring
 
-from smithy_core.codecs import Codec
-from smithy_core.deserializers import ShapeDeserializer
 from smithy_core.exceptions import MissingDependencyError
-from smithy_core.interfaces import BytesReader, BytesWriter
-from smithy_core.serializers import ShapeSerializer
 
-try:
-    from smithy_xml import XMLCodec
-
-    _HAS_XML = True
-except ImportError:
-    _HAS_XML = False  # type: ignore
-
-if TYPE_CHECKING:
-    from smithy_xml import XMLCodec
+_HAS_XML = find_spec("smithy_xml") is not None
 
 
 def assert_xml() -> None:
@@ -46,89 +34,51 @@ def find_child(element: Element, name: str) -> Element | None:
 
 def parse_xml_root(body: bytes) -> Element | None:
     """Parse the root element of an XML document, or None if it isn't valid XML."""
+    if not body:
+        return None
     try:
         return fromstring(body)  # noqa: S314
     except ParseError:
         return None
 
 
-def parse_xml_error_code(body: bytes, wrapper_elements: tuple[str, ...]) -> str | None:
-    """Parse the ``Code`` field from an XML error response.
+def unwrap(root: Element | None, wrapper_elements: tuple[str, ...]) -> Element | None:
+    """Descend through protocol wrapper elements, outermost first.
 
-    :param body: The response body.
-    :param wrapper_elements: The elements enclosing the error fields, outermost
-        first. The root element must match the first wrapper.
+    The root element must match the first wrapper. Returns the innermost wrapper,
+    or None if any wrapper is missing.
     """
-    element = parse_xml_root(body)
-    if element is None:
+    if root is None or local_name(root.tag) != wrapper_elements[0]:
         return None
-
-    if wrapper_elements:
-        if local_name(element.tag) != wrapper_elements[0]:
+    element = root
+    for wrapper in wrapper_elements[1:]:
+        element = find_child(element, wrapper)
+        if element is None:
             return None
-        for wrapper in wrapper_elements[1:]:
-            next_element = find_child(element, wrapper)
-            if next_element is None:
-                return None
-            element = next_element
-
-    code_element = find_child(element, "Code")
-    return code_element.text if code_element is not None else None
+    return element
 
 
-def parse_rest_xml_error(body: bytes) -> tuple[str | None, tuple[str, ...]]:
-    """Parse the error code and wrapper elements from a restXml error response.
+def find_rest_xml_error(root: Element | None) -> Element | None:
+    """Find the ``Error`` element of a restXml error response.
 
-    Error responses are either wrapped, ``<ErrorResponse><Error>...``, or bare,
-    ``<Error>...``. Both forms are detected from the body itself.
-
-    :param body: The response body.
-    :returns: The error code, if found, and the wrapper elements enclosing the
-        error fields. The wrapper elements are empty if the body isn't an XML
-        error response.
+    Errors are either wrapped, ``<ErrorResponse><Error>``, or bare, ``<Error>``.
+    Both forms are accepted regardless of the service's ``noErrorWrapping``
+    setting because the response itself is unambiguous.
     """
-    root = parse_xml_root(body) if body else None
     if root is None:
-        return None, ()
+        return None
+    match local_name(root.tag):
+        case "Error":
+            return root
+        case "ErrorResponse":
+            return find_child(root, "Error")
+        case _:
+            return None
 
-    root_name = local_name(root.tag)
-    if root_name == "ErrorResponse":
-        wrapper_elements = ("ErrorResponse", "Error")
-        error = find_child(root, "Error")
-    elif root_name == "Error":
-        wrapper_elements = ("Error",)
-        error = root
-    else:
-        return None, ()
 
+def error_code(error: Element | None) -> str | None:
+    """Read the ``Code`` of an XML error element, if present."""
     if error is None:
-        return None, wrapper_elements
-    code_element = find_child(error, "Code")
-    if code_element is None or not code_element.text:
-        return None, wrapper_elements
-    return code_element.text, wrapper_elements
-
-
-class WrappedXMLCodec(Codec):
-    """An XML codec whose deserializers first consume protocol wrapper elements.
-
-    This lets HTTP binding deserializers, which create deserializers without any
-    extra arguments, read error fields nested inside e.g.
-    ``<ErrorResponse><Error>``.
-    """
-
-    def __init__(self, codec: "XMLCodec", wrapper_elements: tuple[str, ...]) -> None:
-        self._codec = codec
-        self._wrapper_elements = wrapper_elements
-
-    @property
-    def media_type(self) -> str:
-        return self._codec.media_type
-
-    def create_serializer(self, sink: BytesWriter) -> ShapeSerializer:
-        return self._codec.create_serializer(sink)
-
-    def create_deserializer(self, source: bytes | BytesReader) -> ShapeDeserializer:
-        return self._codec.create_deserializer(
-            source, wrapper_elements=self._wrapper_elements
-        )
+        return None
+    code = find_child(error, "Code")
+    return code.text or None if code is not None else None
