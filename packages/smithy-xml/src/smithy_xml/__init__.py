@@ -2,7 +2,7 @@
 #  SPDX-License-Identifier: Apache-2.0
 
 from io import BytesIO
-from xml.etree.ElementTree import iterparse
+from xml.etree.ElementTree import Element, iterparse
 
 from smithy_core.codecs import Codec
 from smithy_core.deserializers import ShapeDeserializer
@@ -12,6 +12,7 @@ from smithy_core.types import TimestampFormat
 
 from ._private.deserializers import XMLShapeDeserializer as _XMLShapeDeserializer
 from ._private.readers import XMLEventReader as _XMLEventReader
+from ._private.readers import tree_events as _tree_events
 from ._private.serializers import XMLShapeSerializer as _XMLShapeSerializer
 from .settings import XMLSettings
 
@@ -57,16 +58,22 @@ class XMLCodec(Codec):
         return _XMLShapeSerializer.for_sink(sink, self._settings)
 
     def create_deserializer(
-        self,
-        source: bytes | BytesReader,
-        *,
-        wrapper_elements: tuple[str, ...] = (),
+        self, source: bytes | BytesReader | Element
     ) -> ShapeDeserializer:
-        if isinstance(source, bytes):
-            source = BytesIO(source)
-        reader = _XMLEventReader(
-            iterparse(source, events=("start", "end"))  # noqa: S314
-        )
-        return _XMLShapeDeserializer(
-            settings=self._settings, reader=reader, wrapper_elements=wrapper_elements
-        )
+        """Create a deserializer for an XML document.
+
+        :param source: The document to read. This may be the raw document, or an
+            already parsed :py:class:`Element`, in which case that element is
+            treated as the root of the document. Passing an element allows a
+            document to be inspected before it is deserialized without having to
+            parse it twice.
+        """
+        if isinstance(source, Element):
+            reader = _XMLEventReader(_tree_events(source))
+        else:
+            if isinstance(source, bytes):
+                source = BytesIO(source)
+            reader = _XMLEventReader(
+                iterparse(source, events=("start", "end"))  # noqa: S314
+            )
+        return _XMLShapeDeserializer(settings=self._settings, reader=reader)

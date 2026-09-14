@@ -1,0 +1,4 @@
+{
+  "type": "feature",
+  "description": "`HTTPResponseDeserializer` accepts an optional pre-built `body_deserializer`, letting protocols that inspect the body before deserializing it avoid parsing it twice."
+}

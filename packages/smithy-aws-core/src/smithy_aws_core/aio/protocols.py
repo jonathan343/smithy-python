@@ -38,9 +38,16 @@ from smithy_http.aio.protocols import (
 )
 from smithy_http.deserializers import HTTPResponseDeserializer
 
+from .._private.errors import unknown_error
 from .._private.query.errors import create_aws_query_error
 from .._private.query.serializers import QueryShapeSerializer
-from .._private.xml import WrappedXMLCodec, parse_rest_xml_error
+from .._private.xml import (
+    assert_xml,
+    error_code,
+    find_rest_xml_error,
+    parse_xml_root,
+    unwrap,
+)
 from ..traits import (
     AwsJson1_0Trait,
     AwsJson1_1Trait,
@@ -59,10 +66,8 @@ except ImportError:
 
 try:
     from smithy_xml import XMLCodec
-
-    _HAS_XML = True
 except ImportError:
-    _HAS_XML = False  # type: ignore
+    pass
 
 try:
     from smithy_aws_event_stream.aio import (
@@ -93,19 +98,25 @@ def _assert_json() -> None:
         )
 
 
-def _assert_xml() -> None:
-    if not _HAS_XML:
-        raise MissingDependencyError(
-            "Attempted to use XML codec, but smithy-xml is not installed."
-        )
-
-
 def _assert_event_stream() -> None:
     if not _HAS_EVENT_STREAM:
         raise MissingDependencyError(
             "Attempted to use event streams, but smithy-aws-event-stream "
             "is not installed."
         )
+
+
+def _resolve_error_id(operation: APIOperation[Any, Any], error_id: ShapeID) -> ShapeID:
+    """Resolve an error ID from a response to the operation's modeled error.
+
+    Services only send the shape name of an error, so the namespace is a guess.
+    If the guess doesn't match a known error, fall back to any error of the
+    operation with the same name.
+    """
+    for error_schema in operation.error_schemas:
+        if error_schema.id.name == error_id.name:
+            return error_schema.id
+    return error_id
 
 
 class AWSErrorIdentifier(HTTPErrorIdentifier):
@@ -148,32 +159,19 @@ else:
         pass
 
 
-class RestJsonClientProtocol(HttpBindingClientProtocol):
-    """An implementation of the aws.protocols#restJson1 protocol."""
+class _AWSHttpBindingClientProtocol(HttpBindingClientProtocol):
+    """Behavior shared by the AWS protocols that use HTTP binding traits.
 
-    _id: Final = RestJson1Trait.id
-    _content_type: Final = "application/json"
+    Subclasses set the protocol ID and content type, and provide the payload codec.
+    """
+
+    _id: ClassVar[ShapeID]
+    _content_type: ClassVar[str]
     _error_identifier: Final = AWSErrorIdentifier()
-
-    def __init__(self, service_schema: Schema) -> None:
-        """Initialize a RestJsonClientProtocol.
-
-        :param service: The schema for the service to interact with.
-        """
-        _assert_json()
-        self._codec: Final = JSONCodec(
-            document_class=AWSJSONDocument,
-            default_namespace=service_schema.id.namespace,
-            default_timestamp_format=TimestampFormat.EPOCH_SECONDS,
-        )
 
     @property
     def id(self) -> ShapeID:
         return self._id
-
-    @property
-    def payload_codec(self) -> Codec:
-        return self._codec
 
     @property
     def content_type(self) -> str:
@@ -192,10 +190,7 @@ class RestJsonClientProtocol(HttpBindingClientProtocol):
         operation: APIOperation[Any, Any],
         error_id: ShapeID,
     ) -> ShapeID:
-        for error_schema in operation.error_schemas:
-            if error_schema.id.name == error_id.name:
-                return error_schema.id
-        return error_id
+        return _resolve_error_id(operation, error_id)
 
     def create_event_publisher[
         OperationInput: SerializeableShape,
@@ -259,6 +254,29 @@ class RestJsonClientProtocol(HttpBindingClientProtocol):
             source=AsyncBytesReader(response.body),
             deserializer=event_deserializer,
         )
+
+
+class RestJsonClientProtocol(_AWSHttpBindingClientProtocol):
+    """An implementation of the aws.protocols#restJson1 protocol."""
+
+    _id: ClassVar[ShapeID] = RestJson1Trait.id
+    _content_type: ClassVar[str] = "application/json"
+
+    def __init__(self, service_schema: Schema) -> None:
+        """Initialize a RestJsonClientProtocol.
+
+        :param service: The schema for the service to interact with.
+        """
+        _assert_json()
+        self._codec: Final = JSONCodec(
+            document_class=AWSJSONDocument,
+            default_namespace=service_schema.id.namespace,
+            default_timestamp_format=TimestampFormat.EPOCH_SECONDS,
+        )
+
+    @property
+    def payload_codec(self) -> Codec:
+        return self._codec
 
 
 class _AWSJSONClientProtocol(HttpClientProtocol):
@@ -369,7 +387,7 @@ class _AWSJSONClientProtocol(HttpClientProtocol):
             operation=operation, response=response
         )
         if error_id is not None and error_id not in error_registry:
-            error_id = self._resolve_error_id(operation=operation, error_id=error_id)
+            error_id = _resolve_error_id(operation, error_id)
 
         retry_after = parse_retry_after(response)
 
@@ -382,9 +400,7 @@ class _AWSJSONClientProtocol(HttpClientProtocol):
             document = deserializer.read_document(schema=DOCUMENT)
             document_error_id = document.discriminator
             if document_error_id not in error_registry:
-                document_error_id = self._resolve_error_id(
-                    operation=operation, error_id=document_error_id
-                )
+                document_error_id = _resolve_error_id(operation, document_error_id)
 
             if document_error_id in error_registry:
                 error_id = document_error_id
@@ -406,25 +422,11 @@ class _AWSJSONClientProtocol(HttpClientProtocol):
                 modeled_error.retry_after = retry_after
             return modeled_error
 
-        message = (
-            f"Unknown error for operation {operation.schema.id} "
-            f"- status: {response.status}"
-        )
-        if error_id is not None:
-            message += f" - id: {error_id}"
-        if response.reason is not None:
-            message += f" - reason: {response.reason}"
-
-        is_timeout = response.status == 408
-        is_throttle = response.status == 429
-        fault = "client" if response.status < 500 else "server"
-
-        return CallError(
-            message=message,
-            fault=fault,
-            is_throttling_error=is_throttle,
-            is_timeout_error=is_timeout,
-            is_retry_safe=is_throttle or is_timeout or None,
+        return unknown_error(
+            operation=operation,
+            status=response.status,
+            reason=response.reason,
+            error_id=error_id,
             retry_after=retry_after,
         )
 
@@ -433,17 +435,6 @@ class _AWSJSONClientProtocol(HttpClientProtocol):
             return False
         actual = response.fields["content-type"].as_string()
         return actual.split(";", 1)[0].strip().lower() == self.content_type.lower()
-
-    def _resolve_error_id(
-        self,
-        *,
-        operation: APIOperation[Any, Any],
-        error_id: ShapeID,
-    ) -> ShapeID:
-        for error_schema in operation.error_schemas:
-            if error_schema.id.name == error_id.name:
-                return error_schema.id
-        return error_id
 
 
 class AwsJson10ClientProtocol(_AWSJSONClientProtocol):
@@ -460,19 +451,18 @@ class AwsJson11ClientProtocol(_AWSJSONClientProtocol):
     _content_type: ClassVar[str] = "application/x-amz-json-1.1"
 
 
-class RestXmlClientProtocol(HttpBindingClientProtocol):
+class RestXmlClientProtocol(_AWSHttpBindingClientProtocol):
     """An implementation of the aws.protocols#restXml protocol."""
 
-    _id: Final = RestXmlTrait.id
-    _content_type: Final = "application/xml"
-    _error_identifier: Final = AWSErrorIdentifier()
+    _id: ClassVar[ShapeID] = RestXmlTrait.id
+    _content_type: ClassVar[str] = "application/xml"
 
     def __init__(self, service_schema: Schema) -> None:
         """Initialize a RestXmlClientProtocol.
 
         :param service_schema: The schema for the service to interact with.
         """
-        _assert_xml()
+        assert_xml()
         self._default_namespace: Final = service_schema.id.namespace
         xml_namespace = service_schema.get_trait(XMLNamespaceTrait)
         self._codec: Final = XMLCodec(
@@ -483,34 +473,8 @@ class RestXmlClientProtocol(HttpBindingClientProtocol):
         )
 
     @property
-    def id(self) -> ShapeID:
-        return self._id
-
-    @property
     def payload_codec(self) -> Codec:
         return self._codec
-
-    @property
-    def content_type(self) -> str:
-        return self._content_type
-
-    @property
-    def error_identifier(self) -> HTTPErrorIdentifier:
-        return self._error_identifier
-
-    def _retry_after(self, response: HTTPResponse) -> float | None:
-        return parse_retry_after(response)
-
-    def _resolve_error_id(
-        self,
-        *,
-        operation: APIOperation[Any, Any],
-        error_id: ShapeID,
-    ) -> ShapeID:
-        for error_schema in operation.error_schemas:
-            if error_schema.id.name == error_id.name:
-                return error_schema.id
-        return error_id
 
     async def _create_error(
         self,
@@ -521,24 +485,25 @@ class RestXmlClientProtocol(HttpBindingClientProtocol):
         error_registry: TypeRegistry,
         context: TypedProperties,
     ) -> CallError:
-        body = _read_sync_body(response_body)
+        if isinstance(response_body, bytes | bytearray):
+            body = bytes(response_body)
+        else:
+            body = response_body.read()
 
         error_id = self.error_identifier.identify(
             operation=operation, response=response
         )
         if error_id is not None and error_id not in error_registry:
-            error_id = self._resolve_error_id(operation=operation, error_id=error_id)
+            error_id = _resolve_error_id(operation, error_id)
 
-        # Error responses are either wrapped in <ErrorResponse><Error> or use a
-        # bare <Error> root. Both are accepted regardless of the `noErrorWrapping`
-        # setting because the response itself is unambiguous.
-        code, wrapper_elements = parse_rest_xml_error(body)
+        # The body is parsed once to find the error code. If the error is modeled,
+        # the same parsed element is then deserialized into the error shape.
+        error_element = find_rest_xml_error(parse_xml_root(body))
+        code = error_code(error_element)
         if error_id is None and code is not None:
             error_id = parse_error_code(code, self._default_namespace)
             if error_id is not None and error_id not in error_registry:
-                error_id = self._resolve_error_id(
-                    operation=operation, error_id=error_id
-                )
+                error_id = _resolve_error_id(operation, error_id)
 
         retry_after = self._retry_after(response)
 
@@ -552,48 +517,29 @@ class RestXmlClientProtocol(HttpBindingClientProtocol):
                     f"but got {error_shape}"
                 )
 
+            body_deserializer: ShapeDeserializer | None = None
+            if error_element is not None:
+                body_deserializer = self._codec.create_deserializer(error_element)
             deserializer = HTTPResponseDeserializer(
-                payload_codec=WrappedXMLCodec(self._codec, wrapper_elements),
+                payload_codec=self._codec,
                 http_trait=operation.schema.expect_trait(HTTPTrait),
                 response=response,
                 body=body,
+                body_deserializer=body_deserializer,
             )
             modeled_error = error_shape.deserialize(deserializer)
             if retry_after is not None:
                 modeled_error.retry_after = retry_after
             return modeled_error
 
-        message = (
-            f"Unknown error for operation {operation.schema.id} "
-            f"- status: {response.status}"
-        )
-        if code is not None:
-            message += f" - code: {code}"
-        elif error_id is not None:
-            message += f" - id: {error_id}"
-        if response.reason is not None:
-            message += f" - reason: {response.reason}"
-
-        is_timeout = response.status == 408
-        is_throttle = response.status == 429
-        fault = "client" if response.status < 500 else "server"
-
-        return CallError(
-            message=message,
-            fault=fault,
-            is_throttling_error=is_throttle,
-            is_timeout_error=is_timeout,
-            is_retry_safe=is_throttle or is_timeout or None,
+        return unknown_error(
+            operation=operation,
+            status=response.status,
+            reason=response.reason,
+            code=code,
+            error_id=error_id,
             retry_after=retry_after,
         )
-
-
-def _read_sync_body(body: SyncStreamingBlob) -> bytes:
-    if isinstance(body, bytes):
-        return body
-    if isinstance(body, bytearray):
-        return bytes(body)
-    return body.read()
 
 
 class AwsQueryClientProtocol(HttpClientProtocol):
@@ -603,7 +549,7 @@ class AwsQueryClientProtocol(HttpClientProtocol):
     _content_type: Final = "application/x-www-form-urlencoded"
 
     def __init__(self, service_schema: Schema, version: str) -> None:
-        _assert_xml()
+        assert_xml()
         self._default_namespace: Final = service_schema.id.namespace
         self._version: Final = version
         self._codec: Final = XMLCodec()
@@ -689,10 +635,14 @@ class AwsQueryClientProtocol(HttpClientProtocol):
             )
 
         wrapper_elements = self._response_wrapper_elements(operation)
-        deserializer = self.payload_codec.create_deserializer(
-            body, wrapper_elements=wrapper_elements
+        result = unwrap(parse_xml_root(body), wrapper_elements)
+        if result is None:
+            raise ExpectationNotMetError(
+                f"Expected an XML response wrapped in {'/'.join(wrapper_elements)}."
+            )
+        return operation.output.deserialize(
+            self.payload_codec.create_deserializer(result)
         )
-        return operation.output.deserialize(deserializer)
 
     def _is_success(
         self,

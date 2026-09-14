@@ -28,11 +28,11 @@ def test_allows_empty_protocol_trait_value(
 
 
 def test_parses_rest_xml_trait() -> None:
-    assert RestXmlTrait(None).no_error_wrapping is False
-    assert RestXmlTrait({"noErrorWrapping": False}).no_error_wrapping is False
+    assert RestXmlTrait(None).http == ("http/1.1",)
 
+    # noErrorWrapping is accepted but has no runtime effect: the error response
+    # shape is detected from the body itself.
     trait = RestXmlTrait({"noErrorWrapping": True, "http": ["h2"]})
-    assert trait.no_error_wrapping is True
     assert trait.http == ("h2",)
 
 

@@ -11,6 +11,18 @@ class XMLEvent(NamedTuple):
     elem: Element
 
 
+def tree_events(element: Element) -> Iterator[XMLEvent]:
+    """Yield the start and end events of an already parsed element tree.
+
+    This produces the same sequence of events ``iterparse`` would for the
+    document rooted at ``element``.
+    """
+    yield XMLEvent("start", element)
+    for child in element:
+        yield from tree_events(child)
+    yield XMLEvent("end", element)
+
+
 class XMLEventReader:
     """Buffered iterator over XML pull parser events with peek support.
 

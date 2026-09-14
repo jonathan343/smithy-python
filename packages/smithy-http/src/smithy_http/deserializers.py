@@ -49,6 +49,7 @@ class HTTPResponseDeserializer(SpecificShapeDeserializer):
         response: HTTPResponse,
         http_trait: HTTPTrait | None = None,
         body: "SyncStreamingBlob | None" = None,
+        body_deserializer: ShapeDeserializer | None = None,
     ) -> None:
         """Initialize an HTTPResponseDeserializer.
 
@@ -57,11 +58,16 @@ class HTTPResponseDeserializer(SpecificShapeDeserializer):
         :param http_trait: The HTTP trait of the operation being handled.
         :param body: The HTTP response body in a synchronously readable form. This is
             necessary for async response bodies when there is no streaming member.
+        :param body_deserializer: A deserializer to use for structured payloads
+            instead of creating one from the codec. This lets a protocol that has
+            already parsed the body, for example to identify an error, avoid
+            parsing it a second time.
         """
         self._payload_codec = payload_codec
         self._response = response
         self._http_trait = http_trait
         self._body = body
+        self._body_deserializer = body_deserializer
 
     def read_struct(
         self, schema: Schema, consumer: Callable[[Schema, ShapeDeserializer], None]
@@ -140,6 +146,9 @@ class HTTPResponseDeserializer(SpecificShapeDeserializer):
         return self._create_body_deserializer()
 
     def _create_body_deserializer(self):
+        if self._body_deserializer is not None:
+            return self._body_deserializer
+
         body = self._body if self._body is not None else self._response.body
         if not is_streaming_blob(body):
             raise UnsupportedStreamError(
