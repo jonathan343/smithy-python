@@ -1,6 +1,7 @@
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: Apache-2.0
 
+import re
 from base64 import b64encode
 from collections.abc import Callable, Iterable
 from contextlib import AbstractContextManager
@@ -46,6 +47,20 @@ _ATTRIBUTE_ESCAPES = str.maketrans(
         "\t": "&#9;",
     }
 )
+
+# XML 1.0 permits tabs, line feeds, and carriage returns from the C0 control
+# range. The remaining C0 controls, surrogate code points, and the final two
+# noncharacters in the BMP are not permitted.
+_INVALID_XML_CHARACTERS = re.compile(
+    r"[\x00-\x08\x0b\x0c\x0e-\x1f\ud800-\udfff\ufffe\uffff]"
+)
+
+
+def _validate_xml_string(value: str) -> None:
+    if (match := _INVALID_XML_CHARACTERS.search(value)) is not None:
+        raise SerializationError(
+            f"Character U+{ord(match.group()):04X} is not permitted in XML 1.0."
+        )
 
 
 def _escape_text(value: str) -> str:
@@ -189,7 +204,9 @@ class XMLShapeSerializer(ShapeSerializer):
 
     def write_string(self, schema: Schema, value: str) -> None:
         # str() unwraps StrEnum members.
-        self._write_text(schema, str(value))
+        value = str(value)
+        _validate_xml_string(value)
+        self._write_text(schema, value)
 
     def write_blob(self, schema: Schema, value: bytes) -> None:
         self._write_text(schema, b64encode(value).decode("utf-8"))
@@ -317,23 +334,27 @@ class _XMLListSerializer(InterceptingSerializer):
         self._namespace = namespace
         self._is_flattened = schema.get_trait(XMLFlattenedTrait) is not None
 
-        namespace_override: str | None = None
+        target = schema.member_target or schema
+        member_schema = target.members["member"]
         if self._is_flattened:
             # Flattened entries use the containing member's namespace if present,
             # otherwise they fall back to the list member's own namespace.
-            if namespace:
-                namespace_override = namespace
-            else:
-                target = schema.member_target or schema
-                namespace_override = _format_namespace(
-                    own_trait(target.members["member"], XMLNamespaceTrait)
-                )
+            entry_name = name
+            entry_namespace = namespace or _format_namespace(
+                own_trait(member_schema, XMLNamespaceTrait)
+            )
+        else:
+            # Wrapped entries always use the list member's name and namespace.
+            entry_name = member_name(member_schema)
+            entry_namespace = _format_namespace(
+                own_trait(member_schema, XMLNamespaceTrait)
+            )
 
         self._entry_serializer = XMLShapeSerializer(
             settings,
             fragments=parent,
-            name_override=name if self._is_flattened else None,
-            namespace_override=namespace_override,
+            name_override=entry_name,
+            namespace_override=entry_namespace,
         )
 
     def __enter__(self) -> Self:
@@ -381,6 +402,7 @@ class _XMLMapSerializer(MapSerializer):
 
         target = schema.member_target or schema
         key_schema = target.members["key"]
+        value_schema = target.members["value"]
         key_name = member_name(key_schema)
         key_namespace = _format_namespace(own_trait(key_schema, XMLNamespaceTrait))
         self._key_start = f"<{key_name}{key_namespace}>"
@@ -393,7 +415,14 @@ class _XMLMapSerializer(MapSerializer):
             self._entry_start = "<entry>"
             self._entry_end = "</entry>"
 
-        self._value_serializer = XMLShapeSerializer(settings, fragments=parent)
+        self._value_serializer = XMLShapeSerializer(
+            settings,
+            fragments=parent,
+            name_override=member_name(value_schema),
+            namespace_override=_format_namespace(
+                own_trait(value_schema, XMLNamespaceTrait)
+            ),
+        )
 
     def __enter__(self) -> Self:
         if not self._is_flattened:
@@ -410,6 +439,7 @@ class _XMLMapSerializer(MapSerializer):
             self._parent.append(f"</{self._name}>")
 
     def entry(self, key: str, value_writer: Callable[[ShapeSerializer], None]) -> None:
+        _validate_xml_string(key)
         self._parent.append(
             f"{self._entry_start}{self._key_start}{_escape_text(key)}{self._key_end}"
         )

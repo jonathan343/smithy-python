@@ -206,6 +206,26 @@ def test_escapes_text_and_attributes() -> None:
     assert parsed[0].text == 'a<b>&"c\r\n'
 
 
+@pytest.mark.parametrize(
+    "value",
+    ["\x00", "\x01", "\x0b", "\x1f", "\ud800", "\udfff", "\ufffe", "\uffff"],
+)
+def test_rejects_characters_not_permitted_in_xml(value: str) -> None:
+    with pytest.raises(SerializationError, match=r"not permitted in XML 1\.0"):
+        _serialize(value, STRING)
+
+
+def test_rejects_invalid_xml_character_in_attribute() -> None:
+    shape = SerdeShape(xml_attribute_member="\x00")
+    with pytest.raises(SerializationError, match=r"not permitted in XML 1\.0"):
+        _serialize(shape, SCHEMA)
+
+
+def test_rejects_invalid_xml_character_in_map_key() -> None:
+    with pytest.raises(SerializationError, match=r"not permitted in XML 1\.0"):
+        _serialize({"\x00": "value"}, STRING_MAP_SCHEMA)
+
+
 def test_attribute_written_after_children() -> None:
     """Attributes end up on the start tag regardless of member order."""
     shape = SerdeShape(string_member="foo", xml_attribute_member="bar")
