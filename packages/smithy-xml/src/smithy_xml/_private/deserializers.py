@@ -24,13 +24,6 @@ from .traits import local_name as _local_name
 from .traits import member_name as _xml_member_name
 
 
-def _validate_element_name(expected: str, elem: Element) -> None:
-    """Raise XMLParseError if the element's local name doesn't match expected."""
-    found = _local_name(elem.tag)
-    if found != expected:
-        raise XMLParseError(f"Expected element '{expected}', got '{found}'")
-
-
 def _parse_xml_float(text: str) -> float:
     """Parse an XML float string, handling NaN and Infinity."""
     match text:
@@ -52,26 +45,10 @@ class XMLParseError(SmithyError):
 class XMLShapeDeserializer(ShapeDeserializer):
     """Deserializer that reads XML from a streaming pull parser."""
 
-    def __init__(
-        self,
-        settings: XMLSettings,
-        reader: XMLEventReader,
-        wrapper_elements: tuple[str, ...] = (),
-    ) -> None:
+    def __init__(self, settings: XMLSettings, reader: XMLEventReader) -> None:
         self._settings = settings
         self._reader = reader
         self._xml_names: dict[ShapeID, dict[str, Schema]] = {}
-        self._preconsumed_start: Element | None = None
-
-        # Wrapper elements are protocol transport containers (e.g. awsQuery's
-        # <OpResponse><OpResult>). The last wrapper's start element is kept
-        # so that the next read can reuse it.
-        for wrapper in wrapper_elements:
-            event = next(self._reader)
-            if event.type != "start":
-                raise XMLParseError(f"Expected start element, got '{event.type}'")
-            _validate_element_name(wrapper, event.elem)
-            self._preconsumed_start = event.elem
 
     def is_null(self) -> bool:
         return False
@@ -105,7 +82,7 @@ class XMLShapeDeserializer(ShapeDeserializer):
         return self._read_text()
 
     def read_document(self, schema: Schema) -> Document:
-        raise NotImplementedError("XML does not support document types")
+        raise XMLParseError("XML does not support document types")
 
     def read_timestamp(self, schema: Schema) -> datetime.datetime:
         format = self._settings.default_timestamp_format
@@ -181,16 +158,15 @@ class XMLShapeDeserializer(ShapeDeserializer):
         schema: Schema,
         consumer: Callable[["ShapeDeserializer"], None],
     ) -> None:
-        is_flattened = schema.get_trait(XMLFlattenedTrait) is not None
-        if not is_flattened:
+        if schema.get_trait(XMLFlattenedTrait) is not None:
+            # Flattened entries are replayed from a bounded buffer, so they end
+            # when the buffer does rather than at an enclosing end element.
+            while self._reader.has_next():
+                consumer(self)
+        else:
             self._consume_start_event()
             while self._reader.peek().type != "end":
                 consumer(self)
-        else:
-            while self._reader.has_next():
-                consumer(self)
-
-        if not is_flattened:
             next(self._reader)
 
     def read_map(
@@ -198,21 +174,16 @@ class XMLShapeDeserializer(ShapeDeserializer):
         schema: Schema,
         consumer: Callable[[str, "ShapeDeserializer"], None],
     ) -> None:
-        is_flattened = schema.get_trait(XMLFlattenedTrait) is not None
-        key_schema = schema.members["key"]
-        value_schema = schema.members["value"]
-        key_tag = _xml_member_name(key_schema)
-        value_tag = _xml_member_name(value_schema)
+        key_tag = _xml_member_name(schema.members["key"])
+        value_tag = _xml_member_name(schema.members["value"])
 
-        if not is_flattened:
+        if schema.get_trait(XMLFlattenedTrait) is not None:
+            while self._reader.has_next():
+                self._read_map_entry(key_tag, value_tag, consumer)
+        else:
             self._consume_start_event()
             while self._reader.peek().type != "end":
                 self._read_map_entry(key_tag, value_tag, consumer)
-        else:
-            while self._reader.has_next():
-                self._read_map_entry(key_tag, value_tag, consumer)
-
-        if not is_flattened:
             next(self._reader)
 
     def _read_text(self) -> str:
@@ -223,15 +194,7 @@ class XMLShapeDeserializer(ShapeDeserializer):
         return elem.text or ""
 
     def _consume_start_event(self) -> Element:
-        """Consume and return the next start element.
-
-        If a start element was pre-consumed (e.g. from consuming wrapper elements),
-        it is returned first and cleared.
-        """
-        if self._preconsumed_start is not None:
-            elem = self._preconsumed_start
-            self._preconsumed_start = None
-            return elem
+        """Consume and return the next start element."""
         event = next(self._reader)
         if event.type != "start":
             raise XMLParseError(f"Expected start element, got '{event.type}'")

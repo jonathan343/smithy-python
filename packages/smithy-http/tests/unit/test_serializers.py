@@ -2030,6 +2030,28 @@ async def test_deserialize_http_response_with_async_stream() -> None:
     assert actual == HTTPStreamingPayload(stream)
 
 
+async def test_deserialize_http_response_with_body_deserializer() -> None:
+    """A pre-built body deserializer is used instead of parsing the body."""
+    body = b'{"payload_member": "from body"}'
+    body_deserializer = JSONCodec().create_deserializer(
+        b'{"payload_member": "pre-parsed"}'
+    )
+
+    deserializer = HTTPResponseDeserializer(
+        payload_codec=JSONCodec(),
+        http_trait=HTTPTrait({"method": "POST", "code": 200, "uri": "/"}),
+        response=_HTTPResponse(
+            body=AsyncBytesReader(body),
+            status=200,
+            fields=tuples_to_fields([("header", "foo")]),
+        ),
+        body=body,
+        body_deserializer=body_deserializer,
+    )
+    actual = HTTPImplicitPayload.deserialize(deserializer)
+    assert actual == HTTPImplicitPayload(header="foo", payload_member="pre-parsed")
+
+
 async def test_serialize_request_event_stream_creates_writeable_body() -> None:
     serializer = HTTPRequestSerializer(
         payload_codec=JSONCodec(),

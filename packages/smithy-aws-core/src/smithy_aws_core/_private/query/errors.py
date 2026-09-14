@@ -9,7 +9,8 @@ from smithy_core.schemas import APIOperation
 from smithy_core.shapes import ShapeID
 
 from ...traits import AwsQueryErrorTrait
-from ..xml import assert_xml, parse_xml_error_code
+from ..errors import unknown_error
+from ..xml import assert_xml, error_code, parse_xml_root, unwrap
 
 try:
     from smithy_xml import XMLCodec
@@ -51,8 +52,9 @@ def create_aws_query_error(
     retry_after: float | None = None,
 ) -> CallError:
     """Create a modeled or generic CallError from an awsQuery error response."""
-    code = parse_xml_error_code(body, wrapper_elements)
-    if code is not None:
+    error = unwrap(parse_xml_root(body), wrapper_elements)
+    code = error_code(error)
+    if error is not None and code is not None:
         shape_id = _resolve_aws_query_error_shape_id(
             code=code,
             operation=operation,
@@ -68,27 +70,13 @@ def create_aws_query_error(
                 )
 
             assert_xml()
-            deserializer = XMLCodec().create_deserializer(
-                body, wrapper_elements=wrapper_elements
+            modeled_error = error_shape.deserialize(
+                XMLCodec().create_deserializer(error)
             )
-            modeled_error = error_shape.deserialize(deserializer)
             if retry_after is not None:
                 modeled_error.retry_after = retry_after
             return modeled_error
 
-    message = f"Unknown error for operation {operation.schema.id} - status: {status}"
-    if code is not None:
-        message += f", code: {code}"
-
-    is_timeout = status == 408
-    is_throttle = status == 429
-    fault = "client" if status < 500 else "server"
-
-    return CallError(
-        message=message,
-        fault=fault,
-        is_throttling_error=is_throttle,
-        is_timeout_error=is_timeout,
-        is_retry_safe=is_throttle or is_timeout or None,
-        retry_after=retry_after,
+    return unknown_error(
+        operation=operation, status=status, code=code, retry_after=retry_after
     )

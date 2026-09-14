@@ -1,0 +1,4 @@
+{
+  "type": "feature",
+  "description": "`XMLCodec.create_deserializer` now accepts a pre-parsed `Element` as the document root, replacing the `wrapper_elements` argument."
+}
