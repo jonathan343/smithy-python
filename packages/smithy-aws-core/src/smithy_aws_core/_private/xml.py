@@ -81,11 +81,6 @@ def find_rest_xml_error(root: Element | None) -> Element | None:
             return None
 
 
-def error_code(error: Element | None) -> str | None:
-    """Read the ``Code`` of an XML error element, if present."""
-    return child_text(error, "Code")
-
-
 def child_text(element: Element | None, name: str) -> str | None:
     """Read a direct child's text, ignoring namespace prefixes."""
     if element is None:

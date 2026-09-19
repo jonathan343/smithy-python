@@ -10,7 +10,7 @@ from smithy_core.shapes import ShapeID
 
 from ...traits import AwsQueryErrorTrait
 from ..errors import unknown_error
-from ..xml import assert_xml, error_code, parse_xml_root, unwrap
+from ..xml import assert_xml, child_text, parse_xml_root, unwrap
 
 try:
     from smithy_xml import XMLCodec
@@ -53,7 +53,7 @@ def create_aws_query_error(
 ) -> CallError:
     """Create a modeled or generic CallError from an awsQuery error response."""
     error = unwrap(parse_xml_root(body), wrapper_elements)
-    code = error_code(error)
+    code = child_text(error, "Code")
     if error is not None and code is not None:
         shape_id = _resolve_aws_query_error_shape_id(
             code=code,

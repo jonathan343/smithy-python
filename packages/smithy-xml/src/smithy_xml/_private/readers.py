@@ -81,7 +81,7 @@ class XMLEventReader:
 
     def __init__(
         self,
-        events: Iterator[tuple[str, Element] | XMLEvent],
+        events: Iterator[XMLEvent],
         *,
         document: bool = False,
     ) -> None:
@@ -102,7 +102,7 @@ class XMLEventReader:
 
     def _next(self) -> XMLEvent:
         try:
-            event = XMLEvent(*next(self._iter))
+            event = next(self._iter)
             if event.type == "start":
                 self._depth += 1
                 if self._depth > 128:

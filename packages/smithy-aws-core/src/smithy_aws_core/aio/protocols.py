@@ -44,7 +44,6 @@ from .._private.query.serializers import QueryShapeSerializer
 from .._private.xml import (
     assert_xml,
     child_text,
-    error_code,
     find_rest_xml_error,
     parse_xml_root,
     unwrap,
@@ -501,7 +500,7 @@ class RestXmlClientProtocol(_AWSHttpBindingClientProtocol):
         # the same parsed element is then deserialized into the error shape.
         root = parse_xml_root(body)
         error_element = find_rest_xml_error(root)
-        code = error_code(error_element)
+        code = child_text(error_element, "Code")
         if error_id is None and code is not None:
             error_id = parse_error_code(code, self._default_namespace)
             if error_id is not None and error_id not in error_registry:

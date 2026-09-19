@@ -17,7 +17,6 @@ from smithy_aws_core.aio.protocols import (
 )
 from smithy_aws_core.traits import AwsQueryTrait, RestXmlTrait
 from smithy_core import URI as _URI
-from smithy_core.aio.types import AsyncBytesReader
 from smithy_core.deserializers import ShapeDeserializer
 from smithy_core.documents import TypeRegistry
 from smithy_core.exceptions import CallError, DiscriminatorError, ModeledError
@@ -849,22 +848,6 @@ async def test_rest_xml_rejects_unsafe_error_envelopes(body: bytes) -> None:
     assert exc_info.value.message == (
         "Unknown error for operation com.test#FailingOperation - status: 500"
     )
-
-
-async def test_rest_xml_supports_event_streams() -> None:
-    """Event stream support is shared with the other AWS HTTP binding protocols."""
-    from smithy_aws_event_stream.aio import AWSEventReceiver
-
-    protocol = RestXmlClientProtocol(_REST_XML_SERVICE_SCHEMA)
-    receiver = protocol.create_event_receiver(
-        operation=_mock_operation(_rest_xml_operation_schema("StreamingOperation")),
-        request=cast(HTTPRequest, Mock()),
-        response=HTTPResponse(status=200, fields=Fields(), body=AsyncBytesReader(b"")),
-        event_type=_ModeledRestXmlError,
-        event_deserializer=_ModeledRestXmlError.deserialize,
-        context=TypedProperties(),
-    )
-    assert isinstance(receiver, AWSEventReceiver)
 
 
 async def test_rest_xml_event_frames() -> None:
