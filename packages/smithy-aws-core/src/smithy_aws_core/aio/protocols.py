@@ -43,6 +43,7 @@ from .._private.query.errors import create_aws_query_error
 from .._private.query.serializers import QueryShapeSerializer
 from .._private.xml import (
     assert_xml,
+    child_text,
     error_code,
     find_rest_xml_error,
     parse_xml_root,
@@ -498,7 +499,8 @@ class RestXmlClientProtocol(_AWSHttpBindingClientProtocol):
 
         # The body is parsed once to find the error code. If the error is modeled,
         # the same parsed element is then deserialized into the error shape.
-        error_element = find_rest_xml_error(parse_xml_root(body))
+        root = parse_xml_root(body)
+        error_element = find_rest_xml_error(root)
         code = error_code(error_element)
         if error_id is None and code is not None:
             error_id = parse_error_code(code, self._default_namespace)
@@ -539,6 +541,9 @@ class RestXmlClientProtocol(_AWSHttpBindingClientProtocol):
             code=code,
             error_id=error_id,
             retry_after=retry_after,
+            service_message=child_text(error_element, "Message"),
+            request_id=child_text(root, "RequestId")
+            or child_text(error_element, "RequestId"),
         )
 
 

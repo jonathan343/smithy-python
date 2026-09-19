@@ -17,6 +17,8 @@ def unknown_error(
     code: str | None = None,
     error_id: ShapeID | None = None,
     retry_after: float | None = None,
+    service_message: str | None = None,
+    request_id: str | None = None,
 ) -> CallError:
     """Create the generic error raised when a response can't be matched to a
     modeled error.
@@ -28,6 +30,8 @@ def unknown_error(
     :param error_id: The error shape ID identified from the response, if any. This
         is only included in the message if ``code`` is not set.
     :param retry_after: The retry delay requested by the server, if any.
+    :param service_message: The service's diagnostic message, if present.
+    :param request_id: The service's request identifier, if present.
     """
     message = f"Unknown error for operation {operation.schema.id} - status: {status}"
     if code is not None:
@@ -36,6 +40,10 @@ def unknown_error(
         message += f" - id: {error_id}"
     if reason is not None:
         message += f" - reason: {reason}"
+    if service_message is not None:
+        message += f" - message: {service_message}"
+    if request_id is not None:
+        message += f" - request id: {request_id}"
 
     is_timeout = status == 408
     is_throttle = status == 429

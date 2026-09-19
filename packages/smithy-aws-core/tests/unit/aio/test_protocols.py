@@ -2,8 +2,9 @@
 #  SPDX-License-Identifier: Apache-2.0
 
 from dataclasses import dataclass
+from io import BytesIO
 from typing import Any, cast
-from unittest.mock import Mock
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 from ijson.common import IncompleteJSONError  # type: ignore[reportMissingTypeStubs]
@@ -802,6 +803,54 @@ async def test_rest_xml_returns_generic_error_for_non_xml_body() -> None:
     )
 
 
+@pytest.mark.parametrize("wrapped", [False, True])
+async def test_rest_xml_unknown_error_preserves_diagnostics(wrapped: bool) -> None:
+    error = (
+        b"<Error><Code>NewError</Code><Message>Try &amp; retry</Message>"
+        b"<RequestId>inner-id</RequestId></Error>"
+    )
+    body = (
+        b'<ErrorResponse xmlns="urn:test">'
+        + error
+        + b"<RequestId>outer-id</RequestId></ErrorResponse>"
+        if wrapped
+        else error
+    )
+    with pytest.raises(CallError) as exc_info:
+        await _raise_rest_xml_error(
+            body, status=429, headers=[("x-amz-retry-after", "3000")]
+        )
+    error_id = "outer-id" if wrapped else "inner-id"
+    assert exc_info.value.message == (
+        "Unknown error for operation com.test#FailingOperation - status: 429"
+        " - code: NewError - message: Try & retry"
+        f" - request id: {error_id}"
+    )
+    assert exc_info.value.is_throttling_error
+    assert exc_info.value.retry_after == 3
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        b'<!DOCTYPE Error [<!ENTITY code "InvalidGreeting">]>'
+        b"<Error><Code>&code;</Code><Message>unsafe</Message></Error>",
+        b"<Error><Code>InvalidGreeting</Code></Error>garbage",
+        b"<Error><Code>InvalidGreeting</Code>"
+        + b"<nested>" * 128
+        + b"</nested>" * 128
+        + b"</Error>",
+    ],
+)
+async def test_rest_xml_rejects_unsafe_error_envelopes(body: bytes) -> None:
+    with pytest.raises(CallError) as exc_info:
+        await _raise_rest_xml_error(body, status=500)
+    assert not isinstance(exc_info.value, ModeledError)
+    assert exc_info.value.message == (
+        "Unknown error for operation com.test#FailingOperation - status: 500"
+    )
+
+
 async def test_rest_xml_supports_event_streams() -> None:
     """Event stream support is shared with the other AWS HTTP binding protocols."""
     from smithy_aws_event_stream.aio import AWSEventReceiver
@@ -816,3 +865,86 @@ async def test_rest_xml_supports_event_streams() -> None:
         context=TypedProperties(),
     )
     assert isinstance(receiver, AWSEventReceiver)
+
+
+async def test_rest_xml_event_frames() -> None:
+    from smithy_aws_event_stream.events import Event, EventMessage
+    from smithy_core.aio.interfaces import AsyncWriter
+
+    stream_schema = Schema.collection(
+        id=ShapeID("com.test#Events"),
+        shape_type=ShapeType.UNION,
+        members={"Greeting": {"target": _INPUT_SCHEMA}},
+    )
+
+    @dataclass
+    class GreetingEvent:
+        name: str
+
+        def serialize(self, serializer: ShapeSerializer) -> None:
+            serializer.write_struct(stream_schema, self)
+
+        def serialize_members(self, serializer: ShapeSerializer) -> None:
+            serializer.write_struct(
+                stream_schema.members["Greeting"], _TestInput(self.name)
+            )
+
+        @classmethod
+        def deserialize(cls, deserializer: ShapeDeserializer) -> "GreetingEvent":
+            values: list[str] = []
+
+            def consume(member: Schema, de: ShapeDeserializer) -> None:
+                assert member.expect_member_name() == "Greeting"
+                de.read_struct(member, lambda m, d: values.append(d.read_string(m)))
+
+            deserializer.read_struct(stream_schema, consume)
+            return cls(values[0])
+
+    protocol = RestXmlClientProtocol(_REST_XML_SERVICE_SCHEMA)
+    operation = _mock_operation(_rest_xml_operation_schema("StreamingOperation"))
+    writer = AsyncMock(spec=AsyncWriter)
+    request = HTTPRequest(
+        destination=_URI(host="example.com"),
+        method="POST",
+        fields=Fields(),
+        body=writer,
+    )
+    publisher = protocol.create_event_publisher(
+        operation=operation,
+        request=request,
+        event_type=GreetingEvent,
+        context=TypedProperties(),
+    )
+    await publisher.send(GreetingEvent("out<&"))
+    writer.write.assert_awaited_once()
+    frame = Event.decode(BytesIO(writer.write.call_args.args[0]))
+    assert frame is not None
+    assert frame.message == EventMessage(
+        headers={
+            ":message-type": "event",
+            ":event-type": "Greeting",
+            ":content-type": "application/xml",
+        },
+        payload=b"<TestInput><name>out&lt;&amp;</name></TestInput>",
+    )
+
+    incoming = EventMessage(
+        headers={
+            ":message-type": "event",
+            ":event-type": "Greeting",
+            ":content-type": "application/xml",
+        },
+        payload=b"<TestInput><name>in&lt;&amp;</name></TestInput>",
+    ).encode()
+    receiver = protocol.create_event_receiver(
+        operation=operation,
+        request=request,
+        response=HTTPResponse(status=200, fields=Fields(), body=incoming),
+        event_type=GreetingEvent,
+        event_deserializer=GreetingEvent.deserialize,
+        context=TypedProperties(),
+    )
+    assert await receiver.receive() == GreetingEvent("in<&")
+    assert await receiver.receive() is None
+    await publisher.close()
+    await receiver.close()

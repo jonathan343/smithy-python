@@ -734,18 +734,20 @@ public final class HttpProtocolTestGenerator implements Runnable {
                 RuntimeTypes.ASYNC_LIST);
 
         if (needsXmlComparator) {
-            writeXmlComparator();
+            writeXmlComparator(writer);
         }
     }
 
     /**
      * Writes a helper that converts an XML document into a comparable structure.
      *
-     * <p>Element order, attribute order, and whitespace surrounding child elements
-     * are not significant, matching how other Smithy implementations compare XML
-     * bodies. Text in leaf elements is compared exactly.
+     * <p>Unique child elements are unordered, while the order of repeated children
+     * with the same tag is significant. This permits structure members to be
+     * reordered without treating wrapped or flattened lists as unordered. Attribute
+     * order and whitespace surrounding child elements are not significant. Text in
+     * leaf elements is compared exactly.
      */
-    private void writeXmlComparator() {
+    static void writeXmlComparator(PythonWriter writer) {
         writer.addStdlibImport("xml.etree.ElementTree", "Element");
         writer.addStdlibImport("xml.etree.ElementTree", "fromstring");
         writer.addStdlibImport("typing", "Any");
@@ -755,11 +757,18 @@ public final class HttpProtocolTestGenerator implements Runnable {
                     ""\"Converts an XML document into a structure suitable for equality comparison.""\"
 
                     def convert(element: Element) -> Any:
-                        children = sorted(convert(child) for child in element)
+                        children: dict[str, list[Any]] = {}
+                        for child in element:
+                            children.setdefault(child.tag, []).append(convert(child))
                         text = element.text or ""
                         if children:
                             text = text.strip()
-                        return (element.tag, sorted(element.attrib.items()), text, children)
+                        return (
+                            element.tag,
+                            sorted(element.attrib.items()),
+                            text,
+                            sorted(children.items()),
+                        )
 
                     return convert(fromstring(document))
                 """, XML_COMPARABLE_FUNCTION);

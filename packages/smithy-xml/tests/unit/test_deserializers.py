@@ -3,10 +3,12 @@
 import math
 from datetime import datetime
 from decimal import Decimal
+from io import BytesIO
 from typing import Any
 from xml.etree.ElementTree import fromstring
 
 import pytest
+from smithy_core.deserializers import ShapeDeserializer
 from smithy_core.exceptions import SmithyError
 from smithy_core.prelude import (
     BIG_DECIMAL,
@@ -18,7 +20,10 @@ from smithy_core.prelude import (
     STRING,
     TIMESTAMP,
 )
-from smithy_xml import XMLCodec
+from smithy_core.schemas import Schema
+from smithy_core.shapes import ShapeID, ShapeType
+from smithy_core.traits import XMLFlattenedTrait, XMLNamespaceTrait, XMLNameTrait
+from smithy_xml import XMLCodec, XMLParseError, parse_xml
 
 from . import (
     STRING_LIST_SCHEMA,
@@ -157,3 +162,174 @@ def test_unknown_members_skipped() -> None:
     )
     result = SerdeShape.deserialize(XMLCodec().create_deserializer(xml))
     assert result == SerdeShape(string_member="keep", integer_member=5)
+
+
+@pytest.mark.parametrize("flattened", [False, True])
+def test_prefixed_names_round_trip(flattened: bool) -> None:
+    mapping = Schema.collection(
+        id=ShapeID("test#Map"),
+        shape_type=ShapeType.MAP,
+        members={
+            "key": {"target": STRING, "traits": [XMLNameTrait("p:key")]},
+            "value": {"target": STRING, "traits": [XMLNameTrait("p:value")]},
+        },
+    )
+    collection_traits = [XMLFlattenedTrait()] if flattened else []
+    schema = Schema.collection(
+        id=ShapeID("test#Root"),
+        traits=[XMLNamespaceTrait({"uri": "urn:test", "prefix": "p"})],
+        members={
+            "text": {"target": STRING, "traits": [XMLNameTrait("p:text")]},
+            "items": {
+                "target": STRING_LIST_SCHEMA,
+                "traits": [XMLNameTrait("p:items"), *collection_traits],
+            },
+            "mapping": {
+                "target": mapping,
+                "traits": [XMLNameTrait("p:mapping"), *collection_traits],
+            },
+        },
+    )
+    codec = XMLCodec()
+    sink = BytesIO()
+    with codec.create_serializer(sink).begin_struct(schema) as serializer:
+        serializer.write_string(schema.members["text"], "keep")
+        with serializer.begin_list(schema.members["items"], 2) as items:
+            for item in ("second", "first"):
+                items.write_string(STRING_LIST_SCHEMA.members["member"], item)
+        with serializer.begin_map(schema.members["mapping"], 1) as entries:
+            entries.entry(
+                "key", lambda s: s.write_string(mapping.members["value"], "value")
+            )
+
+    result: dict[str, Any] = {}
+
+    def consume(member: Schema, de: ShapeDeserializer) -> None:
+        name = member.expect_member_name()
+        if name == "text":
+            result[name] = de.read_string(member)
+        elif name == "items":
+            result[name] = []
+            de.read_list(member, lambda d: result[name].append(d.read_string(STRING)))
+        else:
+            result[name] = {}
+            de.read_map(
+                member, lambda k, d: result[name].__setitem__(k, d.read_string(STRING))
+            )
+
+    # An equivalent prefix must work as well as the serializer's chosen prefix.
+    wire = sink.getvalue().replace(b"p:", b"q:").replace(b"xmlns:p", b"xmlns:q")
+    codec.create_deserializer(wire).read_struct(schema, consume)
+    assert result == {
+        "text": "keep",
+        "items": ["second", "first"],
+        "mapping": {"key": "value"},
+    }
+
+
+def test_unknown_union_notifies_consumer_and_consumes_subtree() -> None:
+    schema = Schema.collection(
+        id=ShapeID("test#Union"),
+        shape_type=ShapeType.UNION,
+        members={"known": {"target": STRING}},
+    )
+    seen: list[tuple[int, str]] = []
+
+    def consume(member: Schema, de: ShapeDeserializer) -> None:
+        seen.append((member.expect_member_index(), member.expect_member_name()))
+        if member.expect_member_index() == 0:
+            assert de.read_string(member) == "next"
+
+    XMLCodec().create_deserializer(
+        b'<Union xmlns:p="urn:test"><p:future><nested>ignored</nested></p:future>'
+        b"<known>next</known></Union>"
+    ).read_struct(schema, consume)
+    # The generated union consumer uses the unknown index to create its unknown
+    # variant, and sees both callbacks so it can reject multiple union members.
+    assert seen == [(-1, "future"), (0, "known")]
+
+
+@pytest.mark.parametrize("suffix", [b"<extra/>", b"garbage", b"<!--unclosed"])
+@pytest.mark.parametrize("chunked", [False, True])
+def test_rejects_trailing_content(suffix: bytes, chunked: bool) -> None:
+    class ChunkedReader(BytesIO):
+        def read(self, size: int | None = -1) -> bytes:
+            return super().read(1 if size != 0 else 0)
+
+    wire = b"<s>ok</s>" + suffix
+    source = ChunkedReader(wire) if chunked else wire
+    with pytest.raises(XMLParseError):
+        XMLCodec().create_deserializer(source).read_string(STRING)
+
+
+def test_valid_epilog_and_escaped_text() -> None:
+    wire = b"<s>&lt;&amp;&#13;</s> \n<!-- comment --><?instruction value?>"
+    assert XMLCodec().create_deserializer(wire).read_string(STRING) == "<&\r"
+    assert parse_xml(wire).text == "<&\r"
+
+
+def test_doctype_text_in_comments_and_cdata_is_not_a_declaration() -> None:
+    wire = b"<!-- <!DOCTYPE s> --><s><![CDATA[<!DOCTYPE s>]]></s>"
+    assert XMLCodec().create_deserializer(wire).read_string(STRING) == "<!DOCTYPE s>"
+
+
+def test_text_spanning_parser_chunks() -> None:
+    text = "x" * 20_000 + "\u2603<&"
+    wire = b"<s>" + ("x" * 20_000 + "\u2603&lt;&amp;").encode() + b"</s>"
+    assert XMLCodec().create_deserializer(wire).read_string(STRING) == text
+
+
+@pytest.mark.parametrize(
+    "wire",
+    [
+        b"<!DOCTYPE s><s>plain</s>",
+        b'<!DOCTYPE s [<!ENTITY custom "expanded">]><s>&custom;</s>',
+        b'<!DOCTYPE s SYSTEM "https://example.com/external.dtd"><s/>',
+        b'<!DOCTYPE s [<!ENTITY custom SYSTEM "file:///not-a-real-file">]><s>&custom;</s>',
+        '<!DOCTYPE s [<!ENTITY custom "expanded">]><s>&custom;</s>'.encode("utf-16"),
+    ],
+)
+@pytest.mark.parametrize("chunked", [False, True])
+def test_rejects_dtds_and_entities(wire: bytes, chunked: bool) -> None:
+    class ChunkedReader(BytesIO):
+        def read(self, size: int | None = -1) -> bytes:
+            return super().read(1 if size != 0 else 0)
+
+    with pytest.raises(XMLParseError, match="DTD declarations are not supported"):
+        XMLCodec().create_deserializer(
+            ChunkedReader(wire) if chunked else wire
+        ).read_string(STRING)
+    with pytest.raises(XMLParseError, match="DTD declarations are not supported"):
+        parse_xml(ChunkedReader(wire) if chunked else wire)
+
+
+def test_rejects_doctype_before_reading_internal_subset() -> None:
+    # Rejection must happen at the opening declaration, rather than after reading
+    # or expanding entities in the subset. Even this incomplete DTD is rejected.
+    with pytest.raises(XMLParseError, match="DTD declarations are not supported"):
+        parse_xml(b"<!DOCTYPE s [")
+
+
+@pytest.mark.parametrize("depth", [128, 129])
+@pytest.mark.parametrize("element_source", [False, True])
+def test_xml_nesting_limit_including_unknown_members(
+    depth: int, element_source: bool
+) -> None:
+    wire = (
+        b"<SerdeShape>"
+        + b"<unknown>" * (depth - 1)
+        + b"</unknown>" * (depth - 1)
+        + b"</SerdeShape>"
+    )
+    source = fromstring(wire) if element_source else wire
+    if depth == 128:
+        assert (
+            SerdeShape.deserialize(XMLCodec().create_deserializer(source))
+            == SerdeShape()
+        )
+        assert parse_xml(wire).tag == "SerdeShape"
+    else:
+        with pytest.raises(XMLParseError, match="nesting depth"):
+            SerdeShape.deserialize(XMLCodec().create_deserializer(source))
+        with pytest.raises(XMLParseError, match="nesting depth"):
+            parse_xml(wire)

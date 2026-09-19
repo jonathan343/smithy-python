@@ -3,11 +3,15 @@
 """Helpers shared by the XML-based AWS protocols."""
 
 from importlib.util import find_spec
-from xml.etree.ElementTree import Element, ParseError, fromstring
+from typing import TYPE_CHECKING
+from xml.etree.ElementTree import Element
 
 from smithy_core.exceptions import MissingDependencyError
 
 _HAS_XML = find_spec("smithy_xml") is not None
+
+if TYPE_CHECKING or _HAS_XML:
+    from smithy_xml import XMLParseError, parse_xml
 
 
 def assert_xml() -> None:
@@ -36,9 +40,10 @@ def parse_xml_root(body: bytes) -> Element | None:
     """Parse the root element of an XML document, or None if it isn't valid XML."""
     if not body:
         return None
+    assert_xml()
     try:
-        return fromstring(body)  # noqa: S314
-    except ParseError:
+        return parse_xml(body)
+    except XMLParseError:
         return None
 
 
@@ -78,7 +83,12 @@ def find_rest_xml_error(root: Element | None) -> Element | None:
 
 def error_code(error: Element | None) -> str | None:
     """Read the ``Code`` of an XML error element, if present."""
-    if error is None:
+    return child_text(error, "Code")
+
+
+def child_text(element: Element | None, name: str) -> str | None:
+    """Read a direct child's text, ignoring namespace prefixes."""
+    if element is None:
         return None
-    code = find_child(error, "Code")
-    return code.text or None if code is not None else None
+    child = find_child(element, name)
+    return child.text or None if child is not None else None

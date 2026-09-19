@@ -9,9 +9,8 @@ from xml.etree.ElementTree import Element
 
 from smithy_core.deserializers import ShapeDeserializer, SpecificShapeDeserializer
 from smithy_core.documents import Document
-from smithy_core.exceptions import SmithyError
 from smithy_core.schemas import Schema
-from smithy_core.shapes import ShapeID
+from smithy_core.shapes import ShapeID, ShapeType
 from smithy_core.traits import (
     TimestampFormatTrait,
     XMLAttributeTrait,
@@ -19,7 +18,7 @@ from smithy_core.traits import (
 )
 
 from ..settings import XMLSettings
-from .readers import XMLEvent, XMLEventReader
+from .readers import XMLEvent, XMLEventReader, XMLParseError
 from .traits import local_name as _local_name
 from .traits import member_name as _xml_member_name
 
@@ -35,11 +34,6 @@ def _parse_xml_float(text: str) -> float:
             return float("-inf")
         case _:
             return float(text)
-
-
-class XMLParseError(SmithyError):
-    def __init__(self, message: str) -> None:
-        super().__init__(f"Error parsing XML: {message}")
 
 
 class XMLShapeDeserializer(ShapeDeserializer):
@@ -139,9 +133,19 @@ class XMLShapeDeserializer(ShapeDeserializer):
             elif tag in xml_names:
                 consumer(xml_names[tag], self)
             else:
-                # Skip unknown tag
+                # Unknown structure members are ignored. Unions must notify the
+                # generated consumer so it can construct its unknown variant.
                 self._consume_start_event()
                 self._skip_to_end()
+                if schema.shape_type is ShapeType.UNION:
+                    consumer(
+                        Schema.member(
+                            id=schema.id.with_member(tag),
+                            target=schema.member_target or schema,
+                            index=-1,
+                        ),
+                        self,
+                    )
 
         next(self._reader)
 
@@ -174,8 +178,8 @@ class XMLShapeDeserializer(ShapeDeserializer):
         schema: Schema,
         consumer: Callable[[str, "ShapeDeserializer"], None],
     ) -> None:
-        key_tag = _xml_member_name(schema.members["key"])
-        value_tag = _xml_member_name(schema.members["value"])
+        key_tag = _local_name(_xml_member_name(schema.members["key"]))
+        value_tag = _local_name(_xml_member_name(schema.members["value"]))
 
         if schema.get_trait(XMLFlattenedTrait) is not None:
             while self._reader.has_next():
@@ -233,7 +237,7 @@ class XMLShapeDeserializer(ShapeDeserializer):
         for member_schema in schema.members.values():
             if member_schema.get_trait(XMLAttributeTrait) is not None:
                 continue
-            xml_name = _xml_member_name(member_schema)
+            xml_name = _local_name(_xml_member_name(member_schema))
             result[xml_name] = member_schema
         self._xml_names[schema.id] = result
         return result
