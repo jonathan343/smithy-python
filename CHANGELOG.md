@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Breaking Changes
+
+* Regenerated client operations accept input members as keyword-only arguments
+  instead of an input object, for example `client.echo_message(message="spam")`.
+  Operations with no input members no longer need an empty input object.
+  Per-operation `plugins` must also be passed by keyword. Nested models, output
+  types, and existing input defaults and nullability are unchanged. See
+  [Flattened Operation Inputs](designs/codegen/operation-inputs.md) for migration
+  details. Published clients are unaffected until regenerated with this change.
+
 ## v0.5.0
 
 ### Breaking Changes

@@ -61,3 +61,4 @@ behavior of generated packages.
 ## Designs
 
 * [Code Generator CLI](cli.md)
+* [Flattened Operation Inputs](operation-inputs.md)
