@@ -237,7 +237,29 @@ async def test_rest_json_all_query_string_types_request_all_query_string_types()
     )
 
     try:
-        await client.all_query_string_types(input_)
+        await client.all_query_string_types(
+            query_string=input_.query_string,
+            query_string_list=input_.query_string_list,
+            query_string_set=input_.query_string_set,
+            query_byte=input_.query_byte,
+            query_short=input_.query_short,
+            query_integer=input_.query_integer,
+            query_integer_list=input_.query_integer_list,
+            query_integer_set=input_.query_integer_set,
+            query_long=input_.query_long,
+            query_float=input_.query_float,
+            query_double=input_.query_double,
+            query_double_list=input_.query_double_list,
+            query_boolean=input_.query_boolean,
+            query_boolean_list=input_.query_boolean_list,
+            query_timestamp=input_.query_timestamp,
+            query_timestamp_list=input_.query_timestamp_list,
+            query_enum=input_.query_enum,
+            query_enum_list=input_.query_enum_list,
+            query_integer_enum=input_.query_integer_enum,
+            query_integer_enum_list=input_.query_integer_enum_list,
+            query_params_map_of_string_list=input_.query_params_map_of_string_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -351,7 +373,29 @@ async def test_rest_json_query_string_map_request_all_query_string_types() -> No
     )
 
     try:
-        await client.all_query_string_types(input_)
+        await client.all_query_string_types(
+            query_string=input_.query_string,
+            query_string_list=input_.query_string_list,
+            query_string_set=input_.query_string_set,
+            query_byte=input_.query_byte,
+            query_short=input_.query_short,
+            query_integer=input_.query_integer,
+            query_integer_list=input_.query_integer_list,
+            query_integer_set=input_.query_integer_set,
+            query_long=input_.query_long,
+            query_float=input_.query_float,
+            query_double=input_.query_double,
+            query_double_list=input_.query_double_list,
+            query_boolean=input_.query_boolean,
+            query_boolean_list=input_.query_boolean_list,
+            query_timestamp=input_.query_timestamp,
+            query_timestamp_list=input_.query_timestamp_list,
+            query_enum=input_.query_enum,
+            query_enum_list=input_.query_enum_list,
+            query_integer_enum=input_.query_integer_enum,
+            query_integer_enum_list=input_.query_integer_enum_list,
+            query_params_map_of_string_list=input_.query_params_map_of_string_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -427,7 +471,29 @@ async def test_rest_json_query_string_escaping_request_all_query_string_types() 
     )
 
     try:
-        await client.all_query_string_types(input_)
+        await client.all_query_string_types(
+            query_string=input_.query_string,
+            query_string_list=input_.query_string_list,
+            query_string_set=input_.query_string_set,
+            query_byte=input_.query_byte,
+            query_short=input_.query_short,
+            query_integer=input_.query_integer,
+            query_integer_list=input_.query_integer_list,
+            query_integer_set=input_.query_integer_set,
+            query_long=input_.query_long,
+            query_float=input_.query_float,
+            query_double=input_.query_double,
+            query_double_list=input_.query_double_list,
+            query_boolean=input_.query_boolean,
+            query_boolean_list=input_.query_boolean_list,
+            query_timestamp=input_.query_timestamp,
+            query_timestamp_list=input_.query_timestamp_list,
+            query_enum=input_.query_enum,
+            query_enum_list=input_.query_enum_list,
+            query_integer_enum=input_.query_integer_enum,
+            query_integer_enum_list=input_.query_integer_enum_list,
+            query_params_map_of_string_list=input_.query_params_map_of_string_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -505,7 +571,29 @@ async def test_rest_json_supports_na_n_float_query_values_request_all_query_stri
     )
 
     try:
-        await client.all_query_string_types(input_)
+        await client.all_query_string_types(
+            query_string=input_.query_string,
+            query_string_list=input_.query_string_list,
+            query_string_set=input_.query_string_set,
+            query_byte=input_.query_byte,
+            query_short=input_.query_short,
+            query_integer=input_.query_integer,
+            query_integer_list=input_.query_integer_list,
+            query_integer_set=input_.query_integer_set,
+            query_long=input_.query_long,
+            query_float=input_.query_float,
+            query_double=input_.query_double,
+            query_double_list=input_.query_double_list,
+            query_boolean=input_.query_boolean,
+            query_boolean_list=input_.query_boolean_list,
+            query_timestamp=input_.query_timestamp,
+            query_timestamp_list=input_.query_timestamp_list,
+            query_enum=input_.query_enum,
+            query_enum_list=input_.query_enum_list,
+            query_integer_enum=input_.query_integer_enum,
+            query_integer_enum_list=input_.query_integer_enum_list,
+            query_params_map_of_string_list=input_.query_params_map_of_string_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -581,7 +669,29 @@ async def test_rest_json_supports_infinity_float_query_values_request_all_query_
     )
 
     try:
-        await client.all_query_string_types(input_)
+        await client.all_query_string_types(
+            query_string=input_.query_string,
+            query_string_list=input_.query_string_list,
+            query_string_set=input_.query_string_set,
+            query_byte=input_.query_byte,
+            query_short=input_.query_short,
+            query_integer=input_.query_integer,
+            query_integer_list=input_.query_integer_list,
+            query_integer_set=input_.query_integer_set,
+            query_long=input_.query_long,
+            query_float=input_.query_float,
+            query_double=input_.query_double,
+            query_double_list=input_.query_double_list,
+            query_boolean=input_.query_boolean,
+            query_boolean_list=input_.query_boolean_list,
+            query_timestamp=input_.query_timestamp,
+            query_timestamp_list=input_.query_timestamp_list,
+            query_enum=input_.query_enum,
+            query_enum_list=input_.query_enum_list,
+            query_integer_enum=input_.query_integer_enum,
+            query_integer_enum_list=input_.query_integer_enum_list,
+            query_params_map_of_string_list=input_.query_params_map_of_string_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -660,7 +770,29 @@ async def test_rest_json_supports_negative_infinity_float_query_values_request_a
     )
 
     try:
-        await client.all_query_string_types(input_)
+        await client.all_query_string_types(
+            query_string=input_.query_string,
+            query_string_list=input_.query_string_list,
+            query_string_set=input_.query_string_set,
+            query_byte=input_.query_byte,
+            query_short=input_.query_short,
+            query_integer=input_.query_integer,
+            query_integer_list=input_.query_integer_list,
+            query_integer_set=input_.query_integer_set,
+            query_long=input_.query_long,
+            query_float=input_.query_float,
+            query_double=input_.query_double,
+            query_double_list=input_.query_double_list,
+            query_boolean=input_.query_boolean,
+            query_boolean_list=input_.query_boolean_list,
+            query_timestamp=input_.query_timestamp,
+            query_timestamp_list=input_.query_timestamp_list,
+            query_enum=input_.query_enum,
+            query_enum_list=input_.query_enum_list,
+            query_integer_enum=input_.query_integer_enum,
+            query_integer_enum_list=input_.query_integer_enum_list,
+            query_params_map_of_string_list=input_.query_params_map_of_string_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -736,7 +868,29 @@ async def test_rest_json_zero_and_false_query_values_request_all_query_string_ty
     )
 
     try:
-        await client.all_query_string_types(input_)
+        await client.all_query_string_types(
+            query_string=input_.query_string,
+            query_string_list=input_.query_string_list,
+            query_string_set=input_.query_string_set,
+            query_byte=input_.query_byte,
+            query_short=input_.query_short,
+            query_integer=input_.query_integer,
+            query_integer_list=input_.query_integer_list,
+            query_integer_set=input_.query_integer_set,
+            query_long=input_.query_long,
+            query_float=input_.query_float,
+            query_double=input_.query_double,
+            query_double_list=input_.query_double_list,
+            query_boolean=input_.query_boolean,
+            query_boolean_list=input_.query_boolean_list,
+            query_timestamp=input_.query_timestamp,
+            query_timestamp_list=input_.query_timestamp_list,
+            query_enum=input_.query_enum,
+            query_enum_list=input_.query_enum_list,
+            query_integer_enum=input_.query_integer_enum,
+            query_integer_enum_list=input_.query_integer_enum_list,
+            query_params_map_of_string_list=input_.query_params_map_of_string_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -808,7 +962,9 @@ async def test_rest_json_constant_and_variable_query_string_missing_one_value_re
     input_ = ConstantAndVariableQueryStringInput(baz="bam")
 
     try:
-        await client.constant_and_variable_query_string(input_)
+        await client.constant_and_variable_query_string(
+            baz=input_.baz, maybe_set=input_.maybe_set
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -880,7 +1036,9 @@ async def test_rest_json_constant_and_variable_query_string_all_values_request_c
     input_ = ConstantAndVariableQueryStringInput(baz="bam", maybe_set="yes")
 
     try:
-        await client.constant_and_variable_query_string(input_)
+        await client.constant_and_variable_query_string(
+            baz=input_.baz, maybe_set=input_.maybe_set
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -950,7 +1108,7 @@ async def test_rest_json_constant_query_string_request_constant_query_string() -
     input_ = ConstantQueryStringInput(hello="hi")
 
     try:
-        await client.constant_query_string(input_)
+        await client.constant_query_string(hello=input_.hello)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1028,7 +1186,7 @@ async def test_rest_json_date_time_with_negative_offset_response_datetime_offset
     input_ = DatetimeOffsetsInput()
 
     try:
-        actual = await client.datetime_offsets(input_)
+        actual = await client.datetime_offsets()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1064,7 +1222,7 @@ async def test_rest_json_date_time_with_positive_offset_response_datetime_offset
     input_ = DatetimeOffsetsInput()
 
     try:
-        actual = await client.datetime_offsets(input_)
+        actual = await client.datetime_offsets()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1097,7 +1255,9 @@ async def test_document_type_input_with_object_request_document_type() -> None:
     )
 
     try:
-        await client.document_type(input_)
+        await client.document_type(
+            string_value=input_.string_value, document_value=input_.document_value
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1169,7 +1329,9 @@ async def test_document_input_with_string_request_document_type() -> None:
     input_ = DocumentTypeInput(string_value="string", document_value=Document("hello"))
 
     try:
-        await client.document_type(input_)
+        await client.document_type(
+            string_value=input_.string_value, document_value=input_.document_value
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1243,7 +1405,9 @@ async def test_document_input_with_number_request_document_type() -> None:
     input_ = DocumentTypeInput(string_value="string", document_value=Document(10))
 
     try:
-        await client.document_type(input_)
+        await client.document_type(
+            string_value=input_.string_value, document_value=input_.document_value
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1317,7 +1481,9 @@ async def test_document_input_with_boolean_request_document_type() -> None:
     input_ = DocumentTypeInput(string_value="string", document_value=Document(True))
 
     try:
-        await client.document_type(input_)
+        await client.document_type(
+            string_value=input_.string_value, document_value=input_.document_value
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1394,7 +1560,9 @@ async def test_document_input_with_list_request_document_type() -> None:
     )
 
     try:
-        await client.document_type(input_)
+        await client.document_type(
+            string_value=input_.string_value, document_value=input_.document_value
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1472,7 +1640,9 @@ async def test_document_output_response_document_type() -> None:
     input_ = DocumentTypeInput()
 
     try:
-        actual = await client.document_type(input_)
+        actual = await client.document_type(
+            string_value=input_.string_value, document_value=input_.document_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1503,7 +1673,9 @@ async def test_document_output_string_response_document_type() -> None:
     input_ = DocumentTypeInput()
 
     try:
-        actual = await client.document_type(input_)
+        actual = await client.document_type(
+            string_value=input_.string_value, document_value=input_.document_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1534,7 +1706,9 @@ async def test_document_output_number_response_document_type() -> None:
     input_ = DocumentTypeInput()
 
     try:
-        actual = await client.document_type(input_)
+        actual = await client.document_type(
+            string_value=input_.string_value, document_value=input_.document_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1565,7 +1739,9 @@ async def test_document_output_boolean_response_document_type() -> None:
     input_ = DocumentTypeInput()
 
     try:
-        actual = await client.document_type(input_)
+        actual = await client.document_type(
+            string_value=input_.string_value, document_value=input_.document_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1596,7 +1772,9 @@ async def test_document_output_array_response_document_type() -> None:
     input_ = DocumentTypeInput()
 
     try:
-        actual = await client.document_type(input_)
+        actual = await client.document_type(
+            string_value=input_.string_value, document_value=input_.document_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1632,7 +1810,7 @@ async def test_document_type_as_map_value_input_request_document_type_as_map_val
     )
 
     try:
-        await client.document_type_as_map_value(input_)
+        await client.document_type_as_map_value(doc_valued_map=input_.doc_valued_map)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1709,7 +1887,9 @@ async def test_document_type_as_map_value_output_response_document_type_as_map_v
     input_ = DocumentTypeAsMapValueInput()
 
     try:
-        actual = await client.document_type_as_map_value(input_)
+        actual = await client.document_type_as_map_value(
+            doc_valued_map=input_.doc_valued_map
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1743,7 +1923,7 @@ async def test_document_type_as_payload_input_request_document_type_as_payload()
     input_ = DocumentTypeAsPayloadInput(document_value=Document({"foo": "bar"}))
 
     try:
-        await client.document_type_as_payload(input_)
+        await client.document_type_as_payload(document_value=input_.document_value)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1820,7 +2000,7 @@ async def test_document_type_as_payload_input_string_request_document_type_as_pa
     input_ = DocumentTypeAsPayloadInput(document_value=Document("hello"))
 
     try:
-        await client.document_type_as_payload(input_)
+        await client.document_type_as_payload(document_value=input_.document_value)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1897,7 +2077,9 @@ async def test_document_type_as_payload_output_response_document_type_as_payload
     input_ = DocumentTypeAsPayloadInput()
 
     try:
-        actual = await client.document_type_as_payload(input_)
+        actual = await client.document_type_as_payload(
+            document_value=input_.document_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1928,7 +2110,9 @@ async def test_document_type_as_payload_output_string_response_document_type_as_
     input_ = DocumentTypeAsPayloadInput()
 
     try:
-        actual = await client.document_type_as_payload(input_)
+        actual = await client.document_type_as_payload(
+            document_value=input_.document_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1960,7 +2144,7 @@ async def test_rest_json_empty_input_and_empty_output_request_empty_input_and_em
     input_ = EmptyInputAndEmptyOutputInput()
 
     try:
-        await client.empty_input_and_empty_output(input_)
+        await client.empty_input_and_empty_output()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2036,7 +2220,7 @@ async def test_rest_json_empty_input_and_empty_output_response_empty_input_and_e
     input_ = EmptyInputAndEmptyOutputInput()
 
     try:
-        actual = await client.empty_input_and_empty_output(input_)
+        actual = await client.empty_input_and_empty_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2066,7 +2250,7 @@ async def test_rest_json_empty_input_and_empty_output_json_object_output_respons
     input_ = EmptyInputAndEmptyOutputInput()
 
     try:
-        actual = await client.empty_input_and_empty_output(input_)
+        actual = await client.empty_input_and_empty_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2096,7 +2280,7 @@ async def test_rest_json_endpoint_trait_request_endpoint_operation() -> None:
     input_ = EndpointOperationInput()
 
     try:
-        await client.endpoint_operation(input_)
+        await client.endpoint_operation()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2173,7 +2357,7 @@ async def test_rest_json_endpoint_trait_with_host_label_request_endpoint_with_ho
     input_ = EndpointWithHostLabelOperationInput(label="bar")
 
     try:
-        await client.endpoint_with_host_label_operation(input_)
+        await client.endpoint_with_host_label_operation(label=input_.label)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2253,7 +2437,7 @@ async def test_rest_json_date_time_with_fractional_seconds_response_fractional_s
     input_ = FractionalSecondsInput()
 
     try:
-        actual = await client.fractional_seconds(input_)
+        actual = await client.fractional_seconds()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2287,7 +2471,7 @@ async def test_rest_json_greeting_with_errors_response_greeting_with_errors() ->
     input_ = GreetingWithErrorsInput()
 
     try:
-        actual = await client.greeting_with_errors(input_)
+        actual = await client.greeting_with_errors()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2319,7 +2503,7 @@ async def test_rest_json_greeting_with_errors_no_payload_response_greeting_with_
     input_ = GreetingWithErrorsInput()
 
     try:
-        actual = await client.greeting_with_errors(input_)
+        actual = await client.greeting_with_errors()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2351,7 +2535,7 @@ async def test_rest_json_invalid_greeting_error_error_greeting_with_errors() -> 
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'InvalidGreeting' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "InvalidGreeting":
@@ -2386,7 +2570,7 @@ async def test_rest_json_complex_error_with_no_message_error_greeting_with_error
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'ComplexError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "ComplexError":
@@ -2419,7 +2603,7 @@ async def test_rest_json_empty_complex_error_with_no_message_error_greeting_with
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'ComplexError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "ComplexError":
@@ -2451,7 +2635,7 @@ async def test_rest_json_foo_error_using_x_amzn_error_type_error_greeting_with_e
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -2493,7 +2677,7 @@ async def test_rest_json_foo_error_using_x_amzn_error_type_with_uri_error_greeti
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -2533,7 +2717,7 @@ async def test_rest_json_foo_error_using_x_amzn_error_type_with_uri_and_namespac
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -2572,7 +2756,7 @@ async def test_rest_json_foo_error_using_x_amzn_error_type_with_uri_and_differen
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -2607,7 +2791,7 @@ async def test_rest_json_foo_error_using_code_error_greeting_with_errors() -> No
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -2642,7 +2826,7 @@ async def test_rest_json_foo_error_using_code_and_namespace_error_greeting_with_
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -2678,7 +2862,7 @@ async def test_rest_json_foo_error_using_code_uri_and_namespace_error_greeting_w
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -2709,7 +2893,7 @@ async def test_rest_json_foo_error_with_dunder_type_error_greeting_with_errors()
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -2744,7 +2928,7 @@ async def test_rest_json_foo_error_with_dunder_type_and_namespace_error_greeting
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -2780,7 +2964,7 @@ async def test_rest_json_foo_error_with_dunder_type_uri_and_namespace_error_gree
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -2817,7 +3001,7 @@ async def test_rest_json_foo_error_with_nested_type_property_error_greeting_with
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -2843,7 +3027,7 @@ async def test_rest_json_host_with_path_request_host_with_path_operation() -> No
     input_ = HostWithPathOperationInput()
 
     try:
-        await client.host_with_path_operation(input_)
+        await client.host_with_path_operation()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2916,7 +3100,7 @@ async def test_rest_json_http_checksum_required_request_http_checksum_required()
     input_ = HttpChecksumRequiredInput(foo="base64 encoded md5 checksum")
 
     try:
-        await client.http_checksum_required(input_)
+        await client.http_checksum_required(foo=input_.foo)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2995,7 +3179,9 @@ async def test_rest_json_http_empty_prefix_headers_request_client_request_http_e
     )
 
     try:
-        await client.http_empty_prefix_headers(input_)
+        await client.http_empty_prefix_headers(
+            prefix_headers=input_.prefix_headers, specific_header=input_.specific_header
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3068,7 +3254,9 @@ async def test_rest_json_http_empty_prefix_headers_response_client_response_http
     input_ = HttpEmptyPrefixHeadersInput()
 
     try:
-        actual = await client.http_empty_prefix_headers(input_)
+        actual = await client.http_empty_prefix_headers(
+            prefix_headers=input_.prefix_headers, specific_header=input_.specific_header
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3095,7 +3283,7 @@ async def test_rest_json_enum_payload_request_request_http_enum_payload() -> Non
     input_ = HttpEnumPayloadInput(payload="enumvalue")
 
     try:
-        await client.http_enum_payload(input_)
+        await client.http_enum_payload(payload=input_.payload)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3165,7 +3353,7 @@ async def test_rest_json_enum_payload_response_response_http_enum_payload() -> N
     input_ = HttpEnumPayloadInput()
 
     try:
-        actual = await client.http_enum_payload(input_)
+        actual = await client.http_enum_payload(payload=input_.payload)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3193,7 +3381,7 @@ async def test_rest_json_http_payload_traits_with_blob_request_http_payload_trai
     input_ = HttpPayloadTraitsInput(foo="Foo", blob=b"blobby blob blob")
 
     try:
-        await client.http_payload_traits(input_)
+        await client.http_payload_traits(foo=input_.foo, blob=input_.blob)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3268,7 +3456,7 @@ async def test_rest_json_http_payload_traits_with_no_blob_body_request_http_payl
     input_ = HttpPayloadTraitsInput(foo="Foo")
 
     try:
-        await client.http_payload_traits(input_)
+        await client.http_payload_traits(foo=input_.foo, blob=input_.blob)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3341,7 +3529,7 @@ async def test_rest_json_http_payload_traits_with_blob_response_http_payload_tra
     input_ = HttpPayloadTraitsInput()
 
     try:
-        actual = await client.http_payload_traits(input_)
+        actual = await client.http_payload_traits(foo=input_.foo, blob=input_.blob)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3370,7 +3558,7 @@ async def test_rest_json_http_payload_traits_with_no_blob_body_response_http_pay
     input_ = HttpPayloadTraitsInput()
 
     try:
-        actual = await client.http_payload_traits(input_)
+        actual = await client.http_payload_traits(foo=input_.foo, blob=input_.blob)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3398,7 +3586,9 @@ async def test_rest_json_http_payload_traits_with_media_type_with_blob_request_h
     input_ = HttpPayloadTraitsWithMediaTypeInput(foo="Foo", blob=b"blobby blob blob")
 
     try:
-        await client.http_payload_traits_with_media_type(input_)
+        await client.http_payload_traits_with_media_type(
+            foo=input_.foo, blob=input_.blob
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3476,7 +3666,9 @@ async def test_rest_json_http_payload_traits_with_media_type_with_blob_response_
     input_ = HttpPayloadTraitsWithMediaTypeInput()
 
     try:
-        actual = await client.http_payload_traits_with_media_type(input_)
+        actual = await client.http_payload_traits_with_media_type(
+            foo=input_.foo, blob=input_.blob
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3508,7 +3700,7 @@ async def test_rest_json_http_payload_with_structure_request_http_payload_with_s
     )
 
     try:
-        await client.http_payload_with_structure(input_)
+        await client.http_payload_with_structure(nested=input_.nested)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3585,7 +3777,7 @@ async def test_rest_json_http_payload_with_structure_response_http_payload_with_
     input_ = HttpPayloadWithStructureInput()
 
     try:
-        actual = await client.http_payload_with_structure(input_)
+        actual = await client.http_payload_with_structure(nested=input_.nested)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3614,7 +3806,7 @@ async def test_rest_json_http_payload_with_structure_and_empty_response_body_res
     input_ = HttpPayloadWithStructureInput()
 
     try:
-        actual = await client.http_payload_with_structure(input_)
+        actual = await client.http_payload_with_structure(nested=input_.nested)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3642,7 +3834,7 @@ async def test_rest_json_http_payload_with_union_request_http_payload_with_union
     input_ = HttpPayloadWithUnionInput(nested=UnionPayloadGreeting(value="hello"))
 
     try:
-        await client.http_payload_with_union(input_)
+        await client.http_payload_with_union(nested=input_.nested)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3716,7 +3908,7 @@ async def test_rest_json_http_payload_with_unset_union_request_http_payload_with
     input_ = HttpPayloadWithUnionInput()
 
     try:
-        await client.http_payload_with_union(input_)
+        await client.http_payload_with_union(nested=input_.nested)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3791,7 +3983,7 @@ async def test_rest_json_http_payload_with_union_response_http_payload_with_unio
     input_ = HttpPayloadWithUnionInput()
 
     try:
-        actual = await client.http_payload_with_union(input_)
+        actual = await client.http_payload_with_union(nested=input_.nested)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3822,7 +4014,7 @@ async def test_rest_json_http_payload_with_unset_union_response_http_payload_wit
     input_ = HttpPayloadWithUnionInput()
 
     try:
-        actual = await client.http_payload_with_union(input_)
+        actual = await client.http_payload_with_union(nested=input_.nested)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3852,7 +4044,7 @@ async def test_rest_json_http_prefix_headers_are_present_request_http_prefix_hea
     )
 
     try:
-        await client.http_prefix_headers(input_)
+        await client.http_prefix_headers(foo=input_.foo, foo_map=input_.foo_map)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3928,7 +4120,7 @@ async def test_rest_json_http_prefix_headers_are_not_present_request_http_prefix
     input_ = HttpPrefixHeadersInput(foo="Foo", foo_map={})
 
     try:
-        await client.http_prefix_headers(input_)
+        await client.http_prefix_headers(foo=input_.foo, foo_map=input_.foo_map)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4000,7 +4192,7 @@ async def test_rest_json_http_prefix_empty_headers_request_http_prefix_headers()
     input_ = HttpPrefixHeadersInput(foo_map={"abc": ""})
 
     try:
-        await client.http_prefix_headers(input_)
+        await client.http_prefix_headers(foo=input_.foo, foo_map=input_.foo_map)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4079,7 +4271,9 @@ async def test_rest_json_http_prefix_headers_are_present_response_http_prefix_he
     input_ = HttpPrefixHeadersInput()
 
     try:
-        actual = await client.http_prefix_headers(input_)
+        actual = await client.http_prefix_headers(
+            foo=input_.foo, foo_map=input_.foo_map
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4110,7 +4304,7 @@ async def test_http_prefix_headers_response_response_http_prefix_headers_in_resp
     input_ = HttpPrefixHeadersInResponseInput()
 
     try:
-        actual = await client.http_prefix_headers_in_response(input_)
+        actual = await client.http_prefix_headers_in_response()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4143,7 +4337,7 @@ async def test_http_query_params_only_request_request_http_query_params_only_ope
     input_ = HttpQueryParamsOnlyOperationInput(query_map={"a": "b", "c": "d"})
 
     try:
-        await client.http_query_params_only_operation(input_)
+        await client.http_query_params_only_operation(query_map=input_.query_map)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4211,7 +4405,7 @@ async def test_http_query_params_only_empty_request_request_http_query_params_on
     input_ = HttpQueryParamsOnlyOperationInput(query_map={})
 
     try:
-        await client.http_query_params_only_operation(input_)
+        await client.http_query_params_only_operation(query_map=input_.query_map)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4279,7 +4473,9 @@ async def test_rest_json_supports_na_n_float_labels_request_http_request_with_fl
     input_ = HttpRequestWithFloatLabelsInput(float_=float("nan"), double=float("nan"))
 
     try:
-        await client.http_request_with_float_labels(input_)
+        await client.http_request_with_float_labels(
+            float_=input_.float_, double=input_.double
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4351,7 +4547,9 @@ async def test_rest_json_supports_infinity_float_labels_request_http_request_wit
     input_ = HttpRequestWithFloatLabelsInput(float_=float("inf"), double=float("inf"))
 
     try:
-        await client.http_request_with_float_labels(input_)
+        await client.http_request_with_float_labels(
+            float_=input_.float_, double=input_.double
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4423,7 +4621,9 @@ async def test_rest_json_supports_negative_infinity_float_labels_request_http_re
     input_ = HttpRequestWithFloatLabelsInput(float_=float("-inf"), double=float("-inf"))
 
     try:
-        await client.http_request_with_float_labels(input_)
+        await client.http_request_with_float_labels(
+            float_=input_.float_, double=input_.double
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4495,7 +4695,9 @@ async def test_rest_json_http_request_with_greedy_label_in_path_request_http_req
     input_ = HttpRequestWithGreedyLabelInPathInput(foo="hello/escape", baz="there/guy")
 
     try:
-        await client.http_request_with_greedy_label_in_path(input_)
+        await client.http_request_with_greedy_label_in_path(
+            foo=input_.foo, baz=input_.baz
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4579,7 +4781,16 @@ async def test_rest_json_input_with_headers_and_all_params_request_http_request_
     )
 
     try:
-        await client.http_request_with_labels(input_)
+        await client.http_request_with_labels(
+            string=input_.string,
+            short=input_.short,
+            integer=input_.integer,
+            long=input_.long,
+            float_=input_.float_,
+            double=input_.double,
+            boolean=input_.boolean,
+            timestamp=input_.timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4663,7 +4874,16 @@ async def test_rest_json_http_request_label_escaping_request_http_request_with_l
     )
 
     try:
-        await client.http_request_with_labels(input_)
+        await client.http_request_with_labels(
+            string=input_.string,
+            short=input_.short,
+            integer=input_.integer,
+            long=input_.long,
+            float_=input_.float_,
+            double=input_.double,
+            boolean=input_.boolean,
+            timestamp=input_.timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4746,7 +4966,15 @@ async def test_rest_json_http_request_with_labels_and_timestamp_format_request_h
     )
 
     try:
-        await client.http_request_with_labels_and_timestamp_format(input_)
+        await client.http_request_with_labels_and_timestamp_format(
+            member_epoch_seconds=input_.member_epoch_seconds,
+            member_http_date=input_.member_http_date,
+            member_date_time=input_.member_date_time,
+            default_format=input_.default_format,
+            target_epoch_seconds=input_.target_epoch_seconds,
+            target_http_date=input_.target_http_date,
+            target_date_time=input_.target_date_time,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4821,7 +5049,7 @@ async def test_rest_json_tolerates_regex_chars_in_segments_request_http_request_
     input_ = HttpRequestWithRegexLiteralInput(str_="abc")
 
     try:
-        await client.http_request_with_regex_literal(input_)
+        await client.http_request_with_regex_literal(str_=input_.str_)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4898,7 +5126,7 @@ async def test_rest_json_http_response_code_response_http_response_code() -> Non
     input_ = HttpResponseCodeInput()
 
     try:
-        actual = await client.http_response_code(input_)
+        actual = await client.http_response_code()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4928,7 +5156,7 @@ async def test_rest_json_http_response_code_with_no_payload_response_http_respon
     input_ = HttpResponseCodeInput()
 
     try:
-        actual = await client.http_response_code(input_)
+        actual = await client.http_response_code()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4953,7 +5181,7 @@ async def test_rest_json_string_payload_request_request_http_string_payload() ->
     input_ = HttpStringPayloadInput(payload="rawstring")
 
     try:
-        await client.http_string_payload(input_)
+        await client.http_string_payload(payload=input_.payload)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5023,7 +5251,7 @@ async def test_rest_json_string_payload_response_response_http_string_payload() 
     input_ = HttpStringPayloadInput()
 
     try:
-        actual = await client.http_string_payload(input_)
+        actual = await client.http_string_payload(payload=input_.payload)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5059,7 +5287,7 @@ async def test_rest_json_ignore_query_params_in_response_response_ignore_query_p
     input_ = IgnoreQueryParamsInResponseInput()
 
     try:
-        actual = await client.ignore_query_params_in_response(input_)
+        actual = await client.ignore_query_params_in_response()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5091,7 +5319,26 @@ async def test_rest_json_input_and_output_with_string_headers_request_input_and_
     )
 
     try:
-        await client.input_and_output_with_headers(input_)
+        await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5171,7 +5418,26 @@ async def test_rest_json_input_and_output_with_quoted_string_headers_request_inp
     input_ = InputAndOutputWithHeadersInput(header_string_list=["b,c", '"def"', "a"])
 
     try:
-        await client.input_and_output_with_headers(input_)
+        await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5255,7 +5521,26 @@ async def test_rest_json_input_and_output_with_numeric_headers_request_input_and
     )
 
     try:
-        await client.input_and_output_with_headers(input_)
+        await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5341,7 +5626,26 @@ async def test_rest_json_input_and_output_with_boolean_headers_request_input_and
     )
 
     try:
-        await client.input_and_output_with_headers(input_)
+        await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5424,7 +5728,26 @@ async def test_rest_json_input_and_output_with_timestamp_headers_request_input_a
     )
 
     try:
-        await client.input_and_output_with_headers(input_)
+        await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5501,7 +5824,26 @@ async def test_rest_json_input_and_output_with_enum_headers_request_input_and_ou
     )
 
     try:
-        await client.input_and_output_with_headers(input_)
+        await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5580,7 +5922,26 @@ async def test_rest_json_input_and_output_with_int_enum_headers_request_input_an
     )
 
     try:
-        await client.input_and_output_with_headers(input_)
+        await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5659,7 +6020,26 @@ async def test_rest_json_supports_na_n_float_header_inputs_request_input_and_out
     )
 
     try:
-        await client.input_and_output_with_headers(input_)
+        await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5736,7 +6116,26 @@ async def test_rest_json_supports_infinity_float_header_inputs_request_input_and
     )
 
     try:
-        await client.input_and_output_with_headers(input_)
+        await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5813,7 +6212,26 @@ async def test_rest_json_supports_negative_infinity_float_header_inputs_request_
     )
 
     try:
-        await client.input_and_output_with_headers(input_)
+        await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5895,7 +6313,26 @@ async def test_rest_json_input_and_output_with_string_headers_response_input_and
     input_ = InputAndOutputWithHeadersInput()
 
     try:
-        actual = await client.input_and_output_with_headers(input_)
+        actual = await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5930,7 +6367,26 @@ async def test_rest_json_input_and_output_with_quoted_string_headers_response_in
     input_ = InputAndOutputWithHeadersInput()
 
     try:
-        actual = await client.input_and_output_with_headers(input_)
+        actual = await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5971,7 +6427,26 @@ async def test_rest_json_input_and_output_with_numeric_headers_response_input_an
     input_ = InputAndOutputWithHeadersInput()
 
     try:
-        actual = await client.input_and_output_with_headers(input_)
+        actual = await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6014,7 +6489,26 @@ async def test_rest_json_input_and_output_with_boolean_headers_response_input_an
     input_ = InputAndOutputWithHeadersInput()
 
     try:
-        actual = await client.input_and_output_with_headers(input_)
+        actual = await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6054,7 +6548,26 @@ async def test_rest_json_input_and_output_with_timestamp_headers_response_input_
     input_ = InputAndOutputWithHeadersInput()
 
     try:
-        actual = await client.input_and_output_with_headers(input_)
+        actual = await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6090,7 +6603,26 @@ async def test_rest_json_input_and_output_with_enum_headers_response_input_and_o
     input_ = InputAndOutputWithHeadersInput()
 
     try:
-        actual = await client.input_and_output_with_headers(input_)
+        actual = await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6123,7 +6655,26 @@ async def test_rest_json_input_and_output_with_int_enum_headers_response_input_a
     input_ = InputAndOutputWithHeadersInput()
 
     try:
-        actual = await client.input_and_output_with_headers(input_)
+        actual = await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6155,7 +6706,26 @@ async def test_rest_json_supports_na_n_float_header_outputs_response_input_and_o
     input_ = InputAndOutputWithHeadersInput()
 
     try:
-        actual = await client.input_and_output_with_headers(input_)
+        actual = await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6188,7 +6758,26 @@ async def test_rest_json_supports_infinity_float_header_outputs_response_input_a
     input_ = InputAndOutputWithHeadersInput()
 
     try:
-        actual = await client.input_and_output_with_headers(input_)
+        actual = await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6221,7 +6810,26 @@ async def test_rest_json_supports_negative_infinity_float_header_outputs_respons
     input_ = InputAndOutputWithHeadersInput()
 
     try:
-        actual = await client.input_and_output_with_headers(input_)
+        actual = await client.input_and_output_with_headers(
+            header_string=input_.header_string,
+            header_byte=input_.header_byte,
+            header_short=input_.header_short,
+            header_integer=input_.header_integer,
+            header_long=input_.header_long,
+            header_float=input_.header_float,
+            header_double=input_.header_double,
+            header_true_bool=input_.header_true_bool,
+            header_false_bool=input_.header_false_bool,
+            header_string_list=input_.header_string_list,
+            header_string_set=input_.header_string_set,
+            header_integer_list=input_.header_integer_list,
+            header_boolean_list=input_.header_boolean_list,
+            header_timestamp_list=input_.header_timestamp_list,
+            header_enum=input_.header_enum,
+            header_enum_list=input_.header_enum_list,
+            header_integer_enum=input_.header_integer_enum,
+            header_integer_enum_list=input_.header_integer_enum_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6249,7 +6857,7 @@ async def test_rest_json_json_blobs_request_json_blobs() -> None:
     input_ = JsonBlobsInput(data=b"value")
 
     try:
-        await client.json_blobs(input_)
+        await client.json_blobs(data=input_.data)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -6324,7 +6932,7 @@ async def test_rest_json_json_blobs_response_json_blobs() -> None:
     input_ = JsonBlobsInput()
 
     try:
-        actual = await client.json_blobs(input_)
+        actual = await client.json_blobs(data=input_.data)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6357,7 +6965,14 @@ async def test_rest_json_json_enums_request_json_enums() -> None:
     )
 
     try:
-        await client.json_enums(input_)
+        await client.json_enums(
+            foo_enum1=input_.foo_enum1,
+            foo_enum2=input_.foo_enum2,
+            foo_enum3=input_.foo_enum3,
+            foo_enum_list=input_.foo_enum_list,
+            foo_enum_set=input_.foo_enum_set,
+            foo_enum_map=input_.foo_enum_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -6432,7 +7047,14 @@ async def test_rest_json_json_enums_response_json_enums() -> None:
     input_ = JsonEnumsInput()
 
     try:
-        actual = await client.json_enums(input_)
+        actual = await client.json_enums(
+            foo_enum1=input_.foo_enum1,
+            foo_enum2=input_.foo_enum2,
+            foo_enum3=input_.foo_enum3,
+            foo_enum_list=input_.foo_enum_list,
+            foo_enum_set=input_.foo_enum_set,
+            foo_enum_map=input_.foo_enum_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6472,7 +7094,14 @@ async def test_rest_json_json_int_enums_request_json_int_enums() -> None:
     )
 
     try:
-        await client.json_int_enums(input_)
+        await client.json_int_enums(
+            integer_enum1=input_.integer_enum1,
+            integer_enum2=input_.integer_enum2,
+            integer_enum3=input_.integer_enum3,
+            integer_enum_list=input_.integer_enum_list,
+            integer_enum_set=input_.integer_enum_set,
+            integer_enum_map=input_.integer_enum_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -6547,7 +7176,14 @@ async def test_rest_json_json_int_enums_response_json_int_enums() -> None:
     input_ = JsonIntEnumsInput()
 
     try:
-        actual = await client.json_int_enums(input_)
+        actual = await client.json_int_enums(
+            integer_enum1=input_.integer_enum1,
+            integer_enum2=input_.integer_enum2,
+            integer_enum3=input_.integer_enum3,
+            integer_enum_list=input_.integer_enum_list,
+            integer_enum_set=input_.integer_enum_set,
+            integer_enum_map=input_.integer_enum_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6596,7 +7232,17 @@ async def test_rest_json_lists_request_json_lists() -> None:
     )
 
     try:
-        await client.json_lists(input_)
+        await client.json_lists(
+            string_list=input_.string_list,
+            string_set=input_.string_set,
+            integer_list=input_.integer_list,
+            boolean_list=input_.boolean_list,
+            timestamp_list=input_.timestamp_list,
+            enum_list=input_.enum_list,
+            int_enum_list=input_.int_enum_list,
+            nested_string_list=input_.nested_string_list,
+            structure_list=input_.structure_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -6668,7 +7314,17 @@ async def test_rest_json_lists_empty_request_json_lists() -> None:
     input_ = JsonListsInput(string_list=[])
 
     try:
-        await client.json_lists(input_)
+        await client.json_lists(
+            string_list=input_.string_list,
+            string_set=input_.string_set,
+            integer_list=input_.integer_list,
+            boolean_list=input_.boolean_list,
+            timestamp_list=input_.timestamp_list,
+            enum_list=input_.enum_list,
+            int_enum_list=input_.int_enum_list,
+            nested_string_list=input_.nested_string_list,
+            structure_list=input_.structure_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -6743,7 +7399,17 @@ async def test_rest_json_lists_response_json_lists() -> None:
     input_ = JsonListsInput()
 
     try:
-        actual = await client.json_lists(input_)
+        actual = await client.json_lists(
+            string_list=input_.string_list,
+            string_set=input_.string_set,
+            integer_list=input_.integer_list,
+            boolean_list=input_.boolean_list,
+            timestamp_list=input_.timestamp_list,
+            enum_list=input_.enum_list,
+            int_enum_list=input_.int_enum_list,
+            nested_string_list=input_.nested_string_list,
+            structure_list=input_.structure_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6788,7 +7454,17 @@ async def test_rest_json_lists_empty_response_json_lists() -> None:
     input_ = JsonListsInput()
 
     try:
-        actual = await client.json_lists(input_)
+        actual = await client.json_lists(
+            string_list=input_.string_list,
+            string_set=input_.string_set,
+            integer_list=input_.integer_list,
+            boolean_list=input_.boolean_list,
+            timestamp_list=input_.timestamp_list,
+            enum_list=input_.enum_list,
+            int_enum_list=input_.int_enum_list,
+            nested_string_list=input_.nested_string_list,
+            structure_list=input_.structure_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6819,7 +7495,13 @@ async def test_rest_json_json_maps_request_json_maps() -> None:
     )
 
     try:
-        await client.json_maps(input_)
+        await client.json_maps(
+            dense_struct_map=input_.dense_struct_map,
+            dense_number_map=input_.dense_number_map,
+            dense_boolean_map=input_.dense_boolean_map,
+            dense_string_map=input_.dense_string_map,
+            dense_set_map=input_.dense_set_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -6891,7 +7573,13 @@ async def test_rest_json_serializes_zero_values_in_maps_request_json_maps() -> N
     input_ = JsonMapsInput(dense_number_map={"x": 0}, dense_boolean_map={"x": False})
 
     try:
-        await client.json_maps(input_)
+        await client.json_maps(
+            dense_struct_map=input_.dense_struct_map,
+            dense_number_map=input_.dense_number_map,
+            dense_boolean_map=input_.dense_boolean_map,
+            dense_string_map=input_.dense_string_map,
+            dense_set_map=input_.dense_set_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -6963,7 +7651,13 @@ async def test_rest_json_serializes_dense_set_map_request_json_maps() -> None:
     input_ = JsonMapsInput(dense_set_map={"x": [], "y": ["a", "b"]})
 
     try:
-        await client.json_maps(input_)
+        await client.json_maps(
+            dense_struct_map=input_.dense_struct_map,
+            dense_number_map=input_.dense_number_map,
+            dense_boolean_map=input_.dense_boolean_map,
+            dense_string_map=input_.dense_string_map,
+            dense_set_map=input_.dense_set_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -7038,7 +7732,13 @@ async def test_rest_json_json_maps_response_json_maps() -> None:
     input_ = JsonMapsInput()
 
     try:
-        actual = await client.json_maps(input_)
+        actual = await client.json_maps(
+            dense_struct_map=input_.dense_struct_map,
+            dense_number_map=input_.dense_number_map,
+            dense_boolean_map=input_.dense_boolean_map,
+            dense_string_map=input_.dense_string_map,
+            dense_set_map=input_.dense_set_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -7072,7 +7772,13 @@ async def test_rest_json_deserializes_zero_values_in_maps_response_json_maps() -
     input_ = JsonMapsInput()
 
     try:
-        actual = await client.json_maps(input_)
+        actual = await client.json_maps(
+            dense_struct_map=input_.dense_struct_map,
+            dense_number_map=input_.dense_number_map,
+            dense_boolean_map=input_.dense_boolean_map,
+            dense_string_map=input_.dense_string_map,
+            dense_set_map=input_.dense_set_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -7103,7 +7809,13 @@ async def test_rest_json_deserializes_dense_set_map_response_json_maps() -> None
     input_ = JsonMapsInput()
 
     try:
-        actual = await client.json_maps(input_)
+        actual = await client.json_maps(
+            dense_struct_map=input_.dense_struct_map,
+            dense_number_map=input_.dense_number_map,
+            dense_boolean_map=input_.dense_boolean_map,
+            dense_string_map=input_.dense_string_map,
+            dense_set_map=input_.dense_set_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -7131,7 +7843,15 @@ async def test_rest_json_json_timestamps_request_json_timestamps() -> None:
     )
 
     try:
-        await client.json_timestamps(input_)
+        await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -7210,7 +7930,15 @@ async def test_rest_json_json_timestamps_with_date_time_format_request_json_time
     )
 
     try:
-        await client.json_timestamps(input_)
+        await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -7289,7 +8017,15 @@ async def test_rest_json_json_timestamps_with_date_time_on_target_format_request
     )
 
     try:
-        await client.json_timestamps(input_)
+        await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -7365,7 +8101,15 @@ async def test_rest_json_json_timestamps_with_epoch_seconds_format_request_json_
     )
 
     try:
-        await client.json_timestamps(input_)
+        await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -7444,7 +8188,15 @@ async def test_rest_json_json_timestamps_with_epoch_seconds_on_target_format_req
     )
 
     try:
-        await client.json_timestamps(input_)
+        await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -7520,7 +8272,15 @@ async def test_rest_json_json_timestamps_with_http_date_format_request_json_time
     )
 
     try:
-        await client.json_timestamps(input_)
+        await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -7596,7 +8356,15 @@ async def test_rest_json_json_timestamps_with_http_date_on_target_format_request
     )
 
     try:
-        await client.json_timestamps(input_)
+        await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -7673,7 +8441,15 @@ async def test_rest_json_json_timestamps_response_json_timestamps() -> None:
     input_ = JsonTimestampsInput()
 
     try:
-        actual = await client.json_timestamps(input_)
+        actual = await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -7709,7 +8485,15 @@ async def test_rest_json_json_timestamps_with_date_time_format_response_json_tim
     input_ = JsonTimestampsInput()
 
     try:
-        actual = await client.json_timestamps(input_)
+        actual = await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -7745,7 +8529,15 @@ async def test_rest_json_json_timestamps_with_date_time_on_target_format_respons
     input_ = JsonTimestampsInput()
 
     try:
-        actual = await client.json_timestamps(input_)
+        actual = await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -7778,7 +8570,15 @@ async def test_rest_json_json_timestamps_with_epoch_seconds_format_response_json
     input_ = JsonTimestampsInput()
 
     try:
-        actual = await client.json_timestamps(input_)
+        actual = await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -7814,7 +8614,15 @@ async def test_rest_json_json_timestamps_with_epoch_seconds_on_target_format_res
     input_ = JsonTimestampsInput()
 
     try:
-        actual = await client.json_timestamps(input_)
+        actual = await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -7847,7 +8655,15 @@ async def test_rest_json_json_timestamps_with_http_date_format_response_json_tim
     input_ = JsonTimestampsInput()
 
     try:
-        actual = await client.json_timestamps(input_)
+        actual = await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -7880,7 +8696,15 @@ async def test_rest_json_json_timestamps_with_http_date_on_target_format_respons
     input_ = JsonTimestampsInput()
 
     try:
-        actual = await client.json_timestamps(input_)
+        actual = await client.json_timestamps(
+            normal=input_.normal,
+            date_time=input_.date_time,
+            date_time_on_target=input_.date_time_on_target,
+            epoch_seconds=input_.epoch_seconds,
+            epoch_seconds_on_target=input_.epoch_seconds_on_target,
+            http_date=input_.http_date,
+            http_date_on_target=input_.http_date_on_target,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -7908,7 +8732,7 @@ async def test_rest_json_serialize_string_union_value_request_json_unions() -> N
     input_ = JsonUnionsInput(contents=MyUnionStringValue(value="foo"))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -7982,7 +8806,7 @@ async def test_rest_json_serialize_boolean_union_value_request_json_unions() -> 
     input_ = JsonUnionsInput(contents=MyUnionBooleanValue(value=True))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -8056,7 +8880,7 @@ async def test_rest_json_serialize_number_union_value_request_json_unions() -> N
     input_ = JsonUnionsInput(contents=MyUnionNumberValue(value=1))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -8130,7 +8954,7 @@ async def test_rest_json_serialize_blob_union_value_request_json_unions() -> Non
     input_ = JsonUnionsInput(contents=MyUnionBlobValue(value=b"foo"))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -8208,7 +9032,7 @@ async def test_rest_json_serialize_timestamp_union_value_request_json_unions() -
     )
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -8282,7 +9106,7 @@ async def test_rest_json_serialize_enum_union_value_request_json_unions() -> Non
     input_ = JsonUnionsInput(contents=MyUnionEnumValue(value="Foo"))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -8356,7 +9180,7 @@ async def test_rest_json_serialize_list_union_value_request_json_unions() -> Non
     input_ = JsonUnionsInput(contents=MyUnionListValue(value=["foo", "bar"]))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -8432,7 +9256,7 @@ async def test_rest_json_serialize_map_union_value_request_json_unions() -> None
     )
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -8506,7 +9330,7 @@ async def test_rest_json_serialize_structure_union_value_request_json_unions() -
     )
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -8584,7 +9408,7 @@ async def test_rest_json_serialize_renamed_structure_union_value_request_json_un
     )
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -8658,7 +9482,7 @@ async def test_rest_json_serialize_nested_union_value_request_json_unions() -> N
     )
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -8733,7 +9557,7 @@ async def test_rest_json_deserialize_string_union_value_response_json_unions() -
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -8762,7 +9586,7 @@ async def test_rest_json_deserialize_boolean_union_value_response_json_unions() 
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -8791,7 +9615,7 @@ async def test_rest_json_deserialize_number_union_value_response_json_unions() -
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -8820,7 +9644,7 @@ async def test_rest_json_deserialize_blob_union_value_response_json_unions() -> 
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -8851,7 +9675,7 @@ async def test_rest_json_deserialize_timestamp_union_value_response_json_unions(
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -8884,7 +9708,7 @@ async def test_rest_json_deserialize_enum_union_value_response_json_unions() -> 
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -8913,7 +9737,7 @@ async def test_rest_json_deserialize_list_union_value_response_json_unions() -> 
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -8942,7 +9766,7 @@ async def test_rest_json_deserialize_map_union_value_response_json_unions() -> N
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -8975,7 +9799,7 @@ async def test_rest_json_deserialize_structure_union_value_response_json_unions(
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -9006,7 +9830,7 @@ async def test_rest_json_deserialize_nested_union_value_response_json_unions() -
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -9037,7 +9861,7 @@ async def test_rest_json_deserialize_ignore_type_response_json_unions() -> None:
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -9065,7 +9889,7 @@ async def test_media_type_header_input_base64_request_media_type_header() -> Non
     input_ = MediaTypeHeaderInput(json="true")
 
     try:
-        await client.media_type_header(input_)
+        await client.media_type_header(json=input_.json)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -9136,7 +9960,7 @@ async def test_media_type_header_output_base64_response_media_type_header() -> N
     input_ = MediaTypeHeaderInput()
 
     try:
-        actual = await client.media_type_header(input_)
+        actual = await client.media_type_header(json=input_.json)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -9167,7 +9991,7 @@ async def test_rest_json_no_input_and_no_output_request_no_input_and_no_output()
     input_ = NoInputAndNoOutputInput()
 
     try:
-        await client.no_input_and_no_output(input_)
+        await client.no_input_and_no_output()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -9241,7 +10065,7 @@ async def test_rest_json_no_input_and_no_output_response_no_input_and_no_output(
     input_ = NoInputAndNoOutputInput()
 
     try:
-        actual = await client.no_input_and_no_output(input_)
+        actual = await client.no_input_and_no_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -9270,7 +10094,7 @@ async def test_rest_json_no_input_and_output_request_no_input_and_output() -> No
     input_ = NoInputAndOutputInput()
 
     try:
-        await client.no_input_and_output(input_)
+        await client.no_input_and_output()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -9346,7 +10170,7 @@ async def test_rest_json_no_input_and_output_with_json_response_no_input_and_out
     input_ = NoInputAndOutputInput()
 
     try:
-        actual = await client.no_input_and_output(input_)
+        actual = await client.no_input_and_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -9376,7 +10200,7 @@ async def test_rest_json_no_input_and_output_no_payload_response_no_input_and_ou
     input_ = NoInputAndOutputInput()
 
     try:
-        actual = await client.no_input_and_output(input_)
+        actual = await client.no_input_and_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -9407,7 +10231,7 @@ async def test_rest_json_null_and_empty_headers_request_null_and_empty_headers_c
     input_ = NullAndEmptyHeadersClientInput(a=None, b="", c=[])
 
     try:
-        await client.null_and_empty_headers_client(input_)
+        await client.null_and_empty_headers_client(a=input_.a, b=input_.b, c=input_.c)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -9479,7 +10303,9 @@ async def test_rest_json_omits_null_query_request_omits_null_serializes_empty_st
     input_ = OmitsNullSerializesEmptyStringInput(null_value=None)
 
     try:
-        await client.omits_null_serializes_empty_string(input_)
+        await client.omits_null_serializes_empty_string(
+            null_value=input_.null_value, empty_string=input_.empty_string
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -9551,7 +10377,9 @@ async def test_rest_json_serializes_empty_query_value_request_omits_null_seriali
     input_ = OmitsNullSerializesEmptyStringInput(empty_string="")
 
     try:
-        await client.omits_null_serializes_empty_string(input_)
+        await client.omits_null_serializes_empty_string(
+            null_value=input_.null_value, empty_string=input_.empty_string
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -9631,7 +10459,15 @@ async def test_rest_json_omits_empty_list_query_values_request_omits_serializing
     )
 
     try:
-        await client.omits_serializing_empty_lists(input_)
+        await client.omits_serializing_empty_lists(
+            query_string_list=input_.query_string_list,
+            query_integer_list=input_.query_integer_list,
+            query_double_list=input_.query_double_list,
+            query_boolean_list=input_.query_boolean_list,
+            query_timestamp_list=input_.query_timestamp_list,
+            query_enum_list=input_.query_enum_list,
+            query_integer_enum_list=input_.query_integer_enum_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -9704,7 +10540,12 @@ async def test_rest_json_client_populates_default_values_in_input_request_operat
     input_ = OperationWithDefaultsInput(defaults=Defaults())
 
     try:
-        await client.operation_with_defaults(input_)
+        await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -9779,7 +10620,12 @@ async def test_rest_json_client_skips_top_level_default_values_in_input_request_
     input_ = OperationWithDefaultsInput()
 
     try:
-        await client.operation_with_defaults(input_)
+        await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -9885,7 +10731,12 @@ async def test_rest_json_client_uses_explicitly_provided_member_values_over_defa
     )
 
     try:
-        await client.operation_with_defaults(input_)
+        await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -9964,7 +10815,12 @@ async def test_rest_json_client_uses_explicitly_provided_values_in_top_level_req
     )
 
     try:
-        await client.operation_with_defaults(input_)
+        await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -10046,7 +10902,12 @@ async def test_rest_json_client_ignores_non_top_level_defaults_on_members_with_c
     )
 
     try:
-        await client.operation_with_defaults(input_)
+        await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -10121,7 +10982,12 @@ async def test_rest_json_client_populates_defaults_values_when_missing_in_respon
     input_ = OperationWithDefaultsInput()
 
     try:
-        actual = await client.operation_with_defaults(input_)
+        actual = await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -10183,7 +11049,12 @@ async def test_rest_json_client_ignores_default_values_if_member_values_are_pres
     input_ = OperationWithDefaultsInput()
 
     try:
-        actual = await client.operation_with_defaults(input_)
+        actual = await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -10260,7 +11131,7 @@ async def test_rest_json_client_populates_nested_default_values_when_missing_req
     )
 
     try:
-        await client.operation_with_nested_structure(input_)
+        await client.operation_with_nested_structure(top_level=input_.top_level)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -10337,7 +11208,9 @@ async def test_rest_json_client_populates_nested_defaults_when_missing_in_respon
     input_ = OperationWithNestedStructureInput()
 
     try:
-        actual = await client.operation_with_nested_structure(input_)
+        actual = await client.operation_with_nested_structure(
+            top_level=input_.top_level
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -10385,7 +11258,7 @@ async def test_rest_json_input_union_with_unit_member_request_post_player_action
     input_ = PostPlayerActionInput(action=PlayerActionQuit(value=Unit()))
 
     try:
-        await client.post_player_action(input_)
+        await client.post_player_action(action=input_.action)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -10462,7 +11335,7 @@ async def test_rest_json_output_union_with_unit_member_response_post_player_acti
     input_ = PostPlayerActionInput()
 
     try:
-        actual = await client.post_player_action(input_)
+        actual = await client.post_player_action(action=input_.action)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -10490,7 +11363,7 @@ async def test_post_union_with_json_name_request1_request_post_union_with_json_n
     input_ = PostUnionWithJsonNameInput(value=UnionWithJsonNameFoo(value="hi"))
 
     try:
-        await client.post_union_with_json_name(input_)
+        await client.post_union_with_json_name(value=input_.value)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -10564,7 +11437,7 @@ async def test_post_union_with_json_name_request2_request_post_union_with_json_n
     input_ = PostUnionWithJsonNameInput(value=UnionWithJsonNameBaz(value="hi"))
 
     try:
-        await client.post_union_with_json_name(input_)
+        await client.post_union_with_json_name(value=input_.value)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -10638,7 +11511,7 @@ async def test_post_union_with_json_name_request3_request_post_union_with_json_n
     input_ = PostUnionWithJsonNameInput(value=UnionWithJsonNameBar(value="hi"))
 
     try:
-        await client.post_union_with_json_name(input_)
+        await client.post_union_with_json_name(value=input_.value)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -10715,7 +11588,7 @@ async def test_post_union_with_json_name_response1_response_post_union_with_json
     input_ = PostUnionWithJsonNameInput()
 
     try:
-        actual = await client.post_union_with_json_name(input_)
+        actual = await client.post_union_with_json_name(value=input_.value)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -10746,7 +11619,7 @@ async def test_post_union_with_json_name_response2_response_post_union_with_json
     input_ = PostUnionWithJsonNameInput()
 
     try:
-        actual = await client.post_union_with_json_name(input_)
+        actual = await client.post_union_with_json_name(value=input_.value)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -10777,7 +11650,7 @@ async def test_post_union_with_json_name_response3_response_post_union_with_json
     input_ = PostUnionWithJsonNameInput()
 
     try:
-        actual = await client.post_union_with_json_name(input_)
+        actual = await client.post_union_with_json_name(value=input_.value)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -10811,7 +11684,9 @@ async def test_sdk_applied_content_encoding_rest_json1_request_put_with_content_
     )
 
     try:
-        await client.put_with_content_encoding(input_)
+        await client.put_with_content_encoding(
+            encoding=input_.encoding, data=input_.data
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -10888,7 +11763,9 @@ async def test_sdk_appended_gzip_after_provided_encoding_rest_json1_request_put_
     )
 
     try:
-        await client.put_with_content_encoding(input_)
+        await client.put_with_content_encoding(
+            encoding=input_.encoding, data=input_.data
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -10957,7 +11834,7 @@ async def test_rest_json_query_idempotency_token_auto_fill_request_query_idempot
     input_ = QueryIdempotencyTokenAutoFillInput()
 
     try:
-        await client.query_idempotency_token_auto_fill(input_)
+        await client.query_idempotency_token_auto_fill(token=input_.token)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -11033,7 +11910,7 @@ async def test_rest_json_query_idempotency_token_auto_fill_is_set_request_query_
     )
 
     try:
-        await client.query_idempotency_token_auto_fill(input_)
+        await client.query_idempotency_token_auto_fill(token=input_.token)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -11107,7 +11984,7 @@ async def test_rest_json_query_params_string_list_map_request_query_params_as_st
     input_ = QueryParamsAsStringListMapInput(qux="named", foo={"baz": ["bar", "qux"]})
 
     try:
-        await client.query_params_as_string_list_map(input_)
+        await client.query_params_as_string_list_map(qux=input_.qux, foo=input_.foo)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -11179,7 +12056,7 @@ async def test_rest_json_query_precedence_request_query_precedence() -> None:
     )
 
     try:
-        await client.query_precedence(input_)
+        await client.query_precedence(foo=input_.foo, baz=input_.baz)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -11259,7 +12136,7 @@ async def test_rest_json_recursive_shapes_request_recursive_shapes() -> None:
     )
 
     try:
-        await client.recursive_shapes(input_)
+        await client.recursive_shapes(nested=input_.nested)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -11334,7 +12211,7 @@ async def test_rest_json_recursive_shapes_response_recursive_shapes() -> None:
     input_ = RecursiveShapesInput()
 
     try:
-        actual = await client.recursive_shapes(input_)
+        actual = await client.recursive_shapes(nested=input_.nested)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -11383,7 +12260,18 @@ async def test_rest_json_simple_scalar_properties_request_simple_scalar_properti
     )
 
     try:
-        await client.simple_scalar_properties(input_)
+        await client.simple_scalar_properties(
+            foo=input_.foo,
+            string_value=input_.string_value,
+            true_boolean_value=input_.true_boolean_value,
+            false_boolean_value=input_.false_boolean_value,
+            byte_value=input_.byte_value,
+            short_value=input_.short_value,
+            integer_value=input_.integer_value,
+            long_value=input_.long_value,
+            float_value=input_.float_value,
+            double_value=input_.double_value,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -11460,7 +12348,18 @@ async def test_rest_json_doesnt_serialize_null_structure_values_request_simple_s
     input_ = SimpleScalarPropertiesInput(string_value=None)
 
     try:
-        await client.simple_scalar_properties(input_)
+        await client.simple_scalar_properties(
+            foo=input_.foo,
+            string_value=input_.string_value,
+            true_boolean_value=input_.true_boolean_value,
+            false_boolean_value=input_.false_boolean_value,
+            byte_value=input_.byte_value,
+            short_value=input_.short_value,
+            integer_value=input_.integer_value,
+            long_value=input_.long_value,
+            float_value=input_.float_value,
+            double_value=input_.double_value,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -11537,7 +12436,18 @@ async def test_rest_json_supports_na_n_float_inputs_request_simple_scalar_proper
     )
 
     try:
-        await client.simple_scalar_properties(input_)
+        await client.simple_scalar_properties(
+            foo=input_.foo,
+            string_value=input_.string_value,
+            true_boolean_value=input_.true_boolean_value,
+            false_boolean_value=input_.false_boolean_value,
+            byte_value=input_.byte_value,
+            short_value=input_.short_value,
+            integer_value=input_.integer_value,
+            long_value=input_.long_value,
+            float_value=input_.float_value,
+            double_value=input_.double_value,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -11615,7 +12525,18 @@ async def test_rest_json_supports_infinity_float_inputs_request_simple_scalar_pr
     )
 
     try:
-        await client.simple_scalar_properties(input_)
+        await client.simple_scalar_properties(
+            foo=input_.foo,
+            string_value=input_.string_value,
+            true_boolean_value=input_.true_boolean_value,
+            false_boolean_value=input_.false_boolean_value,
+            byte_value=input_.byte_value,
+            short_value=input_.short_value,
+            integer_value=input_.integer_value,
+            long_value=input_.long_value,
+            float_value=input_.float_value,
+            double_value=input_.double_value,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -11693,7 +12614,18 @@ async def test_rest_json_supports_negative_infinity_float_inputs_request_simple_
     )
 
     try:
-        await client.simple_scalar_properties(input_)
+        await client.simple_scalar_properties(
+            foo=input_.foo,
+            string_value=input_.string_value,
+            true_boolean_value=input_.true_boolean_value,
+            false_boolean_value=input_.false_boolean_value,
+            byte_value=input_.byte_value,
+            short_value=input_.short_value,
+            integer_value=input_.integer_value,
+            long_value=input_.long_value,
+            float_value=input_.float_value,
+            double_value=input_.double_value,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -11772,7 +12704,18 @@ async def test_rest_json_simple_scalar_properties_response_simple_scalar_propert
     input_ = SimpleScalarPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_properties(input_)
+        actual = await client.simple_scalar_properties(
+            foo=input_.foo,
+            string_value=input_.string_value,
+            true_boolean_value=input_.true_boolean_value,
+            false_boolean_value=input_.false_boolean_value,
+            byte_value=input_.byte_value,
+            short_value=input_.short_value,
+            integer_value=input_.integer_value,
+            long_value=input_.long_value,
+            float_value=input_.float_value,
+            double_value=input_.double_value,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -11814,7 +12757,18 @@ async def test_rest_json_doesnt_deserialize_null_structure_values_response_simpl
     input_ = SimpleScalarPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_properties(input_)
+        actual = await client.simple_scalar_properties(
+            foo=input_.foo,
+            string_value=input_.string_value,
+            true_boolean_value=input_.true_boolean_value,
+            false_boolean_value=input_.false_boolean_value,
+            byte_value=input_.byte_value,
+            short_value=input_.short_value,
+            integer_value=input_.integer_value,
+            long_value=input_.long_value,
+            float_value=input_.float_value,
+            double_value=input_.double_value,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -11846,7 +12800,18 @@ async def test_rest_json_supports_na_n_float_inputs_response_simple_scalar_prope
     input_ = SimpleScalarPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_properties(input_)
+        actual = await client.simple_scalar_properties(
+            foo=input_.foo,
+            string_value=input_.string_value,
+            true_boolean_value=input_.true_boolean_value,
+            false_boolean_value=input_.false_boolean_value,
+            byte_value=input_.byte_value,
+            short_value=input_.short_value,
+            integer_value=input_.integer_value,
+            long_value=input_.long_value,
+            float_value=input_.float_value,
+            double_value=input_.double_value,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -11879,7 +12844,18 @@ async def test_rest_json_supports_infinity_float_inputs_response_simple_scalar_p
     input_ = SimpleScalarPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_properties(input_)
+        actual = await client.simple_scalar_properties(
+            foo=input_.foo,
+            string_value=input_.string_value,
+            true_boolean_value=input_.true_boolean_value,
+            false_boolean_value=input_.false_boolean_value,
+            byte_value=input_.byte_value,
+            short_value=input_.short_value,
+            integer_value=input_.integer_value,
+            long_value=input_.long_value,
+            float_value=input_.float_value,
+            double_value=input_.double_value,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -11912,7 +12888,18 @@ async def test_rest_json_supports_negative_infinity_float_inputs_response_simple
     input_ = SimpleScalarPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_properties(input_)
+        actual = await client.simple_scalar_properties(
+            foo=input_.foo,
+            string_value=input_.string_value,
+            true_boolean_value=input_.true_boolean_value,
+            false_boolean_value=input_.false_boolean_value,
+            byte_value=input_.byte_value,
+            short_value=input_.short_value,
+            integer_value=input_.integer_value,
+            long_value=input_.long_value,
+            float_value=input_.float_value,
+            double_value=input_.double_value,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -11944,7 +12931,10 @@ async def test_rest_json_sparse_lists_serialize_null_request_sparse_json_lists()
     )
 
     try:
-        await client.sparse_json_lists(input_)
+        await client.sparse_json_lists(
+            sparse_string_list=input_.sparse_string_list,
+            sparse_short_list=input_.sparse_short_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -12021,7 +13011,10 @@ async def test_rest_json_sparse_lists_serialize_null_response_sparse_json_lists(
     input_ = SparseJsonListsInput()
 
     try:
-        actual = await client.sparse_json_lists(input_)
+        actual = await client.sparse_json_lists(
+            sparse_string_list=input_.sparse_string_list,
+            sparse_short_list=input_.sparse_short_list,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -12054,7 +13047,13 @@ async def test_rest_json_sparse_json_maps_request_sparse_json_maps() -> None:
     )
 
     try:
-        await client.sparse_json_maps(input_)
+        await client.sparse_json_maps(
+            sparse_struct_map=input_.sparse_struct_map,
+            sparse_number_map=input_.sparse_number_map,
+            sparse_boolean_map=input_.sparse_boolean_map,
+            sparse_string_map=input_.sparse_string_map,
+            sparse_set_map=input_.sparse_set_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -12133,7 +13132,13 @@ async def test_rest_json_serializes_sparse_null_map_values_request_sparse_json_m
     )
 
     try:
-        await client.sparse_json_maps(input_)
+        await client.sparse_json_maps(
+            sparse_struct_map=input_.sparse_struct_map,
+            sparse_number_map=input_.sparse_number_map,
+            sparse_boolean_map=input_.sparse_boolean_map,
+            sparse_string_map=input_.sparse_string_map,
+            sparse_set_map=input_.sparse_set_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -12209,7 +13214,13 @@ async def test_rest_json_serializes_zero_values_in_sparse_maps_request_sparse_js
     )
 
     try:
-        await client.sparse_json_maps(input_)
+        await client.sparse_json_maps(
+            sparse_struct_map=input_.sparse_struct_map,
+            sparse_number_map=input_.sparse_number_map,
+            sparse_boolean_map=input_.sparse_boolean_map,
+            sparse_string_map=input_.sparse_string_map,
+            sparse_set_map=input_.sparse_set_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -12281,7 +13292,13 @@ async def test_rest_json_serializes_sparse_set_map_request_sparse_json_maps() ->
     input_ = SparseJsonMapsInput(sparse_set_map={"x": [], "y": ["a", "b"]})
 
     try:
-        await client.sparse_json_maps(input_)
+        await client.sparse_json_maps(
+            sparse_struct_map=input_.sparse_struct_map,
+            sparse_number_map=input_.sparse_number_map,
+            sparse_boolean_map=input_.sparse_boolean_map,
+            sparse_string_map=input_.sparse_string_map,
+            sparse_set_map=input_.sparse_set_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -12355,7 +13372,13 @@ async def test_rest_json_serializes_sparse_set_map_and_retains_null_request_spar
     input_ = SparseJsonMapsInput(sparse_set_map={"x": [], "y": ["a", "b"], "z": None})
 
     try:
-        await client.sparse_json_maps(input_)
+        await client.sparse_json_maps(
+            sparse_struct_map=input_.sparse_struct_map,
+            sparse_number_map=input_.sparse_number_map,
+            sparse_boolean_map=input_.sparse_boolean_map,
+            sparse_string_map=input_.sparse_string_map,
+            sparse_set_map=input_.sparse_set_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -12430,7 +13453,13 @@ async def test_rest_json_sparse_json_maps_response_sparse_json_maps() -> None:
     input_ = SparseJsonMapsInput()
 
     try:
-        actual = await client.sparse_json_maps(input_)
+        actual = await client.sparse_json_maps(
+            sparse_struct_map=input_.sparse_struct_map,
+            sparse_number_map=input_.sparse_number_map,
+            sparse_boolean_map=input_.sparse_boolean_map,
+            sparse_string_map=input_.sparse_string_map,
+            sparse_set_map=input_.sparse_set_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -12466,7 +13495,13 @@ async def test_rest_json_deserializes_sparse_null_map_values_response_sparse_jso
     input_ = SparseJsonMapsInput()
 
     try:
-        actual = await client.sparse_json_maps(input_)
+        actual = await client.sparse_json_maps(
+            sparse_struct_map=input_.sparse_struct_map,
+            sparse_number_map=input_.sparse_number_map,
+            sparse_boolean_map=input_.sparse_boolean_map,
+            sparse_string_map=input_.sparse_string_map,
+            sparse_set_map=input_.sparse_set_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -12502,7 +13537,13 @@ async def test_rest_json_deserializes_zero_values_in_sparse_maps_response_sparse
     input_ = SparseJsonMapsInput()
 
     try:
-        actual = await client.sparse_json_maps(input_)
+        actual = await client.sparse_json_maps(
+            sparse_struct_map=input_.sparse_struct_map,
+            sparse_number_map=input_.sparse_number_map,
+            sparse_boolean_map=input_.sparse_boolean_map,
+            sparse_string_map=input_.sparse_string_map,
+            sparse_set_map=input_.sparse_set_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -12535,7 +13576,13 @@ async def test_rest_json_deserializes_sparse_set_map_response_sparse_json_maps()
     input_ = SparseJsonMapsInput()
 
     try:
-        actual = await client.sparse_json_maps(input_)
+        actual = await client.sparse_json_maps(
+            sparse_struct_map=input_.sparse_struct_map,
+            sparse_number_map=input_.sparse_number_map,
+            sparse_boolean_map=input_.sparse_boolean_map,
+            sparse_string_map=input_.sparse_string_map,
+            sparse_set_map=input_.sparse_set_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -12566,7 +13613,13 @@ async def test_rest_json_deserializes_sparse_set_map_and_retains_null_response_s
     input_ = SparseJsonMapsInput()
 
     try:
-        actual = await client.sparse_json_maps(input_)
+        actual = await client.sparse_json_maps(
+            sparse_struct_map=input_.sparse_struct_map,
+            sparse_number_map=input_.sparse_number_map,
+            sparse_boolean_map=input_.sparse_boolean_map,
+            sparse_string_map=input_.sparse_string_map,
+            sparse_set_map=input_.sparse_set_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -12594,7 +13647,7 @@ async def test_rest_json_streaming_traits_with_blob_request_streaming_traits() -
     input_ = StreamingTraitsInput(foo="Foo", blob=b"blobby blob blob")
 
     try:
-        await client.streaming_traits(input_)
+        await client.streaming_traits(foo=input_.foo, blob=input_.blob)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -12669,7 +13722,7 @@ async def test_rest_json_streaming_traits_with_no_blob_body_request_streaming_tr
     input_ = StreamingTraitsInput(foo="Foo")
 
     try:
-        await client.streaming_traits(input_)
+        await client.streaming_traits(foo=input_.foo, blob=input_.blob)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -12745,7 +13798,7 @@ async def test_rest_json_streaming_traits_with_blob_response_streaming_traits() 
     input_ = StreamingTraitsInput()
 
     try:
-        actual = await client.streaming_traits(input_)
+        actual = await client.streaming_traits(foo=input_.foo, blob=input_.blob)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -12780,7 +13833,7 @@ async def test_rest_json_streaming_traits_with_no_blob_body_response_streaming_t
     input_ = StreamingTraitsInput()
 
     try:
-        actual = await client.streaming_traits(input_)
+        actual = await client.streaming_traits(foo=input_.foo, blob=input_.blob)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -12814,7 +13867,7 @@ async def test_rest_json_streaming_traits_require_length_with_blob_request_strea
     input_ = StreamingTraitsRequireLengthInput(foo="Foo", blob=b"blobby blob blob")
 
     try:
-        await client.streaming_traits_require_length(input_)
+        await client.streaming_traits_require_length(foo=input_.foo, blob=input_.blob)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -12889,7 +13942,7 @@ async def test_rest_json_streaming_traits_require_length_with_no_blob_body_reque
     input_ = StreamingTraitsRequireLengthInput(foo="Foo")
 
     try:
-        await client.streaming_traits_require_length(input_)
+        await client.streaming_traits_require_length(foo=input_.foo, blob=input_.blob)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -12961,7 +14014,7 @@ async def test_rest_json_streaming_traits_with_media_type_with_blob_request_stre
     input_ = StreamingTraitsWithMediaTypeInput(foo="Foo", blob=b"blobby blob blob")
 
     try:
-        await client.streaming_traits_with_media_type(input_)
+        await client.streaming_traits_with_media_type(foo=input_.foo, blob=input_.blob)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13039,7 +14092,9 @@ async def test_rest_json_streaming_traits_with_media_type_with_blob_response_str
     input_ = StreamingTraitsWithMediaTypeInput()
 
     try:
-        actual = await client.streaming_traits_with_media_type(input_)
+        actual = await client.streaming_traits_with_media_type(
+            foo=input_.foo, blob=input_.blob
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -13073,7 +14128,9 @@ async def test_rest_json_test_body_structure_request_test_body_structure() -> No
     input_ = TestBodyStructureInput(test_config=TestConfig(timeout=10))
 
     try:
-        await client.test_body_structure(input_)
+        await client.test_body_structure(
+            test_id=input_.test_id, test_config=input_.test_config
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13145,7 +14202,9 @@ async def test_rest_json_http_with_empty_body_request_test_body_structure() -> N
     input_ = TestBodyStructureInput()
 
     try:
-        await client.test_body_structure(input_)
+        await client.test_body_structure(
+            test_id=input_.test_id, test_config=input_.test_config
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13222,7 +14281,7 @@ async def test_rest_json_http_get_with_no_input_request_test_get_no_input_no_pay
     input_ = TestGetNoInputNoPayloadInput()
 
     try:
-        await client.test_get_no_input_no_payload(input_)
+        await client.test_get_no_input_no_payload()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13294,7 +14353,7 @@ async def test_rest_json_http_get_with_no_modeled_body_request_test_get_no_paylo
     input_ = TestGetNoPayloadInput()
 
     try:
-        await client.test_get_no_payload(input_)
+        await client.test_get_no_payload(test_id=input_.test_id)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13366,7 +14425,7 @@ async def test_rest_json_http_get_with_header_member_no_modeled_body_request_tes
     input_ = TestGetNoPayloadInput(test_id="t-12345")
 
     try:
-        await client.test_get_no_payload(input_)
+        await client.test_get_no_payload(test_id=input_.test_id)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13438,7 +14497,9 @@ async def test_rest_json_http_with_empty_blob_payload_request_test_payload_blob(
     input_ = TestPayloadBlobInput()
 
     try:
-        await client.test_payload_blob(input_)
+        await client.test_payload_blob(
+            content_type=input_.content_type, data=input_.data
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13508,7 +14569,9 @@ async def test_rest_json_test_payload_blob_request_test_payload_blob() -> None:
     input_ = TestPayloadBlobInput(content_type="image/jpg", data=b"1234")
 
     try:
-        await client.test_payload_blob(input_)
+        await client.test_payload_blob(
+            content_type=input_.content_type, data=input_.data
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13581,7 +14644,9 @@ async def test_rest_json_http_with_empty_structure_payload_request_test_payload_
     input_ = TestPayloadStructureInput()
 
     try:
-        await client.test_payload_structure(input_)
+        await client.test_payload_structure(
+            test_id=input_.test_id, payload_config=input_.payload_config
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13655,7 +14720,9 @@ async def test_rest_json_test_payload_structure_request_test_payload_structure()
     input_ = TestPayloadStructureInput(payload_config=PayloadConfig(data=25))
 
     try:
-        await client.test_payload_structure(input_)
+        await client.test_payload_structure(
+            test_id=input_.test_id, payload_config=input_.payload_config
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13730,7 +14797,9 @@ async def test_rest_json_http_with_headers_but_no_payload_request_test_payload_s
     input_ = TestPayloadStructureInput(test_id="t-12345")
 
     try:
-        await client.test_payload_structure(input_)
+        await client.test_payload_structure(
+            test_id=input_.test_id, payload_config=input_.payload_config
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13810,7 +14879,7 @@ async def test_rest_json_http_post_with_no_input_request_test_post_no_input_no_p
     input_ = TestPostNoInputNoPayloadInput()
 
     try:
-        await client.test_post_no_input_no_payload(input_)
+        await client.test_post_no_input_no_payload()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13882,7 +14951,7 @@ async def test_rest_json_http_post_with_no_modeled_body_request_test_post_no_pay
     input_ = TestPostNoPayloadInput()
 
     try:
-        await client.test_post_no_payload(input_)
+        await client.test_post_no_payload(test_id=input_.test_id)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -13954,7 +15023,7 @@ async def test_rest_json_http_with_post_header_member_no_modeled_body_request_te
     input_ = TestPostNoPayloadInput(test_id="t-12345")
 
     try:
-        await client.test_post_no_payload(input_)
+        await client.test_post_no_payload(test_id=input_.test_id)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -14034,7 +15103,15 @@ async def test_rest_json_timestamp_format_headers_request_timestamp_format_heade
     )
 
     try:
-        await client.timestamp_format_headers(input_)
+        await client.timestamp_format_headers(
+            member_epoch_seconds=input_.member_epoch_seconds,
+            member_http_date=input_.member_http_date,
+            member_date_time=input_.member_date_time,
+            default_format=input_.default_format,
+            target_epoch_seconds=input_.target_epoch_seconds,
+            target_http_date=input_.target_http_date,
+            target_date_time=input_.target_date_time,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -14125,7 +15202,15 @@ async def test_rest_json_timestamp_format_headers_response_timestamp_format_head
     input_ = TimestampFormatHeadersInput()
 
     try:
-        actual = await client.timestamp_format_headers(input_)
+        actual = await client.timestamp_format_headers(
+            member_epoch_seconds=input_.member_epoch_seconds,
+            member_http_date=input_.member_http_date,
+            member_date_time=input_.member_date_time,
+            default_format=input_.default_format,
+            target_epoch_seconds=input_.target_epoch_seconds,
+            target_http_date=input_.target_http_date,
+            target_date_time=input_.target_date_time,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -14163,7 +15248,7 @@ async def test_rest_json_unit_input_and_output_request_unit_input_and_output() -
     input_ = UnitInputAndOutputInput()
 
     try:
-        await client.unit_input_and_output(input_)
+        await client.unit_input_and_output()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -14237,7 +15322,7 @@ async def test_rest_json_unit_input_and_output_no_output_response_unit_input_and
     input_ = UnitInputAndOutputInput()
 
     try:
-        actual = await client.unit_input_and_output(input_)
+        actual = await client.unit_input_and_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:

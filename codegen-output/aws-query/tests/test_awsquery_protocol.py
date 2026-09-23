@@ -112,7 +112,7 @@ async def test_aws_query_date_time_with_negative_offset_response_datetime_offset
     input_ = DatetimeOffsetsInput()
 
     try:
-        actual = await client.datetime_offsets(input_)
+        actual = await client.datetime_offsets()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -148,7 +148,7 @@ async def test_aws_query_date_time_with_positive_offset_response_datetime_offset
     input_ = DatetimeOffsetsInput()
 
     try:
-        actual = await client.datetime_offsets(input_)
+        actual = await client.datetime_offsets()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -178,7 +178,7 @@ async def test_query_empty_input_and_empty_output_request_empty_input_and_empty_
     input_ = EmptyInputAndEmptyOutputInput()
 
     try:
-        await client.empty_input_and_empty_output(input_)
+        await client.empty_input_and_empty_output()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -257,7 +257,7 @@ async def test_query_empty_input_and_empty_output_response_empty_input_and_empty
     input_ = EmptyInputAndEmptyOutputInput()
 
     try:
-        actual = await client.empty_input_and_empty_output(input_)
+        actual = await client.empty_input_and_empty_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -287,7 +287,7 @@ async def test_aws_query_endpoint_trait_request_endpoint_operation() -> None:
     input_ = EndpointOperationInput()
 
     try:
-        await client.endpoint_operation(input_)
+        await client.endpoint_operation()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -372,7 +372,7 @@ async def test_aws_query_endpoint_trait_with_host_label_request_endpoint_with_ho
     input_ = EndpointWithHostLabelOperationInput(label="bar")
 
     try:
-        await client.endpoint_with_host_label_operation(input_)
+        await client.endpoint_with_host_label_operation(label=input_.label)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -455,7 +455,7 @@ async def test_query_query_flattened_xml_map_response_flattened_xml_map() -> Non
     input_ = FlattenedXmlMapInput()
 
     try:
-        actual = await client.flattened_xml_map(input_)
+        actual = await client.flattened_xml_map()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -486,7 +486,7 @@ async def test_query_query_flattened_xml_map_with_xml_name_response_flattened_xm
     input_ = FlattenedXmlMapWithXmlNameInput()
 
     try:
-        actual = await client.flattened_xml_map_with_xml_name(input_)
+        actual = await client.flattened_xml_map_with_xml_name()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -520,7 +520,7 @@ async def test_query_query_flattened_xml_map_with_xml_namespace_response_flatten
     input_ = FlattenedXmlMapWithXmlNamespaceInput()
 
     try:
-        actual = await client.flattened_xml_map_with_xml_namespace(input_)
+        actual = await client.flattened_xml_map_with_xml_namespace()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -554,7 +554,7 @@ async def test_aws_query_date_time_with_fractional_seconds_response_fractional_s
     input_ = FractionalSecondsInput()
 
     try:
-        actual = await client.fractional_seconds(input_)
+        actual = await client.fractional_seconds()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -588,7 +588,7 @@ async def test_query_greeting_with_errors_response_greeting_with_errors() -> Non
     input_ = GreetingWithErrorsInput()
 
     try:
-        actual = await client.greeting_with_errors(input_)
+        actual = await client.greeting_with_errors()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -617,7 +617,7 @@ async def test_query_invalid_greeting_error_error_greeting_with_errors() -> None
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'InvalidGreeting' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "InvalidGreeting":
@@ -645,7 +645,7 @@ async def test_query_complex_error_error_greeting_with_errors() -> None:
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'ComplexError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "ComplexError":
@@ -674,7 +674,7 @@ async def test_query_customized_error_error_greeting_with_errors() -> None:
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'CustomCodeError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "CustomCodeError":
@@ -700,7 +700,7 @@ async def test_query_host_with_path_request_host_with_path_operation() -> None:
     input_ = HostWithPathOperationInput()
 
     try:
-        await client.host_with_path_operation(input_)
+        await client.host_with_path_operation()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -775,7 +775,7 @@ async def test_query_ignores_wrapping_xml_name_response_ignores_wrapping_xml_nam
     input_ = IgnoresWrappingXmlNameInput()
 
     try:
-        actual = await client.ignores_wrapping_xml_name(input_)
+        actual = await client.ignores_wrapping_xml_name()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -805,7 +805,7 @@ async def test_nested_structures_request_nested_structures() -> None:
     )
 
     try:
-        await client.nested_structures(input_)
+        await client.nested_structures(nested=input_.nested)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -883,7 +883,7 @@ async def test_query_no_input_and_no_output_request_no_input_and_no_output() -> 
     input_ = NoInputAndNoOutputInput()
 
     try:
-        await client.no_input_and_no_output(input_)
+        await client.no_input_and_no_output()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -960,7 +960,7 @@ async def test_query_no_input_and_no_output_response_no_input_and_no_output() ->
     input_ = NoInputAndNoOutputInput()
 
     try:
-        actual = await client.no_input_and_no_output(input_)
+        actual = await client.no_input_and_no_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -991,7 +991,7 @@ async def test_query_no_input_and_no_output_with_response_metadata_response_no_i
     input_ = NoInputAndNoOutputInput()
 
     try:
-        actual = await client.no_input_and_no_output(input_)
+        actual = await client.no_input_and_no_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1017,7 +1017,7 @@ async def test_query_no_input_and_output_request_no_input_and_output() -> None:
     input_ = NoInputAndOutputInput()
 
     try:
-        await client.no_input_and_output(input_)
+        await client.no_input_and_output()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1094,7 +1094,7 @@ async def test_query_no_input_and_output_response_no_input_and_output() -> None:
     input_ = NoInputAndOutputInput()
 
     try:
-        actual = await client.no_input_and_output(input_)
+        actual = await client.no_input_and_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1128,7 +1128,9 @@ async def test_sdk_applied_content_encoding_aws_query_request_put_with_content_e
     )
 
     try:
-        await client.put_with_content_encoding(input_)
+        await client.put_with_content_encoding(
+            encoding=input_.encoding, data=input_.data
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1205,7 +1207,9 @@ async def test_sdk_appends_gzip_and_ignores_http_provided_encoding_aws_query_req
     )
 
     try:
-        await client.put_with_content_encoding(input_)
+        await client.put_with_content_encoding(
+            encoding=input_.encoding, data=input_.data
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1274,7 +1278,7 @@ async def test_query_protocol_idempotency_token_auto_fill_request_query_idempote
     input_ = QueryIdempotencyTokenAutoFillInput()
 
     try:
-        await client.query_idempotency_token_auto_fill(input_)
+        await client.query_idempotency_token_auto_fill(token=input_.token)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1356,7 +1360,7 @@ async def test_query_protocol_idempotency_token_auto_fill_is_set_request_query_i
     )
 
     try:
-        await client.query_idempotency_token_auto_fill(input_)
+        await client.query_idempotency_token_auto_fill(token=input_.token)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1437,7 +1441,14 @@ async def test_query_lists_request_query_lists() -> None:
     )
 
     try:
-        await client.query_lists(input_)
+        await client.query_lists(
+            list_arg=input_.list_arg,
+            complex_list_arg=input_.complex_list_arg,
+            flattened_list_arg=input_.flattened_list_arg,
+            list_arg_with_xml_name_member=input_.list_arg_with_xml_name_member,
+            flattened_list_arg_with_xml_name=input_.flattened_list_arg_with_xml_name,
+            nested_with_list=input_.nested_with_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1515,7 +1526,14 @@ async def test_empty_query_lists_request_query_lists() -> None:
     input_ = QueryListsInput(list_arg=[])
 
     try:
-        await client.query_lists(input_)
+        await client.query_lists(
+            list_arg=input_.list_arg,
+            complex_list_arg=input_.complex_list_arg,
+            flattened_list_arg=input_.flattened_list_arg,
+            list_arg_with_xml_name_member=input_.list_arg_with_xml_name_member,
+            flattened_list_arg_with_xml_name=input_.flattened_list_arg_with_xml_name,
+            nested_with_list=input_.nested_with_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1596,7 +1614,14 @@ async def test_flattened_query_lists_request_query_lists() -> None:
     input_ = QueryListsInput(flattened_list_arg=["A", "B"])
 
     try:
-        await client.query_lists(input_)
+        await client.query_lists(
+            list_arg=input_.list_arg,
+            complex_list_arg=input_.complex_list_arg,
+            flattened_list_arg=input_.flattened_list_arg,
+            list_arg_with_xml_name_member=input_.list_arg_with_xml_name_member,
+            flattened_list_arg_with_xml_name=input_.flattened_list_arg_with_xml_name,
+            nested_with_list=input_.nested_with_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1674,7 +1699,14 @@ async def test_query_list_arg_with_xml_name_member_request_query_lists() -> None
     input_ = QueryListsInput(list_arg_with_xml_name_member=["A", "B"])
 
     try:
-        await client.query_lists(input_)
+        await client.query_lists(
+            list_arg=input_.list_arg,
+            complex_list_arg=input_.complex_list_arg,
+            flattened_list_arg=input_.flattened_list_arg,
+            list_arg_with_xml_name_member=input_.list_arg_with_xml_name_member,
+            flattened_list_arg_with_xml_name=input_.flattened_list_arg_with_xml_name,
+            nested_with_list=input_.nested_with_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1755,7 +1787,14 @@ async def test_query_flattened_list_arg_with_xml_name_request_query_lists() -> N
     input_ = QueryListsInput(flattened_list_arg_with_xml_name=["A", "B"])
 
     try:
-        await client.query_lists(input_)
+        await client.query_lists(
+            list_arg=input_.list_arg,
+            complex_list_arg=input_.complex_list_arg,
+            flattened_list_arg=input_.flattened_list_arg,
+            list_arg_with_xml_name_member=input_.list_arg_with_xml_name_member,
+            flattened_list_arg_with_xml_name=input_.flattened_list_arg_with_xml_name,
+            nested_with_list=input_.nested_with_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1833,7 +1872,14 @@ async def test_query_nested_struct_with_list_request_query_lists() -> None:
     input_ = QueryListsInput(nested_with_list=NestedStructWithList(list_arg=["A", "B"]))
 
     try:
-        await client.query_lists(input_)
+        await client.query_lists(
+            list_arg=input_.list_arg,
+            complex_list_arg=input_.complex_list_arg,
+            flattened_list_arg=input_.flattened_list_arg,
+            list_arg_with_xml_name_member=input_.list_arg_with_xml_name_member,
+            flattened_list_arg_with_xml_name=input_.flattened_list_arg_with_xml_name,
+            nested_with_list=input_.nested_with_list,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1911,7 +1957,16 @@ async def test_query_simple_query_maps_request_query_maps() -> None:
     input_ = QueryMapsInput(map_arg={"bar": "Bar", "foo": "Foo"})
 
     try:
-        await client.query_maps(input_)
+        await client.query_maps(
+            map_arg=input_.map_arg,
+            renamed_map_arg=input_.renamed_map_arg,
+            complex_map_arg=input_.complex_map_arg,
+            map_with_xml_member_name=input_.map_with_xml_member_name,
+            flattened_map=input_.flattened_map,
+            flattened_map_with_xml_name=input_.flattened_map_with_xml_name,
+            map_of_lists=input_.map_of_lists,
+            nested_struct_with_map=input_.nested_struct_with_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1989,7 +2044,16 @@ async def test_query_simple_query_maps_with_xml_name_request_query_maps() -> Non
     input_ = QueryMapsInput(renamed_map_arg={"foo": "Foo"})
 
     try:
-        await client.query_maps(input_)
+        await client.query_maps(
+            map_arg=input_.map_arg,
+            renamed_map_arg=input_.renamed_map_arg,
+            complex_map_arg=input_.complex_map_arg,
+            map_with_xml_member_name=input_.map_with_xml_member_name,
+            flattened_map=input_.flattened_map,
+            flattened_map_with_xml_name=input_.flattened_map_with_xml_name,
+            map_of_lists=input_.map_of_lists,
+            nested_struct_with_map=input_.nested_struct_with_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2072,7 +2136,16 @@ async def test_query_complex_query_maps_request_query_maps() -> None:
     )
 
     try:
-        await client.query_maps(input_)
+        await client.query_maps(
+            map_arg=input_.map_arg,
+            renamed_map_arg=input_.renamed_map_arg,
+            complex_map_arg=input_.complex_map_arg,
+            map_with_xml_member_name=input_.map_with_xml_member_name,
+            flattened_map=input_.flattened_map,
+            flattened_map_with_xml_name=input_.flattened_map_with_xml_name,
+            map_of_lists=input_.map_of_lists,
+            nested_struct_with_map=input_.nested_struct_with_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2150,7 +2223,16 @@ async def test_query_empty_query_maps_request_query_maps() -> None:
     input_ = QueryMapsInput(map_arg={})
 
     try:
-        await client.query_maps(input_)
+        await client.query_maps(
+            map_arg=input_.map_arg,
+            renamed_map_arg=input_.renamed_map_arg,
+            complex_map_arg=input_.complex_map_arg,
+            map_with_xml_member_name=input_.map_with_xml_member_name,
+            flattened_map=input_.flattened_map,
+            flattened_map_with_xml_name=input_.flattened_map_with_xml_name,
+            map_of_lists=input_.map_of_lists,
+            nested_struct_with_map=input_.nested_struct_with_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2228,7 +2310,16 @@ async def test_query_query_map_with_member_xml_name_request_query_maps() -> None
     input_ = QueryMapsInput(map_with_xml_member_name={"bar": "Bar", "foo": "Foo"})
 
     try:
-        await client.query_maps(input_)
+        await client.query_maps(
+            map_arg=input_.map_arg,
+            renamed_map_arg=input_.renamed_map_arg,
+            complex_map_arg=input_.complex_map_arg,
+            map_with_xml_member_name=input_.map_with_xml_member_name,
+            flattened_map=input_.flattened_map,
+            flattened_map_with_xml_name=input_.flattened_map_with_xml_name,
+            map_of_lists=input_.map_of_lists,
+            nested_struct_with_map=input_.nested_struct_with_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2306,7 +2397,16 @@ async def test_query_flattened_query_maps_request_query_maps() -> None:
     input_ = QueryMapsInput(flattened_map={"bar": "Bar", "foo": "Foo"})
 
     try:
-        await client.query_maps(input_)
+        await client.query_maps(
+            map_arg=input_.map_arg,
+            renamed_map_arg=input_.renamed_map_arg,
+            complex_map_arg=input_.complex_map_arg,
+            map_with_xml_member_name=input_.map_with_xml_member_name,
+            flattened_map=input_.flattened_map,
+            flattened_map_with_xml_name=input_.flattened_map_with_xml_name,
+            map_of_lists=input_.map_of_lists,
+            nested_struct_with_map=input_.nested_struct_with_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2384,7 +2484,16 @@ async def test_query_flattened_query_maps_with_xml_name_request_query_maps() -> 
     input_ = QueryMapsInput(flattened_map_with_xml_name={"bar": "Bar", "foo": "Foo"})
 
     try:
-        await client.query_maps(input_)
+        await client.query_maps(
+            map_arg=input_.map_arg,
+            renamed_map_arg=input_.renamed_map_arg,
+            complex_map_arg=input_.complex_map_arg,
+            map_with_xml_member_name=input_.map_with_xml_member_name,
+            flattened_map=input_.flattened_map,
+            flattened_map_with_xml_name=input_.flattened_map_with_xml_name,
+            map_of_lists=input_.map_of_lists,
+            nested_struct_with_map=input_.nested_struct_with_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2462,7 +2571,16 @@ async def test_query_query_map_of_lists_request_query_maps() -> None:
     input_ = QueryMapsInput(map_of_lists={"bar": ["C", "D"], "foo": ["A", "B"]})
 
     try:
-        await client.query_maps(input_)
+        await client.query_maps(
+            map_arg=input_.map_arg,
+            renamed_map_arg=input_.renamed_map_arg,
+            complex_map_arg=input_.complex_map_arg,
+            map_with_xml_member_name=input_.map_with_xml_member_name,
+            flattened_map=input_.flattened_map,
+            flattened_map_with_xml_name=input_.flattened_map_with_xml_name,
+            map_of_lists=input_.map_of_lists,
+            nested_struct_with_map=input_.nested_struct_with_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2542,7 +2660,16 @@ async def test_query_nested_struct_with_map_request_query_maps() -> None:
     )
 
     try:
-        await client.query_maps(input_)
+        await client.query_maps(
+            map_arg=input_.map_arg,
+            renamed_map_arg=input_.renamed_map_arg,
+            complex_map_arg=input_.complex_map_arg,
+            map_with_xml_member_name=input_.map_with_xml_member_name,
+            flattened_map=input_.flattened_map,
+            flattened_map_with_xml_name=input_.flattened_map_with_xml_name,
+            map_of_lists=input_.map_of_lists,
+            nested_struct_with_map=input_.nested_struct_with_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2624,7 +2751,11 @@ async def test_query_timestamps_input_request_query_timestamps() -> None:
     )
 
     try:
-        await client.query_timestamps(input_)
+        await client.query_timestamps(
+            normal_format=input_.normal_format,
+            epoch_member=input_.epoch_member,
+            epoch_target=input_.epoch_target,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2705,7 +2836,7 @@ async def test_query_recursive_shapes_response_recursive_xml_shapes() -> None:
     input_ = RecursiveXmlShapesInput()
 
     try:
-        actual = await client.recursive_xml_shapes(input_)
+        actual = await client.recursive_xml_shapes()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2741,7 +2872,17 @@ async def test_query_simple_input_params_strings_request_simple_input_params() -
     input_ = SimpleInputParamsInput(foo="val1", bar="val2")
 
     try:
-        await client.simple_input_params(input_)
+        await client.simple_input_params(
+            foo=input_.foo,
+            bar=input_.bar,
+            baz=input_.baz,
+            bam=input_.bam,
+            float_value=input_.float_value,
+            boo=input_.boo,
+            qux=input_.qux,
+            foo_enum=input_.foo_enum,
+            integer_enum=input_.integer_enum,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2823,7 +2964,17 @@ async def test_query_simple_input_params_string_and_boolean_true_request_simple_
     input_ = SimpleInputParamsInput(foo="val1", baz=True)
 
     try:
-        await client.simple_input_params(input_)
+        await client.simple_input_params(
+            foo=input_.foo,
+            bar=input_.bar,
+            baz=input_.baz,
+            bam=input_.bam,
+            float_value=input_.float_value,
+            boo=input_.boo,
+            qux=input_.qux,
+            foo_enum=input_.foo_enum,
+            integer_enum=input_.integer_enum,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2905,7 +3056,17 @@ async def test_query_simple_input_params_strings_and_boolean_false_request_simpl
     input_ = SimpleInputParamsInput(baz=False)
 
     try:
-        await client.simple_input_params(input_)
+        await client.simple_input_params(
+            foo=input_.foo,
+            bar=input_.bar,
+            baz=input_.baz,
+            bam=input_.bam,
+            float_value=input_.float_value,
+            boo=input_.boo,
+            qux=input_.qux,
+            foo_enum=input_.foo_enum,
+            integer_enum=input_.integer_enum,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2983,7 +3144,17 @@ async def test_query_simple_input_params_integer_request_simple_input_params() -
     input_ = SimpleInputParamsInput(bam=10)
 
     try:
-        await client.simple_input_params(input_)
+        await client.simple_input_params(
+            foo=input_.foo,
+            bar=input_.bar,
+            baz=input_.baz,
+            bam=input_.bam,
+            float_value=input_.float_value,
+            boo=input_.boo,
+            qux=input_.qux,
+            foo_enum=input_.foo_enum,
+            integer_enum=input_.integer_enum,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3061,7 +3232,17 @@ async def test_query_simple_input_params_float_request_simple_input_params() -> 
     input_ = SimpleInputParamsInput(boo=float(10.8))
 
     try:
-        await client.simple_input_params(input_)
+        await client.simple_input_params(
+            foo=input_.foo,
+            bar=input_.bar,
+            baz=input_.baz,
+            bam=input_.bam,
+            float_value=input_.float_value,
+            boo=input_.boo,
+            qux=input_.qux,
+            foo_enum=input_.foo_enum,
+            integer_enum=input_.integer_enum,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3139,7 +3320,17 @@ async def test_query_simple_input_params_blob_request_simple_input_params() -> N
     input_ = SimpleInputParamsInput(qux=b"value")
 
     try:
-        await client.simple_input_params(input_)
+        await client.simple_input_params(
+            foo=input_.foo,
+            bar=input_.bar,
+            baz=input_.baz,
+            bam=input_.bam,
+            float_value=input_.float_value,
+            boo=input_.boo,
+            qux=input_.qux,
+            foo_enum=input_.foo_enum,
+            integer_enum=input_.integer_enum,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3219,7 +3410,17 @@ async def test_query_enums_request_simple_input_params() -> None:
     input_ = SimpleInputParamsInput(foo_enum="Foo")
 
     try:
-        await client.simple_input_params(input_)
+        await client.simple_input_params(
+            foo=input_.foo,
+            bar=input_.bar,
+            baz=input_.baz,
+            bam=input_.bam,
+            float_value=input_.float_value,
+            boo=input_.boo,
+            qux=input_.qux,
+            foo_enum=input_.foo_enum,
+            integer_enum=input_.integer_enum,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3299,7 +3500,17 @@ async def test_query_int_enums_request_simple_input_params() -> None:
     input_ = SimpleInputParamsInput(integer_enum=1)
 
     try:
-        await client.simple_input_params(input_)
+        await client.simple_input_params(
+            foo=input_.foo,
+            bar=input_.bar,
+            baz=input_.baz,
+            bam=input_.bam,
+            float_value=input_.float_value,
+            boo=input_.boo,
+            qux=input_.qux,
+            foo_enum=input_.foo_enum,
+            integer_enum=input_.integer_enum,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3381,7 +3592,17 @@ async def test_aws_query_supports_na_n_float_inputs_request_simple_input_params(
     input_ = SimpleInputParamsInput(float_value=float("nan"), boo=float("nan"))
 
     try:
-        await client.simple_input_params(input_)
+        await client.simple_input_params(
+            foo=input_.foo,
+            bar=input_.bar,
+            baz=input_.baz,
+            bam=input_.bam,
+            float_value=input_.float_value,
+            boo=input_.boo,
+            qux=input_.qux,
+            foo_enum=input_.foo_enum,
+            integer_enum=input_.integer_enum,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3463,7 +3684,17 @@ async def test_aws_query_supports_infinity_float_inputs_request_simple_input_par
     input_ = SimpleInputParamsInput(float_value=float("inf"), boo=float("inf"))
 
     try:
-        await client.simple_input_params(input_)
+        await client.simple_input_params(
+            foo=input_.foo,
+            bar=input_.bar,
+            baz=input_.baz,
+            bam=input_.bam,
+            float_value=input_.float_value,
+            boo=input_.boo,
+            qux=input_.qux,
+            foo_enum=input_.foo_enum,
+            integer_enum=input_.integer_enum,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3543,7 +3774,17 @@ async def test_aws_query_supports_negative_infinity_float_inputs_request_simple_
     input_ = SimpleInputParamsInput(float_value=float("-inf"), boo=float("-inf"))
 
     try:
-        await client.simple_input_params(input_)
+        await client.simple_input_params(
+            foo=input_.foo,
+            bar=input_.bar,
+            baz=input_.baz,
+            bam=input_.bam,
+            float_value=input_.float_value,
+            boo=input_.boo,
+            qux=input_.qux,
+            foo_enum=input_.foo_enum,
+            integer_enum=input_.integer_enum,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3626,7 +3867,7 @@ async def test_query_simple_scalar_properties_response_simple_scalar_xml_propert
     input_ = SimpleScalarXmlPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_xml_properties(input_)
+        actual = await client.simple_scalar_xml_properties()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3669,7 +3910,7 @@ async def test_aws_query_supports_na_n_float_outputs_response_simple_scalar_xml_
     input_ = SimpleScalarXmlPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_xml_properties(input_)
+        actual = await client.simple_scalar_xml_properties()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3702,7 +3943,7 @@ async def test_aws_query_supports_infinity_float_outputs_response_simple_scalar_
     input_ = SimpleScalarXmlPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_xml_properties(input_)
+        actual = await client.simple_scalar_xml_properties()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3735,7 +3976,7 @@ async def test_aws_query_supports_negative_infinity_float_outputs_response_simpl
     input_ = SimpleScalarXmlPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_xml_properties(input_)
+        actual = await client.simple_scalar_xml_properties()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3766,7 +4007,7 @@ async def test_query_xml_blobs_response_xml_blobs() -> None:
     input_ = XmlBlobsInput()
 
     try:
-        actual = await client.xml_blobs(input_)
+        actual = await client.xml_blobs()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3795,7 +4036,7 @@ async def test_query_xml_empty_blobs_response_xml_empty_blobs() -> None:
     input_ = XmlEmptyBlobsInput()
 
     try:
-        actual = await client.xml_empty_blobs(input_)
+        actual = await client.xml_empty_blobs()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3824,7 +4065,7 @@ async def test_query_xml_empty_self_closed_blobs_response_xml_empty_blobs() -> N
     input_ = XmlEmptyBlobsInput()
 
     try:
-        actual = await client.xml_empty_blobs(input_)
+        actual = await client.xml_empty_blobs()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3853,7 +4094,7 @@ async def test_query_xml_empty_lists_response_xml_empty_lists() -> None:
     input_ = XmlEmptyListsInput()
 
     try:
-        actual = await client.xml_empty_lists(input_)
+        actual = await client.xml_empty_lists()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3882,7 +4123,7 @@ async def test_query_xml_empty_maps_response_xml_empty_maps() -> None:
     input_ = XmlEmptyMapsInput()
 
     try:
-        actual = await client.xml_empty_maps(input_)
+        actual = await client.xml_empty_maps()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3911,7 +4152,7 @@ async def test_query_xml_empty_self_closed_maps_response_xml_empty_maps() -> Non
     input_ = XmlEmptyMapsInput()
 
     try:
-        actual = await client.xml_empty_maps(input_)
+        actual = await client.xml_empty_maps()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3940,7 +4181,7 @@ async def test_query_xml_enums_response_xml_enums() -> None:
     input_ = XmlEnumsInput()
 
     try:
-        actual = await client.xml_enums(input_)
+        actual = await client.xml_enums()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3976,7 +4217,7 @@ async def test_query_xml_int_enums_response_xml_int_enums() -> None:
     input_ = XmlIntEnumsInput()
 
     try:
-        actual = await client.xml_int_enums(input_)
+        actual = await client.xml_int_enums()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4012,7 +4253,7 @@ async def test_query_xml_lists_response_xml_lists() -> None:
     input_ = XmlListsInput()
 
     try:
-        actual = await client.xml_lists(input_)
+        actual = await client.xml_lists()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4062,7 +4303,7 @@ async def test_query_xml_maps_response_xml_maps() -> None:
     input_ = XmlMapsInput()
 
     try:
-        actual = await client.xml_maps(input_)
+        actual = await client.xml_maps()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4093,7 +4334,7 @@ async def test_query_query_xml_maps_xml_name_response_xml_maps_xml_name() -> Non
     input_ = XmlMapsXmlNameInput()
 
     try:
-        actual = await client.xml_maps_xml_name(input_)
+        actual = await client.xml_maps_xml_name()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4124,7 +4365,7 @@ async def test_query_xml_namespaces_response_xml_namespaces() -> None:
     input_ = XmlNamespacesInput()
 
     try:
-        actual = await client.xml_namespaces(input_)
+        actual = await client.xml_namespaces()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4155,7 +4396,7 @@ async def test_query_xml_timestamps_response_xml_timestamps() -> None:
     input_ = XmlTimestampsInput()
 
     try:
-        actual = await client.xml_timestamps(input_)
+        actual = await client.xml_timestamps()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4191,7 +4432,7 @@ async def test_query_xml_timestamps_with_date_time_format_response_xml_timestamp
     input_ = XmlTimestampsInput()
 
     try:
-        actual = await client.xml_timestamps(input_)
+        actual = await client.xml_timestamps()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4227,7 +4468,7 @@ async def test_query_xml_timestamps_with_date_time_on_target_format_response_xml
     input_ = XmlTimestampsInput()
 
     try:
-        actual = await client.xml_timestamps(input_)
+        actual = await client.xml_timestamps()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4260,7 +4501,7 @@ async def test_query_xml_timestamps_with_epoch_seconds_format_response_xml_times
     input_ = XmlTimestampsInput()
 
     try:
-        actual = await client.xml_timestamps(input_)
+        actual = await client.xml_timestamps()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4296,7 +4537,7 @@ async def test_query_xml_timestamps_with_epoch_seconds_on_target_format_response
     input_ = XmlTimestampsInput()
 
     try:
-        actual = await client.xml_timestamps(input_)
+        actual = await client.xml_timestamps()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4329,7 +4570,7 @@ async def test_query_xml_timestamps_with_http_date_format_response_xml_timestamp
     input_ = XmlTimestampsInput()
 
     try:
-        actual = await client.xml_timestamps(input_)
+        actual = await client.xml_timestamps()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4362,7 +4603,7 @@ async def test_query_xml_timestamps_with_http_date_on_target_format_response_xml
     input_ = XmlTimestampsInput()
 
     try:
-        actual = await client.xml_timestamps(input_)
+        actual = await client.xml_timestamps()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:

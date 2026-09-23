@@ -84,7 +84,7 @@ async def test_aws_json10_empty_input_and_empty_output_request_empty_input_and_e
     input_ = EmptyInputAndEmptyOutputInput()
 
     try:
-        await client.empty_input_and_empty_output(input_)
+        await client.empty_input_and_empty_output()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -167,7 +167,7 @@ async def test_aws_json10_empty_input_and_empty_output_send_json_object_response
     input_ = EmptyInputAndEmptyOutputInput()
 
     try:
-        actual = await client.empty_input_and_empty_output(input_)
+        actual = await client.empty_input_and_empty_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -197,7 +197,7 @@ async def test_aws_json10_endpoint_trait_request_endpoint_operation() -> None:
     input_ = EndpointOperationInput()
 
     try:
-        await client.endpoint_operation(input_)
+        await client.endpoint_operation()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -274,7 +274,7 @@ async def test_aws_json10_endpoint_trait_with_host_label_request_endpoint_with_h
     input_ = EndpointWithHostLabelOperationInput(label="bar")
 
     try:
-        await client.endpoint_with_host_label_operation(input_)
+        await client.endpoint_with_host_label_operation(label=input_.label)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -349,7 +349,7 @@ async def test_aws_json10_invalid_greeting_error_error_greeting_with_errors() ->
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'InvalidGreeting' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "InvalidGreeting":
@@ -378,7 +378,7 @@ async def test_aws_json10_complex_error_error_greeting_with_errors() -> None:
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'ComplexError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "ComplexError":
@@ -407,7 +407,7 @@ async def test_aws_json10_empty_complex_error_error_greeting_with_errors() -> No
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'ComplexError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "ComplexError":
@@ -439,7 +439,7 @@ async def test_aws_json10_foo_error_using_x_amzn_error_type_error_greeting_with_
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -481,7 +481,7 @@ async def test_aws_json10_foo_error_using_x_amzn_error_type_with_uri_error_greet
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -521,7 +521,7 @@ async def test_aws_json10_foo_error_using_x_amzn_error_type_with_uri_and_namespa
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -556,7 +556,7 @@ async def test_aws_json10_foo_error_using_code_error_greeting_with_errors() -> N
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -591,7 +591,7 @@ async def test_aws_json10_foo_error_using_code_and_namespace_error_greeting_with
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -627,7 +627,7 @@ async def test_aws_json10_foo_error_using_code_uri_and_namespace_error_greeting_
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -658,7 +658,7 @@ async def test_aws_json10_foo_error_with_dunder_type_error_greeting_with_errors(
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -693,7 +693,7 @@ async def test_aws_json10_foo_error_with_dunder_type_and_namespace_error_greetin
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -727,7 +727,7 @@ async def test_aws_json10_foo_error_with_dunder_type_and_different_namespace_err
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -763,7 +763,7 @@ async def test_aws_json10_foo_error_with_dunder_type_uri_and_namespace_error_gre
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -800,7 +800,7 @@ async def test_aws_json10_foo_error_with_nested_type_property_error_greeting_wit
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors(greeting=input_.greeting)
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -826,7 +826,7 @@ async def test_aws_json10_host_with_path_request_host_with_path_operation() -> N
     input_ = HostWithPathOperationInput()
 
     try:
-        await client.host_with_path_operation(input_)
+        await client.host_with_path_operation()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -896,7 +896,7 @@ async def test_aws_json10_serialize_string_union_value_request_json_unions() -> 
     input_ = JsonUnionsInput(contents=MyUnionStringValue(value="foo"))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -973,7 +973,7 @@ async def test_aws_json10_serialize_boolean_union_value_request_json_unions() ->
     input_ = JsonUnionsInput(contents=MyUnionBooleanValue(value=True))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1050,7 +1050,7 @@ async def test_aws_json10_serialize_number_union_value_request_json_unions() -> 
     input_ = JsonUnionsInput(contents=MyUnionNumberValue(value=1))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1127,7 +1127,7 @@ async def test_aws_json10_serialize_blob_union_value_request_json_unions() -> No
     input_ = JsonUnionsInput(contents=MyUnionBlobValue(value=b"foo"))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1208,7 +1208,7 @@ async def test_aws_json10_serialize_timestamp_union_value_request_json_unions() 
     )
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1285,7 +1285,7 @@ async def test_aws_json10_serialize_enum_union_value_request_json_unions() -> No
     input_ = JsonUnionsInput(contents=MyUnionEnumValue(value="Foo"))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1362,7 +1362,7 @@ async def test_aws_json10_serialize_int_enum_union_value_request_json_unions() -
     input_ = JsonUnionsInput(contents=MyUnionIntEnumValue(value=1))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1439,7 +1439,7 @@ async def test_aws_json10_serialize_list_union_value_request_json_unions() -> No
     input_ = JsonUnionsInput(contents=MyUnionListValue(value=["foo", "bar"]))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1518,7 +1518,7 @@ async def test_aws_json10_serialize_map_union_value_request_json_unions() -> Non
     )
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1595,7 +1595,7 @@ async def test_aws_json10_serialize_structure_union_value_request_json_unions() 
     )
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1673,7 +1673,7 @@ async def test_aws_json10_deserialize_string_union_value_response_json_unions() 
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1704,7 +1704,7 @@ async def test_aws_json10_deserialize_boolean_union_value_response_json_unions()
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1733,7 +1733,7 @@ async def test_aws_json10_deserialize_number_union_value_response_json_unions() 
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1762,7 +1762,7 @@ async def test_aws_json10_deserialize_blob_union_value_response_json_unions() ->
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1793,7 +1793,7 @@ async def test_aws_json10_deserialize_timestamp_union_value_response_json_unions
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1826,7 +1826,7 @@ async def test_aws_json10_deserialize_enum_union_value_response_json_unions() ->
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1857,7 +1857,7 @@ async def test_aws_json10_deserialize_int_enum_union_value_response_json_unions(
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1886,7 +1886,7 @@ async def test_aws_json10_deserialize_list_union_value_response_json_unions() ->
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1915,7 +1915,7 @@ async def test_aws_json10_deserialize_map_union_value_response_json_unions() -> 
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1948,7 +1948,7 @@ async def test_aws_json10_deserialize_structure_union_value_response_json_unions
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1979,7 +1979,7 @@ async def test_aws_json10_deserialize_ignore_type_response_json_unions() -> None
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2010,7 +2010,7 @@ async def test_aws_json10_deserialize_allow_nulls_response_json_unions() -> None
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2046,7 +2046,7 @@ async def test_aws_json10_must_always_send_empty_json_payload_request_no_input_a
     input_ = NoInputAndNoOutputInput()
 
     try:
-        await client.no_input_and_no_output(input_)
+        await client.no_input_and_no_output()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2131,7 +2131,7 @@ async def test_aws_json10_handles_empty_output_shape_response_no_input_and_no_ou
     input_ = NoInputAndNoOutputInput()
 
     try:
-        actual = await client.no_input_and_no_output(input_)
+        actual = await client.no_input_and_no_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2166,7 +2166,7 @@ async def test_aws_json10_handles_unexpected_json_output_response_no_input_and_n
     input_ = NoInputAndNoOutputInput()
 
     try:
-        actual = await client.no_input_and_no_output(input_)
+        actual = await client.no_input_and_no_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2203,7 +2203,7 @@ async def test_aws_json10_service_responds_with_no_payload_response_no_input_and
     input_ = NoInputAndNoOutputInput()
 
     try:
-        actual = await client.no_input_and_no_output(input_)
+        actual = await client.no_input_and_no_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2229,7 +2229,7 @@ async def test_aws_json10_no_input_and_output_request_no_input_and_output() -> N
     input_ = NoInputAndOutputInput()
 
     try:
-        await client.no_input_and_output(input_)
+        await client.no_input_and_output()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2307,7 +2307,7 @@ async def test_aws_json10_no_input_and_output_response_no_input_and_output() -> 
     input_ = NoInputAndOutputInput()
 
     try:
-        actual = await client.no_input_and_output(input_)
+        actual = await client.no_input_and_output()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2336,7 +2336,12 @@ async def test_aws_json10_client_populates_default_values_in_input_request_opera
     input_ = OperationWithDefaultsInput(defaults=Defaults())
 
     try:
-        await client.operation_with_defaults(input_)
+        await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2413,7 +2418,12 @@ async def test_aws_json10_client_skips_top_level_default_values_in_input_request
     input_ = OperationWithDefaultsInput()
 
     try:
-        await client.operation_with_defaults(input_)
+        await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2521,7 +2531,12 @@ async def test_aws_json10_client_uses_explicitly_provided_member_values_over_def
     )
 
     try:
-        await client.operation_with_defaults(input_)
+        await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2602,7 +2617,12 @@ async def test_aws_json10_client_uses_explicitly_provided_values_in_top_level_re
     )
 
     try:
-        await client.operation_with_defaults(input_)
+        await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2686,7 +2706,12 @@ async def test_aws_json10_client_ignores_non_top_level_defaults_on_members_with_
     )
 
     try:
-        await client.operation_with_defaults(input_)
+        await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2765,7 +2790,12 @@ async def test_aws_json10_client_populates_defaults_values_when_missing_in_respo
     input_ = OperationWithDefaultsInput()
 
     try:
-        actual = await client.operation_with_defaults(input_)
+        actual = await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2827,7 +2857,12 @@ async def test_aws_json10_client_ignores_default_values_if_member_values_are_pre
     input_ = OperationWithDefaultsInput()
 
     try:
-        actual = await client.operation_with_defaults(input_)
+        actual = await client.operation_with_defaults(
+            defaults=input_.defaults,
+            client_optional_defaults=input_.client_optional_defaults,
+            top_level_default=input_.top_level_default,
+            other_top_level_default=input_.other_top_level_default,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2904,7 +2939,7 @@ async def test_aws_json10_client_populates_nested_default_values_when_missing_re
     )
 
     try:
-        await client.operation_with_nested_structure(input_)
+        await client.operation_with_nested_structure(top_level=input_.top_level)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2983,7 +3018,9 @@ async def test_aws_json10_client_populates_nested_defaults_when_missing_in_respo
     input_ = OperationWithNestedStructureInput()
 
     try:
-        actual = await client.operation_with_nested_structure(input_)
+        actual = await client.operation_with_nested_structure(
+            top_level=input_.top_level
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3034,7 +3071,7 @@ async def test_aws_json10_client_error_corrects_when_server_fails_to_serialize_r
     input_ = OperationWithRequiredMembersInput()
 
     try:
-        actual = await client.operation_with_required_members(input_)
+        actual = await client.operation_with_required_members()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3081,7 +3118,7 @@ async def test_aws_json10_client_error_corrects_with_default_values_when_server_
     input_ = OperationWithRequiredMembersWithDefaultsInput()
 
     try:
-        actual = await client.operation_with_required_members_with_defaults(input_)
+        actual = await client.operation_with_required_members_with_defaults()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3130,7 +3167,9 @@ async def test_sdk_applied_content_encoding_aws_json1_0_request_put_with_content
     )
 
     try:
-        await client.put_with_content_encoding(input_)
+        await client.put_with_content_encoding(
+            encoding=input_.encoding, data=input_.data
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3207,7 +3246,9 @@ async def test_sdk_appends_gzip_and_ignores_http_provided_encoding_aws_json1_0_r
     )
 
     try:
-        await client.put_with_content_encoding(input_)
+        await client.put_with_content_encoding(
+            encoding=input_.encoding, data=input_.data
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3275,7 +3316,7 @@ async def test_non_query_compatible_aws_json10_forbids_query_mode_header_request
     input_ = QueryIncompatibleOperationInput()
 
     try:
-        await client.query_incompatible_operation(input_)
+        await client.query_incompatible_operation()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3355,7 +3396,9 @@ async def test_aws_json10_supports_na_n_float_inputs_request_simple_scalar_prope
     )
 
     try:
-        await client.simple_scalar_properties(input_)
+        await client.simple_scalar_properties(
+            float_value=input_.float_value, double_value=input_.double_value
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3436,7 +3479,9 @@ async def test_aws_json10_supports_infinity_float_inputs_request_simple_scalar_p
     )
 
     try:
-        await client.simple_scalar_properties(input_)
+        await client.simple_scalar_properties(
+            float_value=input_.float_value, double_value=input_.double_value
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3517,7 +3562,9 @@ async def test_aws_json10_supports_negative_infinity_float_inputs_request_simple
     )
 
     try:
-        await client.simple_scalar_properties(input_)
+        await client.simple_scalar_properties(
+            float_value=input_.float_value, double_value=input_.double_value
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3600,7 +3647,9 @@ async def test_aws_json10_supports_na_n_float_inputs_response_simple_scalar_prop
     input_ = SimpleScalarPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_properties(input_)
+        actual = await client.simple_scalar_properties(
+            float_value=input_.float_value, double_value=input_.double_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3633,7 +3682,9 @@ async def test_aws_json10_supports_infinity_float_inputs_response_simple_scalar_
     input_ = SimpleScalarPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_properties(input_)
+        actual = await client.simple_scalar_properties(
+            float_value=input_.float_value, double_value=input_.double_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -3666,7 +3717,9 @@ async def test_aws_json10_supports_negative_infinity_float_inputs_response_simpl
     input_ = SimpleScalarPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_properties(input_)
+        actual = await client.simple_scalar_properties(
+            float_value=input_.float_value, double_value=input_.double_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:

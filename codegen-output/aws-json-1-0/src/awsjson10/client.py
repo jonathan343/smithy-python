@@ -20,8 +20,10 @@ from smithy_http.plugins import user_agent_plugin
 from .config import AsyncJSONRPC10Config, Plugin
 from .models import (
     CONTENT_TYPE_PARAMETERS,
+    ClientOptionalDefaults,
     ContentTypeParametersInput,
     ContentTypeParametersOutput,
+    Defaults,
     EMPTY_INPUT_AND_EMPTY_OUTPUT,
     ENDPOINT_OPERATION,
     ENDPOINT_WITH_HOST_LABEL_OPERATION,
@@ -40,6 +42,7 @@ from .models import (
     JSON_UNIONS,
     JsonUnionsInput,
     JsonUnionsOutput,
+    MyUnion,
     NO_INPUT_AND_NO_OUTPUT,
     NO_INPUT_AND_OUTPUT,
     NoInputAndNoOutputInput,
@@ -67,6 +70,7 @@ from .models import (
     SIMPLE_SCALAR_PROPERTIES,
     SimpleScalarPropertiesInput,
     SimpleScalarPropertiesOutput,
+    TopLevel,
 )
 from .user_agent import aws_user_agent_plugin
 
@@ -158,15 +162,15 @@ class AsyncJSONRPC10Client:
         await self.close()
 
     async def content_type_parameters(
-        self, input: ContentTypeParametersInput, plugins: list[Plugin] | None = None
+        self, *, value: int | None = None, plugins: list[Plugin] | None = None
     ) -> ContentTypeParametersOutput:
         """
         The example tests how servers must support requests containing a
         `Content-Type` header with parameters.
 
         Args:
-            input:
-                An instance of `ContentTypeParametersInput`.
+            value:
+                The `value` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -176,6 +180,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `ContentTypeParametersOutput`.
         """
+        input = ContentTypeParametersInput(value=value)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -226,7 +231,7 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def empty_input_and_empty_output(
-        self, input: EmptyInputAndEmptyOutputInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> EmptyInputAndEmptyOutputOutput:
         """
         The example tests how requests and responses are serialized when
@@ -235,8 +240,7 @@ class AsyncJSONRPC10Client:
         this should be rare, code generators must support this.
 
         Args:
-            input:
-                An instance of `EmptyInputAndEmptyOutputInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -246,6 +250,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `EmptyInputAndEmptyOutputOutput`.
         """
+        input = EmptyInputAndEmptyOutputInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -296,14 +301,13 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def endpoint_operation(
-        self, input: EndpointOperationInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> EndpointOperationOutput:
         """
         Invokes the EndpointOperation operation.
 
         Args:
-            input:
-                An instance of `EndpointOperationInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -313,6 +317,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `EndpointOperationOutput`.
         """
+        input = EndpointOperationInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -363,16 +368,14 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def endpoint_with_host_label_operation(
-        self,
-        input: EndpointWithHostLabelOperationInput,
-        plugins: list[Plugin] | None = None,
+        self, *, label: str | None = None, plugins: list[Plugin] | None = None
     ) -> EndpointWithHostLabelOperationOutput:
         """
         Invokes the EndpointWithHostLabelOperation operation.
 
         Args:
-            input:
-                An instance of `EndpointWithHostLabelOperationInput`.
+            label:
+                The `label` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -382,6 +385,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `EndpointWithHostLabelOperationOutput`.
         """
+        input = EndpointWithHostLabelOperationInput(label=label)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -432,7 +436,7 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def greeting_with_errors(
-        self, input: GreetingWithErrorsInput, plugins: list[Plugin] | None = None
+        self, *, greeting: str | None = None, plugins: list[Plugin] | None = None
     ) -> GreetingWithErrorsOutput:
         """
         This operation has three possible return values: 1. A successful
@@ -442,8 +446,8 @@ class AsyncJSONRPC10Client:
         error responses.
 
         Args:
-            input:
-                An instance of `GreetingWithErrorsInput`.
+            greeting:
+                The `greeting` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -453,6 +457,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `GreetingWithErrorsOutput`.
         """
+        input = GreetingWithErrorsInput(greeting=greeting)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -503,14 +508,13 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def host_with_path_operation(
-        self, input: HostWithPathOperationInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> HostWithPathOperationOutput:
         """
         Invokes the HostWithPathOperation operation.
 
         Args:
-            input:
-                An instance of `HostWithPathOperationInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -520,6 +524,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `HostWithPathOperationOutput`.
         """
+        input = HostWithPathOperationInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -570,14 +575,14 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def json_unions(
-        self, input: JsonUnionsInput, plugins: list[Plugin] | None = None
+        self, *, contents: MyUnion | None = None, plugins: list[Plugin] | None = None
     ) -> JsonUnionsOutput:
         """
         This operation uses unions for inputs and outputs.
 
         Args:
-            input:
-                An instance of `JsonUnionsInput`.
+            contents:
+                A union with a representative set of types for members.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -587,6 +592,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `JsonUnionsOutput`.
         """
+        input = JsonUnionsInput(contents=contents)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -637,7 +643,7 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def no_input_and_no_output(
-        self, input: NoInputAndNoOutputInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> NoInputAndNoOutputOutput:
         """
         The example tests how requests and responses are serialized when
@@ -646,8 +652,7 @@ class AsyncJSONRPC10Client:
         this.
 
         Args:
-            input:
-                An instance of `NoInputAndNoOutputInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -657,6 +662,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `NoInputAndNoOutputOutput`.
         """
+        input = NoInputAndNoOutputInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -707,7 +713,7 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def no_input_and_output(
-        self, input: NoInputAndOutputInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> NoInputAndOutputOutput:
         """
         The example tests how requests and responses are serialized when
@@ -716,8 +722,7 @@ class AsyncJSONRPC10Client:
         generators must support this.
 
         Args:
-            input:
-                An instance of `NoInputAndOutputInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -727,6 +732,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `NoInputAndOutputOutput`.
         """
+        input = NoInputAndOutputInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -777,14 +783,26 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def operation_with_defaults(
-        self, input: OperationWithDefaultsInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        defaults: Defaults | None = None,
+        client_optional_defaults: ClientOptionalDefaults | None = None,
+        top_level_default: str = "hi",
+        other_top_level_default: int = 0,
+        plugins: list[Plugin] | None = None,
     ) -> OperationWithDefaultsOutput:
         """
         Invokes the OperationWithDefaults operation.
 
         Args:
-            input:
-                An instance of `OperationWithDefaultsInput`.
+            defaults:
+                The `defaults` input member.
+            client_optional_defaults:
+                The `client_optional_defaults` input member.
+            top_level_default:
+                The `top_level_default` input member.
+            other_top_level_default:
+                The `other_top_level_default` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -794,6 +812,12 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `OperationWithDefaultsOutput`.
         """
+        input = OperationWithDefaultsInput(
+            defaults=defaults,
+            client_optional_defaults=client_optional_defaults,
+            top_level_default=top_level_default,
+            other_top_level_default=other_top_level_default,
+        )
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -844,16 +868,14 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def operation_with_nested_structure(
-        self,
-        input: OperationWithNestedStructureInput,
-        plugins: list[Plugin] | None = None,
+        self, *, top_level: TopLevel | None = None, plugins: list[Plugin] | None = None
     ) -> OperationWithNestedStructureOutput:
         """
         Invokes the OperationWithNestedStructure operation.
 
         Args:
-            input:
-                An instance of `OperationWithNestedStructureInput`.
+            top_level:
+                The `top_level` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -863,6 +885,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `OperationWithNestedStructureOutput`.
         """
+        input = OperationWithNestedStructureInput(top_level=top_level)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -913,16 +936,13 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def operation_with_required_members(
-        self,
-        input: OperationWithRequiredMembersInput,
-        plugins: list[Plugin] | None = None,
+        self, *, plugins: list[Plugin] | None = None
     ) -> OperationWithRequiredMembersOutput:
         """
         Invokes the OperationWithRequiredMembers operation.
 
         Args:
-            input:
-                An instance of `OperationWithRequiredMembersInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -932,6 +952,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `OperationWithRequiredMembersOutput`.
         """
+        input = OperationWithRequiredMembersInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -982,16 +1003,13 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def operation_with_required_members_with_defaults(
-        self,
-        input: OperationWithRequiredMembersWithDefaultsInput,
-        plugins: list[Plugin] | None = None,
+        self, *, plugins: list[Plugin] | None = None
     ) -> OperationWithRequiredMembersWithDefaultsOutput:
         """
         Invokes the OperationWithRequiredMembersWithDefaults operation.
 
         Args:
-            input:
-                An instance of `OperationWithRequiredMembersWithDefaultsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1001,6 +1019,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `OperationWithRequiredMembersWithDefaultsOutput`.
         """
+        input = OperationWithRequiredMembersWithDefaultsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1051,14 +1070,20 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def put_with_content_encoding(
-        self, input: PutWithContentEncodingInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        encoding: str | None = None,
+        data: str | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> PutWithContentEncodingOutput:
         """
         Invokes the PutWithContentEncoding operation.
 
         Args:
-            input:
-                An instance of `PutWithContentEncodingInput`.
+            encoding:
+                The `encoding` input member.
+            data:
+                The `data` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1068,6 +1093,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `PutWithContentEncodingOutput`.
         """
+        input = PutWithContentEncodingInput(encoding=encoding, data=data)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1118,16 +1144,13 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def query_incompatible_operation(
-        self,
-        input: QueryIncompatibleOperationInput,
-        plugins: list[Plugin] | None = None,
+        self, *, plugins: list[Plugin] | None = None
     ) -> QueryIncompatibleOperationOutput:
         """
         Invokes the QueryIncompatibleOperation operation.
 
         Args:
-            input:
-                An instance of `QueryIncompatibleOperationInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1137,6 +1160,7 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `QueryIncompatibleOperationOutput`.
         """
+        input = QueryIncompatibleOperationInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1187,14 +1211,20 @@ class AsyncJSONRPC10Client:
         return await pipeline(call)
 
     async def simple_scalar_properties(
-        self, input: SimpleScalarPropertiesInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        float_value: float | None = None,
+        double_value: float | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> SimpleScalarPropertiesOutput:
         """
         Invokes the SimpleScalarProperties operation.
 
         Args:
-            input:
-                An instance of `SimpleScalarPropertiesInput`.
+            float_value:
+                The `float_value` input member.
+            double_value:
+                The `double_value` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1204,6 +1234,9 @@ class AsyncJSONRPC10Client:
         Returns:
             An instance of `SimpleScalarPropertiesOutput`.
         """
+        input = SimpleScalarPropertiesInput(
+            float_value=float_value, double_value=double_value
+        )
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."

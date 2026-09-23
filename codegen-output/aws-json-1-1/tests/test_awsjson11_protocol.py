@@ -92,7 +92,7 @@ async def test_aws_json11_date_time_with_negative_offset_response_datetime_offse
     input_ = DatetimeOffsetsInput()
 
     try:
-        actual = await client.datetime_offsets(input_)
+        actual = await client.datetime_offsets()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -128,7 +128,7 @@ async def test_aws_json11_date_time_with_positive_offset_response_datetime_offse
     input_ = DatetimeOffsetsInput()
 
     try:
-        actual = await client.datetime_offsets(input_)
+        actual = await client.datetime_offsets()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -156,7 +156,7 @@ async def test_sends_requests_to_slash_request_empty_operation() -> None:
     input_ = EmptyOperationInput()
 
     try:
-        await client.empty_operation(input_)
+        await client.empty_operation()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -225,7 +225,7 @@ async def test_includes_x_amz_target_and_content_type_request_empty_operation() 
     input_ = EmptyOperationInput()
 
     try:
-        await client.empty_operation(input_)
+        await client.empty_operation()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -302,7 +302,7 @@ async def test_json_1_1_client_sends_empty_payload_for_no_input_shape_request_em
     input_ = EmptyOperationInput()
 
     try:
-        await client.empty_operation(input_)
+        await client.empty_operation()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -385,7 +385,7 @@ async def test_handles_empty_output_shape_response_empty_operation() -> None:
     input_ = EmptyOperationInput()
 
     try:
-        actual = await client.empty_operation(input_)
+        actual = await client.empty_operation()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -418,7 +418,7 @@ async def test_handles_unexpected_json_output_response_empty_operation() -> None
     input_ = EmptyOperationInput()
 
     try:
-        actual = await client.empty_operation(input_)
+        actual = await client.empty_operation()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -455,7 +455,7 @@ async def test_json_1_1_service_responds_with_no_payload_response_empty_operatio
     input_ = EmptyOperationInput()
 
     try:
-        actual = await client.empty_operation(input_)
+        actual = await client.empty_operation()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -485,7 +485,7 @@ async def test_aws_json11_endpoint_trait_request_endpoint_operation() -> None:
     input_ = EndpointOperationInput()
 
     try:
-        await client.endpoint_operation(input_)
+        await client.endpoint_operation()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -565,7 +565,7 @@ async def test_aws_json11_endpoint_trait_with_host_label_request_endpoint_with_h
     input_ = EndpointWithHostLabelOperationInput(label="bar")
 
     try:
-        await client.endpoint_with_host_label_operation(input_)
+        await client.endpoint_with_host_label_operation(label=input_.label)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -648,7 +648,7 @@ async def test_aws_json11_date_time_with_fractional_seconds_response_fractional_
     input_ = FractionalSecondsInput()
 
     try:
-        actual = await client.fractional_seconds(input_)
+        actual = await client.fractional_seconds()
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -679,7 +679,7 @@ async def test_aws_json11_invalid_greeting_error_error_greeting_with_errors() ->
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'InvalidGreeting' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "InvalidGreeting":
@@ -708,7 +708,7 @@ async def test_aws_json11_complex_error_error_greeting_with_errors() -> None:
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'ComplexError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "ComplexError":
@@ -736,7 +736,7 @@ async def test_aws_json11_empty_complex_error_error_greeting_with_errors() -> No
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'ComplexError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "ComplexError":
@@ -768,7 +768,7 @@ async def test_aws_json11_foo_error_using_x_amzn_error_type_error_greeting_with_
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -810,7 +810,7 @@ async def test_aws_json11_foo_error_using_x_amzn_error_type_with_uri_error_greet
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -850,7 +850,7 @@ async def test_aws_json11_foo_error_using_x_amzn_error_type_with_uri_and_namespa
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -885,7 +885,7 @@ async def test_aws_json11_foo_error_using_code_error_greeting_with_errors() -> N
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -920,7 +920,7 @@ async def test_aws_json11_foo_error_using_code_and_namespace_error_greeting_with
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -956,7 +956,7 @@ async def test_aws_json11_foo_error_using_code_uri_and_namespace_error_greeting_
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -987,7 +987,7 @@ async def test_aws_json11_foo_error_with_dunder_type_error_greeting_with_errors(
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -1022,7 +1022,7 @@ async def test_aws_json11_foo_error_with_dunder_type_and_namespace_error_greetin
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -1056,7 +1056,7 @@ async def test_aws_json11_foo_error_with_dunder_type_and_different_namespace_err
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -1092,7 +1092,7 @@ async def test_aws_json11_foo_error_with_dunder_type_uri_and_namespace_error_gre
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -1129,7 +1129,7 @@ async def test_aws_json11_foo_error_with_nested_type_property_error_greeting_wit
     input_ = GreetingWithErrorsInput()
 
     try:
-        await client.greeting_with_errors(input_)
+        await client.greeting_with_errors()
         fail("Expected 'FooError' exception to be thrown!")
     except Exception as err:
         if type(err).__name__ != "FooError":
@@ -1155,7 +1155,7 @@ async def test_aws_json11_host_with_path_request_host_with_path_operation() -> N
     input_ = HostWithPathOperationInput()
 
     try:
-        await client.host_with_path_operation(input_)
+        await client.host_with_path_operation()
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1235,7 +1235,14 @@ async def test_aws_json11_enums_request_json_enums() -> None:
     )
 
     try:
-        await client.json_enums(input_)
+        await client.json_enums(
+            foo_enum1=input_.foo_enum1,
+            foo_enum2=input_.foo_enum2,
+            foo_enum3=input_.foo_enum3,
+            foo_enum_list=input_.foo_enum_list,
+            foo_enum_set=input_.foo_enum_set,
+            foo_enum_map=input_.foo_enum_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1313,7 +1320,14 @@ async def test_aws_json11_enums_response_json_enums() -> None:
     input_ = JsonEnumsInput()
 
     try:
-        actual = await client.json_enums(input_)
+        actual = await client.json_enums(
+            foo_enum1=input_.foo_enum1,
+            foo_enum2=input_.foo_enum2,
+            foo_enum3=input_.foo_enum3,
+            foo_enum_list=input_.foo_enum_list,
+            foo_enum_set=input_.foo_enum_set,
+            foo_enum_map=input_.foo_enum_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1353,7 +1367,14 @@ async def test_aws_json11_int_enums_request_json_int_enums() -> None:
     )
 
     try:
-        await client.json_int_enums(input_)
+        await client.json_int_enums(
+            int_enum1=input_.int_enum1,
+            int_enum2=input_.int_enum2,
+            int_enum3=input_.int_enum3,
+            int_enum_list=input_.int_enum_list,
+            int_enum_set=input_.int_enum_set,
+            int_enum_map=input_.int_enum_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1434,7 +1455,14 @@ async def test_aws_json11_int_enums_response_json_int_enums() -> None:
     input_ = JsonIntEnumsInput()
 
     try:
-        actual = await client.json_int_enums(input_)
+        actual = await client.json_int_enums(
+            int_enum1=input_.int_enum1,
+            int_enum2=input_.int_enum2,
+            int_enum3=input_.int_enum3,
+            int_enum_list=input_.int_enum_list,
+            int_enum_set=input_.int_enum_set,
+            int_enum_map=input_.int_enum_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -1467,7 +1495,7 @@ async def test_aws_json11_serialize_string_union_value_request_json_unions() -> 
     input_ = JsonUnionsInput(contents=MyUnionStringValue(value="foo"))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1544,7 +1572,7 @@ async def test_aws_json11_serialize_boolean_union_value_request_json_unions() ->
     input_ = JsonUnionsInput(contents=MyUnionBooleanValue(value=True))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1621,7 +1649,7 @@ async def test_aws_json11_serialize_number_union_value_request_json_unions() -> 
     input_ = JsonUnionsInput(contents=MyUnionNumberValue(value=1))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1698,7 +1726,7 @@ async def test_aws_json11_serialize_blob_union_value_request_json_unions() -> No
     input_ = JsonUnionsInput(contents=MyUnionBlobValue(value=b"foo"))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1779,7 +1807,7 @@ async def test_aws_json11_serialize_timestamp_union_value_request_json_unions() 
     )
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1856,7 +1884,7 @@ async def test_aws_json11_serialize_enum_union_value_request_json_unions() -> No
     input_ = JsonUnionsInput(contents=MyUnionEnumValue(value="Foo"))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -1933,7 +1961,7 @@ async def test_aws_json11_serialize_list_union_value_request_json_unions() -> No
     input_ = JsonUnionsInput(contents=MyUnionListValue(value=["foo", "bar"]))
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2012,7 +2040,7 @@ async def test_aws_json11_serialize_map_union_value_request_json_unions() -> Non
     )
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2089,7 +2117,7 @@ async def test_aws_json11_serialize_structure_union_value_request_json_unions() 
     )
 
     try:
-        await client.json_unions(input_)
+        await client.json_unions(contents=input_.contents)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2167,7 +2195,7 @@ async def test_aws_json11_deserialize_string_union_value_response_json_unions() 
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2198,7 +2226,7 @@ async def test_aws_json11_deserialize_boolean_union_value_response_json_unions()
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2227,7 +2255,7 @@ async def test_aws_json11_deserialize_number_union_value_response_json_unions() 
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2256,7 +2284,7 @@ async def test_aws_json11_deserialize_blob_union_value_response_json_unions() ->
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2287,7 +2315,7 @@ async def test_aws_json11_deserialize_timestamp_union_value_response_json_unions
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2320,7 +2348,7 @@ async def test_aws_json11_deserialize_enum_union_value_response_json_unions() ->
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2349,7 +2377,7 @@ async def test_aws_json11_deserialize_list_union_value_response_json_unions() ->
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2378,7 +2406,7 @@ async def test_aws_json11_deserialize_map_union_value_response_json_unions() -> 
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2411,7 +2439,7 @@ async def test_aws_json11_deserialize_structure_union_value_response_json_unions
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2442,7 +2470,7 @@ async def test_aws_json11_deserialize_ignore_type_response_json_unions() -> None
     input_ = JsonUnionsInput()
 
     try:
-        actual = await client.json_unions(input_)
+        actual = await client.json_unions(contents=input_.contents)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -2470,7 +2498,34 @@ async def test_serializes_string_shapes_request_kitchen_sink_operation() -> None
     input_ = KitchenSinkOperationInput(string="abc xyz")
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2549,7 +2604,34 @@ async def test_serializes_string_shapes_with_jsonvalue_trait_request_kitchen_sin
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2624,7 +2706,34 @@ async def test_serializes_integer_shapes_request_kitchen_sink_operation() -> Non
     input_ = KitchenSinkOperationInput(integer=1234)
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2699,7 +2808,34 @@ async def test_serializes_long_shapes_request_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput(long=999999999999)
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2774,7 +2910,34 @@ async def test_serializes_float_shapes_request_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput(float_=float(1234.5))
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2849,7 +3012,34 @@ async def test_serializes_double_shapes_request_kitchen_sink_operation() -> None
     input_ = KitchenSinkOperationInput(double=float(1234.5))
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2924,7 +3114,34 @@ async def test_serializes_blob_shapes_request_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput(blob=b"binary-value")
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -2999,7 +3216,34 @@ async def test_serializes_boolean_shapes_true_request_kitchen_sink_operation() -
     input_ = KitchenSinkOperationInput(boolean=True)
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3074,7 +3318,34 @@ async def test_serializes_boolean_shapes_false_request_kitchen_sink_operation() 
     input_ = KitchenSinkOperationInput(boolean=False)
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3151,7 +3422,34 @@ async def test_serializes_timestamp_shapes_request_kitchen_sink_operation() -> N
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3230,7 +3528,34 @@ async def test_serializes_timestamp_shapes_with_iso8601_timestampformat_request_
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3309,7 +3634,34 @@ async def test_serializes_timestamp_shapes_with_httpdate_timestampformat_request
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3388,7 +3740,34 @@ async def test_serializes_timestamp_shapes_with_unixtimestamp_timestampformat_re
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3463,7 +3842,34 @@ async def test_serializes_list_shapes_request_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput(list_of_strings=["abc", "mno", "xyz"])
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3538,7 +3944,34 @@ async def test_serializes_empty_list_shapes_request_kitchen_sink_operation() -> 
     input_ = KitchenSinkOperationInput(list_of_strings=[])
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3615,7 +4048,34 @@ async def test_serializes_list_of_map_shapes_request_kitchen_sink_operation() ->
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3700,7 +4160,34 @@ async def test_serializes_list_of_structure_shapes_request_kitchen_sink_operatio
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3785,7 +4272,34 @@ async def test_serializes_list_of_recursive_structure_shapes_request_kitchen_sin
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3860,7 +4374,34 @@ async def test_serializes_map_shapes_request_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput(map_of_strings={"abc": "xyz", "mno": "hjk"})
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -3935,7 +4476,34 @@ async def test_serializes_empty_map_shapes_request_kitchen_sink_operation() -> N
     input_ = KitchenSinkOperationInput(map_of_strings={})
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4012,7 +4580,34 @@ async def test_serializes_map_of_list_shapes_request_kitchen_sink_operation() ->
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4096,7 +4691,34 @@ async def test_serializes_map_of_structure_shapes_request_kitchen_sink_operation
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4185,7 +4807,34 @@ async def test_serializes_map_of_recursive_structure_shapes_request_kitchen_sink
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4260,7 +4909,34 @@ async def test_serializes_structure_shapes_request_kitchen_sink_operation() -> N
     input_ = KitchenSinkOperationInput(simple_struct=SimpleStruct(value="abc"))
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4339,7 +5015,34 @@ async def test_serializes_structure_members_with_locationname_traits_request_kit
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4416,7 +5119,34 @@ async def test_serializes_empty_structure_shapes_request_kitchen_sink_operation(
     input_ = KitchenSinkOperationInput(simple_struct=SimpleStruct())
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4493,7 +5223,34 @@ async def test_serializes_structure_which_have_no_members_request_kitchen_sink_o
     input_ = KitchenSinkOperationInput(empty_struct=EmptyStruct())
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4585,7 +5342,34 @@ async def test_serializes_recursive_structure_shapes_request_kitchen_sink_operat
     )
 
     try:
-        await client.kitchen_sink_operation(input_)
+        await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -4665,7 +5449,34 @@ async def test_parses_operations_with_empty_json_bodies_response_kitchen_sink_op
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4694,7 +5505,34 @@ async def test_parses_string_shapes_response_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4723,7 +5561,34 @@ async def test_parses_integer_shapes_response_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4752,7 +5617,34 @@ async def test_parses_long_shapes_response_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4781,7 +5673,34 @@ async def test_parses_float_shapes_response_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4810,7 +5729,34 @@ async def test_parses_double_shapes_response_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4839,7 +5785,34 @@ async def test_parses_boolean_shapes_true_response_kitchen_sink_operation() -> N
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4868,7 +5841,34 @@ async def test_parses_boolean_false_response_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4897,7 +5897,34 @@ async def test_parses_blob_shapes_response_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4926,7 +5953,34 @@ async def test_parses_timestamp_shapes_response_kitchen_sink_operation() -> None
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4957,7 +6011,34 @@ async def test_parses_iso8601_timestamps_response_kitchen_sink_operation() -> No
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -4988,7 +6069,34 @@ async def test_parses_httpdate_timestamps_response_kitchen_sink_operation() -> N
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5019,7 +6127,34 @@ async def test_parses_list_shapes_response_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5048,7 +6183,34 @@ async def test_parses_list_of_map_shapes_response_kitchen_sink_operation() -> No
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5079,7 +6241,34 @@ async def test_parses_list_of_list_shapes_response_kitchen_sink_operation() -> N
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5112,7 +6301,34 @@ async def test_parses_list_of_structure_shapes_response_kitchen_sink_operation()
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5148,7 +6364,34 @@ async def test_parses_list_of_recursive_structure_shapes_response_kitchen_sink_o
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5185,7 +6428,34 @@ async def test_parses_map_shapes_response_kitchen_sink_operation() -> None:
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5216,7 +6486,34 @@ async def test_parses_map_of_list_shapes_response_kitchen_sink_operation() -> No
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5250,7 +6547,34 @@ async def test_parses_map_of_map_shapes_response_kitchen_sink_operation() -> Non
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5284,7 +6608,34 @@ async def test_parses_map_of_structure_shapes_response_kitchen_sink_operation() 
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5320,7 +6671,34 @@ async def test_parses_map_of_recursive_structure_shapes_response_kitchen_sink_op
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5364,7 +6742,34 @@ async def test_parses_the_request_id_from_the_response_response_kitchen_sink_ope
     input_ = KitchenSinkOperationInput()
 
     try:
-        actual = await client.kitchen_sink_operation(input_)
+        actual = await client.kitchen_sink_operation(
+            blob=input_.blob,
+            boolean=input_.boolean,
+            double=input_.double,
+            empty_struct=input_.empty_struct,
+            float_=input_.float_,
+            httpdate_timestamp=input_.httpdate_timestamp,
+            integer=input_.integer,
+            iso8601_timestamp=input_.iso8601_timestamp,
+            json_value=input_.json_value,
+            list_of_lists=input_.list_of_lists,
+            list_of_maps_of_strings=input_.list_of_maps_of_strings,
+            list_of_strings=input_.list_of_strings,
+            list_of_structs=input_.list_of_structs,
+            long=input_.long,
+            map_of_lists_of_strings=input_.map_of_lists_of_strings,
+            map_of_maps=input_.map_of_maps,
+            map_of_strings=input_.map_of_strings,
+            map_of_structs=input_.map_of_structs,
+            recursive_list=input_.recursive_list,
+            recursive_map=input_.recursive_map,
+            recursive_struct=input_.recursive_struct,
+            simple_struct=input_.simple_struct,
+            string=input_.string,
+            struct_with_json_name=input_.struct_with_json_name,
+            timestamp=input_.timestamp,
+            unix_timestamp=input_.unix_timestamp,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5392,7 +6797,7 @@ async def test_aws_json11_structures_dont_serialize_null_values_request_null_ope
     input_ = NullOperationInput(string=None)
 
     try:
-        await client.null_operation(input_)
+        await client.null_operation(string=input_.string)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5472,7 +6877,7 @@ async def test_aws_json11_structures_dont_deserialize_null_values_response_null_
     input_ = NullOperationInput()
 
     try:
-        actual = await client.null_operation(input_)
+        actual = await client.null_operation(string=input_.string)
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5500,7 +6905,7 @@ async def test_can_call_operation_with_no_input_or_output_request_operation_with
     input_ = OperationWithOptionalInputOutputInput()
 
     try:
-        await client.operation_with_optional_input_output(input_)
+        await client.operation_with_optional_input_output(value=input_.value)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5577,7 +6982,7 @@ async def test_can_call_operation_with_optional_input_request_operation_with_opt
     input_ = OperationWithOptionalInputOutputInput(value="Hi")
 
     try:
-        await client.operation_with_optional_input_output(input_)
+        await client.operation_with_optional_input_output(value=input_.value)
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5654,7 +7059,9 @@ async def test_put_and_get_inline_documents_input_request_put_and_get_inline_doc
     input_ = PutAndGetInlineDocumentsInput(inline_document=Document({"foo": "bar"}))
 
     try:
-        await client.put_and_get_inline_documents(input_)
+        await client.put_and_get_inline_documents(
+            inline_document=input_.inline_document
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5734,7 +7141,9 @@ async def test_put_and_get_inline_documents_input_response_put_and_get_inline_do
     input_ = PutAndGetInlineDocumentsInput()
 
     try:
-        actual = await client.put_and_get_inline_documents(input_)
+        actual = await client.put_and_get_inline_documents(
+            inline_document=input_.inline_document
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -5770,7 +7179,9 @@ async def test_sdk_applied_content_encoding_aws_json1_1_request_put_with_content
     )
 
     try:
-        await client.put_with_content_encoding(input_)
+        await client.put_with_content_encoding(
+            encoding=input_.encoding, data=input_.data
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5847,7 +7258,9 @@ async def test_sdk_appends_gzip_and_ignores_http_provided_encoding_aws_json1_1_r
     )
 
     try:
-        await client.put_with_content_encoding(input_)
+        await client.put_with_content_encoding(
+            encoding=input_.encoding, data=input_.data
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5918,7 +7331,9 @@ async def test_aws_json11_supports_na_n_float_inputs_request_simple_scalar_prope
     )
 
     try:
-        await client.simple_scalar_properties(input_)
+        await client.simple_scalar_properties(
+            float_value=input_.float_value, double_value=input_.double_value
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -5999,7 +7414,9 @@ async def test_aws_json11_supports_infinity_float_inputs_request_simple_scalar_p
     )
 
     try:
-        await client.simple_scalar_properties(input_)
+        await client.simple_scalar_properties(
+            float_value=input_.float_value, double_value=input_.double_value
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -6080,7 +7497,9 @@ async def test_aws_json11_supports_negative_infinity_float_inputs_request_simple
     )
 
     try:
-        await client.simple_scalar_properties(input_)
+        await client.simple_scalar_properties(
+            float_value=input_.float_value, double_value=input_.double_value
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -6163,7 +7582,9 @@ async def test_aws_json11_supports_na_n_float_inputs_response_simple_scalar_prop
     input_ = SimpleScalarPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_properties(input_)
+        actual = await client.simple_scalar_properties(
+            float_value=input_.float_value, double_value=input_.double_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6196,7 +7617,9 @@ async def test_aws_json11_supports_infinity_float_inputs_response_simple_scalar_
     input_ = SimpleScalarPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_properties(input_)
+        actual = await client.simple_scalar_properties(
+            float_value=input_.float_value, double_value=input_.double_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6229,7 +7652,9 @@ async def test_aws_json11_supports_negative_infinity_float_inputs_response_simpl
     input_ = SimpleScalarPropertiesInput()
 
     try:
-        actual = await client.simple_scalar_properties(input_)
+        actual = await client.simple_scalar_properties(
+            float_value=input_.float_value, double_value=input_.double_value
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6259,7 +7684,10 @@ async def test_aws_json11_sparse_maps_serialize_null_values_request_sparse_nulls
     input_ = SparseNullsOperationInput(sparse_string_map={"foo": None})
 
     try:
-        await client.sparse_nulls_operation(input_)
+        await client.sparse_nulls_operation(
+            sparse_string_list=input_.sparse_string_list,
+            sparse_string_map=input_.sparse_string_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -6338,7 +7766,10 @@ async def test_aws_json11_sparse_lists_serialize_null_request_sparse_nulls_opera
     input_ = SparseNullsOperationInput(sparse_string_list=[None])
 
     try:
-        await client.sparse_nulls_operation(input_)
+        await client.sparse_nulls_operation(
+            sparse_string_list=input_.sparse_string_list,
+            sparse_string_map=input_.sparse_string_map,
+        )
         fail("Expected 'TestHttpServiceError' exception to be thrown!")
     except TestHttpServiceError as err:
         actual = err.request
@@ -6418,7 +7849,10 @@ async def test_aws_json11_sparse_maps_deserialize_null_values_response_sparse_nu
     input_ = SparseNullsOperationInput()
 
     try:
-        actual = await client.sparse_nulls_operation(input_)
+        actual = await client.sparse_nulls_operation(
+            sparse_string_list=input_.sparse_string_list,
+            sparse_string_map=input_.sparse_string_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:
@@ -6449,7 +7883,10 @@ async def test_aws_json11_sparse_lists_deserialize_null_response_sparse_nulls_op
     input_ = SparseNullsOperationInput()
 
     try:
-        actual = await client.sparse_nulls_operation(input_)
+        actual = await client.sparse_nulls_operation(
+            sparse_string_list=input_.sparse_string_list,
+            sparse_string_map=input_.sparse_string_map,
+        )
     except Exception as err:
         fail(f"Expected a valid response, but received: {type(err).__name__}: {err}")
     else:

@@ -2,6 +2,7 @@
 
 import asyncio
 from copy import deepcopy
+from datetime import datetime
 import logging
 from typing import Any, Self, cast
 
@@ -44,6 +45,7 @@ from .models import (
     FractionalSecondsInput,
     FractionalSecondsOutput,
     GREETING_WITH_ERRORS,
+    GreetingStruct,
     GreetingWithErrorsInput,
     GreetingWithErrorsOutput,
     HOST_WITH_PATH_OPERATION,
@@ -55,6 +57,8 @@ from .models import (
     NESTED_STRUCTURES,
     NO_INPUT_AND_NO_OUTPUT,
     NO_INPUT_AND_OUTPUT,
+    NestedStructWithList,
+    NestedStructWithMap,
     NestedStructuresInput,
     NestedStructuresOutput,
     NoInputAndNoOutputInput,
@@ -85,6 +89,7 @@ from .models import (
     SimpleInputParamsOutput,
     SimpleScalarXmlPropertiesInput,
     SimpleScalarXmlPropertiesOutput,
+    StructArg,
     XML_BLOBS,
     XML_EMPTY_BLOBS,
     XML_EMPTY_LISTS,
@@ -209,14 +214,13 @@ class AsyncQueryProtocolClient:
         await self.close()
 
     async def datetime_offsets(
-        self, input: DatetimeOffsetsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> DatetimeOffsetsOutput:
         """
         Invokes the DatetimeOffsets operation.
 
         Args:
-            input:
-                An instance of `DatetimeOffsetsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -226,6 +230,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `DatetimeOffsetsOutput`.
         """
+        input = DatetimeOffsetsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -276,7 +281,7 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def empty_input_and_empty_output(
-        self, input: EmptyInputAndEmptyOutputInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> EmptyInputAndEmptyOutputOutput:
         """
         The example tests how requests and responses are serialized when
@@ -284,8 +289,7 @@ class AsyncQueryProtocolClient:
         generators must support this.
 
         Args:
-            input:
-                An instance of `EmptyInputAndEmptyOutputInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -295,6 +299,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `EmptyInputAndEmptyOutputOutput`.
         """
+        input = EmptyInputAndEmptyOutputInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -345,14 +350,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def endpoint_operation(
-        self, input: EndpointOperationInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> EndpointOperationOutput:
         """
         Invokes the EndpointOperation operation.
 
         Args:
-            input:
-                An instance of `EndpointOperationInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -362,6 +366,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `EndpointOperationOutput`.
         """
+        input = EndpointOperationInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -412,16 +417,14 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def endpoint_with_host_label_operation(
-        self,
-        input: EndpointWithHostLabelOperationInput,
-        plugins: list[Plugin] | None = None,
+        self, *, label: str | None = None, plugins: list[Plugin] | None = None
     ) -> EndpointWithHostLabelOperationOutput:
         """
         Invokes the EndpointWithHostLabelOperation operation.
 
         Args:
-            input:
-                An instance of `EndpointWithHostLabelOperationInput`.
+            label:
+                The `label` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -431,6 +434,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `EndpointWithHostLabelOperationOutput`.
         """
+        input = EndpointWithHostLabelOperationInput(label=label)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -481,14 +485,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def flattened_xml_map(
-        self, input: FlattenedXmlMapInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> FlattenedXmlMapOutput:
         """
         Flattened maps
 
         Args:
-            input:
-                An instance of `FlattenedXmlMapInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -498,6 +501,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `FlattenedXmlMapOutput`.
         """
+        input = FlattenedXmlMapInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -548,16 +552,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def flattened_xml_map_with_xml_name(
-        self,
-        input: FlattenedXmlMapWithXmlNameInput,
-        plugins: list[Plugin] | None = None,
+        self, *, plugins: list[Plugin] | None = None
     ) -> FlattenedXmlMapWithXmlNameOutput:
         """
         Flattened maps with @xmlName
 
         Args:
-            input:
-                An instance of `FlattenedXmlMapWithXmlNameInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -567,6 +568,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `FlattenedXmlMapWithXmlNameOutput`.
         """
+        input = FlattenedXmlMapWithXmlNameInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -617,16 +619,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def flattened_xml_map_with_xml_namespace(
-        self,
-        input: FlattenedXmlMapWithXmlNamespaceInput,
-        plugins: list[Plugin] | None = None,
+        self, *, plugins: list[Plugin] | None = None
     ) -> FlattenedXmlMapWithXmlNamespaceOutput:
         """
         Flattened maps with @xmlNamespace and @xmlName
 
         Args:
-            input:
-                An instance of `FlattenedXmlMapWithXmlNamespaceInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -636,6 +635,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `FlattenedXmlMapWithXmlNamespaceOutput`.
         """
+        input = FlattenedXmlMapWithXmlNamespaceInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -686,14 +686,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def fractional_seconds(
-        self, input: FractionalSecondsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> FractionalSecondsOutput:
         """
         Invokes the FractionalSeconds operation.
 
         Args:
-            input:
-                An instance of `FractionalSecondsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -703,6 +702,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `FractionalSecondsOutput`.
         """
+        input = FractionalSecondsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -753,7 +753,7 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def greeting_with_errors(
-        self, input: GreetingWithErrorsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> GreetingWithErrorsOutput:
         """
         This operation has three possible return values: 1. A successful
@@ -761,8 +761,7 @@ class AsyncQueryProtocolClient:
         error. 3. A BadRequest error.
 
         Args:
-            input:
-                An instance of `GreetingWithErrorsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -772,6 +771,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `GreetingWithErrorsOutput`.
         """
+        input = GreetingWithErrorsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -822,14 +822,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def host_with_path_operation(
-        self, input: HostWithPathOperationInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> HostWithPathOperationOutput:
         """
         Invokes the HostWithPathOperation operation.
 
         Args:
-            input:
-                An instance of `HostWithPathOperationInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -839,6 +838,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `HostWithPathOperationOutput`.
         """
+        input = HostWithPathOperationInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -889,7 +889,7 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def ignores_wrapping_xml_name(
-        self, input: IgnoresWrappingXmlNameInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> IgnoresWrappingXmlNameOutput:
         """
         The xmlName trait on the output structure is ignored in AWS Query. The
@@ -897,8 +897,7 @@ class AsyncQueryProtocolClient:
         that wrapper is another wrapper named operation name + \"Result\".
 
         Args:
-            input:
-                An instance of `IgnoresWrappingXmlNameInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -908,6 +907,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `IgnoresWrappingXmlNameOutput`.
         """
+        input = IgnoresWrappingXmlNameInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -958,14 +958,14 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def nested_structures(
-        self, input: NestedStructuresInput, plugins: list[Plugin] | None = None
+        self, *, nested: StructArg | None = None, plugins: list[Plugin] | None = None
     ) -> NestedStructuresOutput:
         """
         This test serializes nested and recursive structure members.
 
         Args:
-            input:
-                An instance of `NestedStructuresInput`.
+            nested:
+                The `nested` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -975,6 +975,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `NestedStructuresOutput`.
         """
+        input = NestedStructuresInput(nested=nested)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1025,7 +1026,7 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def no_input_and_no_output(
-        self, input: NoInputAndNoOutputInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> NoInputAndNoOutputOutput:
         """
         The example tests how requests and responses are serialized when
@@ -1034,8 +1035,7 @@ class AsyncQueryProtocolClient:
         this.
 
         Args:
-            input:
-                An instance of `NoInputAndNoOutputInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1045,6 +1045,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `NoInputAndNoOutputOutput`.
         """
+        input = NoInputAndNoOutputInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1095,7 +1096,7 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def no_input_and_output(
-        self, input: NoInputAndOutputInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> NoInputAndOutputOutput:
         """
         The example tests how requests and responses are serialized when
@@ -1103,8 +1104,7 @@ class AsyncQueryProtocolClient:
         rare, code generators must support this.
 
         Args:
-            input:
-                An instance of `NoInputAndOutputInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1114,6 +1114,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `NoInputAndOutputOutput`.
         """
+        input = NoInputAndOutputInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1164,14 +1165,20 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def put_with_content_encoding(
-        self, input: PutWithContentEncodingInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        encoding: str | None = None,
+        data: str | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> PutWithContentEncodingOutput:
         """
         Invokes the PutWithContentEncoding operation.
 
         Args:
-            input:
-                An instance of `PutWithContentEncodingInput`.
+            encoding:
+                The `encoding` input member.
+            data:
+                The `data` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1181,6 +1188,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `PutWithContentEncodingOutput`.
         """
+        input = PutWithContentEncodingInput(encoding=encoding, data=data)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1231,16 +1239,14 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def query_idempotency_token_auto_fill(
-        self,
-        input: QueryIdempotencyTokenAutoFillInput,
-        plugins: list[Plugin] | None = None,
+        self, *, token: str | None = None, plugins: list[Plugin] | None = None
     ) -> QueryIdempotencyTokenAutoFillOutput:
         """
         Automatically adds idempotency tokens.
 
         Args:
-            input:
-                An instance of `QueryIdempotencyTokenAutoFillInput`.
+            token:
+                The `token` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1250,6 +1256,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `QueryIdempotencyTokenAutoFillOutput`.
         """
+        input = QueryIdempotencyTokenAutoFillInput(token=token)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1300,14 +1307,32 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def query_lists(
-        self, input: QueryListsInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        list_arg: list[str] | None = None,
+        complex_list_arg: list[GreetingStruct] | None = None,
+        flattened_list_arg: list[str] | None = None,
+        list_arg_with_xml_name_member: list[str] | None = None,
+        flattened_list_arg_with_xml_name: list[str] | None = None,
+        nested_with_list: NestedStructWithList | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> QueryListsOutput:
         """
         This test serializes simple and complex lists.
 
         Args:
-            input:
-                An instance of `QueryListsInput`.
+            list_arg:
+                The `list_arg` input member.
+            complex_list_arg:
+                The `complex_list_arg` input member.
+            flattened_list_arg:
+                The `flattened_list_arg` input member.
+            list_arg_with_xml_name_member:
+                The `list_arg_with_xml_name_member` input member.
+            flattened_list_arg_with_xml_name:
+                The `flattened_list_arg_with_xml_name` input member.
+            nested_with_list:
+                The `nested_with_list` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1317,6 +1342,14 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `QueryListsOutput`.
         """
+        input = QueryListsInput(
+            list_arg=list_arg,
+            complex_list_arg=complex_list_arg,
+            flattened_list_arg=flattened_list_arg,
+            list_arg_with_xml_name_member=list_arg_with_xml_name_member,
+            flattened_list_arg_with_xml_name=flattened_list_arg_with_xml_name,
+            nested_with_list=nested_with_list,
+        )
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1367,14 +1400,38 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def query_maps(
-        self, input: QueryMapsInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        map_arg: dict[str, str] | None = None,
+        renamed_map_arg: dict[str, str] | None = None,
+        complex_map_arg: dict[str, GreetingStruct] | None = None,
+        map_with_xml_member_name: dict[str, str] | None = None,
+        flattened_map: dict[str, str] | None = None,
+        flattened_map_with_xml_name: dict[str, str] | None = None,
+        map_of_lists: dict[str, list[str]] | None = None,
+        nested_struct_with_map: NestedStructWithMap | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> QueryMapsOutput:
         """
         This test serializes simple and complex maps.
 
         Args:
-            input:
-                An instance of `QueryMapsInput`.
+            map_arg:
+                The `map_arg` input member.
+            renamed_map_arg:
+                The `renamed_map_arg` input member.
+            complex_map_arg:
+                The `complex_map_arg` input member.
+            map_with_xml_member_name:
+                The `map_with_xml_member_name` input member.
+            flattened_map:
+                The `flattened_map` input member.
+            flattened_map_with_xml_name:
+                The `flattened_map_with_xml_name` input member.
+            map_of_lists:
+                The `map_of_lists` input member.
+            nested_struct_with_map:
+                The `nested_struct_with_map` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1384,6 +1441,16 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `QueryMapsOutput`.
         """
+        input = QueryMapsInput(
+            map_arg=map_arg,
+            renamed_map_arg=renamed_map_arg,
+            complex_map_arg=complex_map_arg,
+            map_with_xml_member_name=map_with_xml_member_name,
+            flattened_map=flattened_map,
+            flattened_map_with_xml_name=flattened_map_with_xml_name,
+            map_of_lists=map_of_lists,
+            nested_struct_with_map=nested_struct_with_map,
+        )
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1434,7 +1501,12 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def query_timestamps(
-        self, input: QueryTimestampsInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        normal_format: datetime | None = None,
+        epoch_member: datetime | None = None,
+        epoch_target: datetime | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> QueryTimestampsOutput:
         """
         This test serializes timestamps. 1. Timestamps are serialized as RFC
@@ -1443,8 +1515,12 @@ class AsyncQueryProtocolClient:
         the member changes the format.
 
         Args:
-            input:
-                An instance of `QueryTimestampsInput`.
+            normal_format:
+                The `normal_format` input member.
+            epoch_member:
+                The `epoch_member` input member.
+            epoch_target:
+                The `epoch_target` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1454,6 +1530,11 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `QueryTimestampsOutput`.
         """
+        input = QueryTimestampsInput(
+            normal_format=normal_format,
+            epoch_member=epoch_member,
+            epoch_target=epoch_target,
+        )
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1504,14 +1585,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def recursive_xml_shapes(
-        self, input: RecursiveXmlShapesInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> RecursiveXmlShapesOutput:
         """
         Recursive shapes
 
         Args:
-            input:
-                An instance of `RecursiveXmlShapesInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1521,6 +1601,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `RecursiveXmlShapesOutput`.
         """
+        input = RecursiveXmlShapesInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1571,14 +1652,41 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def simple_input_params(
-        self, input: SimpleInputParamsInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        foo: str | None = None,
+        bar: str | None = None,
+        baz: bool | None = None,
+        bam: int | None = None,
+        float_value: float | None = None,
+        boo: float | None = None,
+        qux: bytes | None = None,
+        foo_enum: str | None = None,
+        integer_enum: int | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> SimpleInputParamsOutput:
         """
         This test serializes strings, numbers, and boolean values.
 
         Args:
-            input:
-                An instance of `SimpleInputParamsInput`.
+            foo:
+                The `foo` input member.
+            bar:
+                The `bar` input member.
+            baz:
+                The `baz` input member.
+            bam:
+                The `bam` input member.
+            float_value:
+                The `float_value` input member.
+            boo:
+                The `boo` input member.
+            qux:
+                The `qux` input member.
+            foo_enum:
+                The `foo_enum` input member.
+            integer_enum:
+                The `integer_enum` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1588,6 +1696,17 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `SimpleInputParamsOutput`.
         """
+        input = SimpleInputParamsInput(
+            foo=foo,
+            bar=bar,
+            baz=baz,
+            bam=bam,
+            float_value=float_value,
+            boo=boo,
+            qux=qux,
+            foo_enum=foo_enum,
+            integer_enum=integer_enum,
+        )
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1638,14 +1757,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def simple_scalar_xml_properties(
-        self, input: SimpleScalarXmlPropertiesInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> SimpleScalarXmlPropertiesOutput:
         """
         Invokes the SimpleScalarXmlProperties operation.
 
         Args:
-            input:
-                An instance of `SimpleScalarXmlPropertiesInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1655,6 +1773,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `SimpleScalarXmlPropertiesOutput`.
         """
+        input = SimpleScalarXmlPropertiesInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1705,14 +1824,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def xml_blobs(
-        self, input: XmlBlobsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> XmlBlobsOperationOutput:
         """
         Blobs are base64 encoded
 
         Args:
-            input:
-                An instance of `XmlBlobsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1722,6 +1840,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `XmlBlobsOperationOutput`.
         """
+        input = XmlBlobsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1772,14 +1891,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def xml_empty_blobs(
-        self, input: XmlEmptyBlobsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> XmlEmptyBlobsOutput:
         """
         Invokes the XmlEmptyBlobs operation.
 
         Args:
-            input:
-                An instance of `XmlEmptyBlobsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1789,6 +1907,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `XmlEmptyBlobsOutput`.
         """
+        input = XmlEmptyBlobsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1839,14 +1958,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def xml_empty_lists(
-        self, input: XmlEmptyListsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> XmlEmptyListsOutput:
         """
         Invokes the XmlEmptyLists operation.
 
         Args:
-            input:
-                An instance of `XmlEmptyListsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1856,6 +1974,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `XmlEmptyListsOutput`.
         """
+        input = XmlEmptyListsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1906,14 +2025,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def xml_empty_maps(
-        self, input: XmlEmptyMapsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> XmlEmptyMapsOutput:
         """
         Invokes the XmlEmptyMaps operation.
 
         Args:
-            input:
-                An instance of `XmlEmptyMapsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1923,6 +2041,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `XmlEmptyMapsOutput`.
         """
+        input = XmlEmptyMapsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1972,16 +2091,13 @@ class AsyncQueryProtocolClient:
 
         return await pipeline(call)
 
-    async def xml_enums(
-        self, input: XmlEnumsInput, plugins: list[Plugin] | None = None
-    ) -> XmlEnumsOutput:
+    async def xml_enums(self, *, plugins: list[Plugin] | None = None) -> XmlEnumsOutput:
         """
         This example serializes enums as top level properties, in lists, sets,
         and maps.
 
         Args:
-            input:
-                An instance of `XmlEnumsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1991,6 +2107,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `XmlEnumsOutput`.
         """
+        input = XmlEnumsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -2041,15 +2158,14 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def xml_int_enums(
-        self, input: XmlIntEnumsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> XmlIntEnumsOutput:
         """
         This example serializes enums as top level properties, in lists, sets,
         and maps.
 
         Args:
-            input:
-                An instance of `XmlIntEnumsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -2059,6 +2175,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `XmlIntEnumsOutput`.
         """
+        input = XmlIntEnumsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -2109,7 +2226,7 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def xml_lists(
-        self, input: XmlListsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> XmlListsOperationOutput:
         """
         This test case serializes XML lists for the following cases for both
@@ -2118,8 +2235,7 @@ class AsyncQueryProtocolClient:
         lists. 6. Flattened XML lists with @xmlName. 7. Lists of structures.
 
         Args:
-            input:
-                An instance of `XmlListsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -2129,6 +2245,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `XmlListsOperationOutput`.
         """
+        input = XmlListsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -2179,14 +2296,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def xml_maps(
-        self, input: XmlMapsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> XmlMapsOperationOutput:
         """
         The example tests basic map serialization.
 
         Args:
-            input:
-                An instance of `XmlMapsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -2196,6 +2312,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `XmlMapsOperationOutput`.
         """
+        input = XmlMapsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -2246,14 +2363,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def xml_maps_xml_name(
-        self, input: XmlMapsXmlNameInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> XmlMapsXmlNameOutput:
         """
         Invokes the XmlMapsXmlName operation.
 
         Args:
-            input:
-                An instance of `XmlMapsXmlNameInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -2263,6 +2379,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `XmlMapsXmlNameOutput`.
         """
+        input = XmlMapsXmlNameInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -2313,14 +2430,13 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def xml_namespaces(
-        self, input: XmlNamespacesInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> XmlNamespacesOutput:
         """
         Invokes the XmlNamespaces operation.
 
         Args:
-            input:
-                An instance of `XmlNamespacesInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -2330,6 +2446,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `XmlNamespacesOutput`.
         """
+        input = XmlNamespacesInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -2380,15 +2497,14 @@ class AsyncQueryProtocolClient:
         return await pipeline(call)
 
     async def xml_timestamps(
-        self, input: XmlTimestampsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> XmlTimestampsOutput:
         """
         This tests how timestamps are serialized, including using the default
         format of date-time and various @timestampFormat trait values.
 
         Args:
-            input:
-                An instance of `XmlTimestampsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -2398,6 +2514,7 @@ class AsyncQueryProtocolClient:
         Returns:
             An instance of `XmlTimestampsOutput`.
         """
+        input = XmlTimestampsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."

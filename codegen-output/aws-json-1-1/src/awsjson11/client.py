@@ -2,6 +2,7 @@
 
 import asyncio
 from copy import deepcopy
+from datetime import datetime
 import logging
 from typing import Any, Self, cast
 
@@ -11,9 +12,10 @@ from smithy_aws_core.identity.chain import IdentityChain
 from smithy_core.aio.client import ClientCall, RequestPipeline
 from smithy_core.aio.retries import RetryStrategyResolver
 from smithy_core.aio.utils import close
+from smithy_core.documents import Document
 from smithy_core.exceptions import ExpectationNotMetError
 from smithy_core.interceptors import InterceptorChain
-from smithy_core.types import TypedProperties
+from smithy_core.types import JsonString, TypedProperties
 from smithy_http.aio.interfaces import HTTPClient
 from smithy_http.plugins import user_agent_plugin
 
@@ -30,6 +32,7 @@ from .models import (
     ENDPOINT_WITH_HOST_LABEL_OPERATION,
     EmptyOperationInput,
     EmptyOperationOutput,
+    EmptyStruct,
     EndpointOperationInput,
     EndpointOperationOutput,
     EndpointWithHostLabelOperationInput,
@@ -53,8 +56,10 @@ from .models import (
     JsonUnionsInput,
     JsonUnionsOutput,
     KITCHEN_SINK_OPERATION,
+    KitchenSink,
     KitchenSinkOperationInput,
     KitchenSinkOperationOutput,
+    MyUnion,
     NULL_OPERATION,
     NullOperationInput,
     NullOperationOutput,
@@ -71,8 +76,10 @@ from .models import (
     SPARSE_NULLS_OPERATION,
     SimpleScalarPropertiesInput,
     SimpleScalarPropertiesOutput,
+    SimpleStruct,
     SparseNullsOperationInput,
     SparseNullsOperationOutput,
+    StructWithJsonName,
 )
 from .user_agent import aws_user_agent_plugin
 
@@ -164,15 +171,15 @@ class AsyncJsonProtocolClient:
         await self.close()
 
     async def content_type_parameters(
-        self, input: ContentTypeParametersInput, plugins: list[Plugin] | None = None
+        self, *, value: int | None = None, plugins: list[Plugin] | None = None
     ) -> ContentTypeParametersOutput:
         """
         The example tests how servers must support requests containing a
         `Content-Type` header with parameters.
 
         Args:
-            input:
-                An instance of `ContentTypeParametersInput`.
+            value:
+                The `value` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -182,6 +189,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `ContentTypeParametersOutput`.
         """
+        input = ContentTypeParametersInput(value=value)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -232,14 +240,13 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def datetime_offsets(
-        self, input: DatetimeOffsetsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> DatetimeOffsetsOutput:
         """
         Invokes the DatetimeOffsets operation.
 
         Args:
-            input:
-                An instance of `DatetimeOffsetsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -249,6 +256,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `DatetimeOffsetsOutput`.
         """
+        input = DatetimeOffsetsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -299,14 +307,13 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def empty_operation(
-        self, input: EmptyOperationInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> EmptyOperationOutput:
         """
         Invokes the EmptyOperation operation.
 
         Args:
-            input:
-                An instance of `EmptyOperationInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -316,6 +323,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `EmptyOperationOutput`.
         """
+        input = EmptyOperationInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -366,14 +374,13 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def endpoint_operation(
-        self, input: EndpointOperationInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> EndpointOperationOutput:
         """
         Invokes the EndpointOperation operation.
 
         Args:
-            input:
-                An instance of `EndpointOperationInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -383,6 +390,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `EndpointOperationOutput`.
         """
+        input = EndpointOperationInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -433,16 +441,14 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def endpoint_with_host_label_operation(
-        self,
-        input: EndpointWithHostLabelOperationInput,
-        plugins: list[Plugin] | None = None,
+        self, *, label: str | None = None, plugins: list[Plugin] | None = None
     ) -> EndpointWithHostLabelOperationOutput:
         """
         Invokes the EndpointWithHostLabelOperation operation.
 
         Args:
-            input:
-                An instance of `EndpointWithHostLabelOperationInput`.
+            label:
+                The `label` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -452,6 +458,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `EndpointWithHostLabelOperationOutput`.
         """
+        input = EndpointWithHostLabelOperationInput(label=label)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -502,14 +509,13 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def fractional_seconds(
-        self, input: FractionalSecondsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> FractionalSecondsOutput:
         """
         Invokes the FractionalSeconds operation.
 
         Args:
-            input:
-                An instance of `FractionalSecondsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -519,6 +525,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `FractionalSecondsOutput`.
         """
+        input = FractionalSecondsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -569,7 +576,7 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def greeting_with_errors(
-        self, input: GreetingWithErrorsInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> GreetingWithErrorsOutput:
         """
         This operation has three possible return values: 1. A successful
@@ -579,8 +586,7 @@ class AsyncJsonProtocolClient:
         error responses.
 
         Args:
-            input:
-                An instance of `GreetingWithErrorsInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -590,6 +596,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `GreetingWithErrorsOutput`.
         """
+        input = GreetingWithErrorsInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -640,14 +647,13 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def host_with_path_operation(
-        self, input: HostWithPathOperationInput, plugins: list[Plugin] | None = None
+        self, *, plugins: list[Plugin] | None = None
     ) -> HostWithPathOperationOutput:
         """
         Invokes the HostWithPathOperation operation.
 
         Args:
-            input:
-                An instance of `HostWithPathOperationInput`.
+
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -657,6 +663,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `HostWithPathOperationOutput`.
         """
+        input = HostWithPathOperationInput()
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -707,15 +714,33 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def json_enums(
-        self, input: JsonEnumsInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        foo_enum1: str | None = None,
+        foo_enum2: str | None = None,
+        foo_enum3: str | None = None,
+        foo_enum_list: list[str] | None = None,
+        foo_enum_set: list[str] | None = None,
+        foo_enum_map: dict[str, str] | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> JsonEnumsOutput:
         """
         This example serializes enums as top level properties, in lists, sets,
         and maps.
 
         Args:
-            input:
-                An instance of `JsonEnumsInput`.
+            foo_enum1:
+                The `foo_enum1` input member.
+            foo_enum2:
+                The `foo_enum2` input member.
+            foo_enum3:
+                The `foo_enum3` input member.
+            foo_enum_list:
+                The `foo_enum_list` input member.
+            foo_enum_set:
+                The `foo_enum_set` input member.
+            foo_enum_map:
+                The `foo_enum_map` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -725,6 +750,14 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `JsonEnumsOutput`.
         """
+        input = JsonEnumsInput(
+            foo_enum1=foo_enum1,
+            foo_enum2=foo_enum2,
+            foo_enum3=foo_enum3,
+            foo_enum_list=foo_enum_list,
+            foo_enum_set=foo_enum_set,
+            foo_enum_map=foo_enum_map,
+        )
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -775,15 +808,33 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def json_int_enums(
-        self, input: JsonIntEnumsInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        int_enum1: int | None = None,
+        int_enum2: int | None = None,
+        int_enum3: int | None = None,
+        int_enum_list: list[int] | None = None,
+        int_enum_set: list[int] | None = None,
+        int_enum_map: dict[str, int] | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> JsonIntEnumsOutput:
         """
         This example serializes intEnums as top level properties, in lists,
         sets, and maps.
 
         Args:
-            input:
-                An instance of `JsonIntEnumsInput`.
+            int_enum1:
+                The `int_enum1` input member.
+            int_enum2:
+                The `int_enum2` input member.
+            int_enum3:
+                The `int_enum3` input member.
+            int_enum_list:
+                The `int_enum_list` input member.
+            int_enum_set:
+                The `int_enum_set` input member.
+            int_enum_map:
+                The `int_enum_map` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -793,6 +844,14 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `JsonIntEnumsOutput`.
         """
+        input = JsonIntEnumsInput(
+            int_enum1=int_enum1,
+            int_enum2=int_enum2,
+            int_enum3=int_enum3,
+            int_enum_list=int_enum_list,
+            int_enum_set=int_enum_set,
+            int_enum_map=int_enum_map,
+        )
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -843,14 +902,14 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def json_unions(
-        self, input: JsonUnionsInput, plugins: list[Plugin] | None = None
+        self, *, contents: MyUnion | None = None, plugins: list[Plugin] | None = None
     ) -> JsonUnionsOutput:
         """
         This operation uses unions for inputs and outputs.
 
         Args:
-            input:
-                An instance of `JsonUnionsInput`.
+            contents:
+                A union with a representative set of types for members.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -860,6 +919,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `JsonUnionsOutput`.
         """
+        input = JsonUnionsInput(contents=contents)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -910,14 +970,92 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def kitchen_sink_operation(
-        self, input: KitchenSinkOperationInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        blob: bytes | None = None,
+        boolean: bool | None = None,
+        double: float | None = None,
+        empty_struct: EmptyStruct | None = None,
+        float_: float | None = None,
+        httpdate_timestamp: datetime | None = None,
+        integer: int | None = None,
+        iso8601_timestamp: datetime | None = None,
+        json_value: str | JsonString | None = None,
+        list_of_lists: list[list[str]] | None = None,
+        list_of_maps_of_strings: list[dict[str, str]] | None = None,
+        list_of_strings: list[str] | None = None,
+        list_of_structs: list[SimpleStruct] | None = None,
+        long: int | None = None,
+        map_of_lists_of_strings: dict[str, list[str]] | None = None,
+        map_of_maps: dict[str, dict[str, str]] | None = None,
+        map_of_strings: dict[str, str] | None = None,
+        map_of_structs: dict[str, SimpleStruct] | None = None,
+        recursive_list: list[KitchenSink] | None = None,
+        recursive_map: dict[str, KitchenSink] | None = None,
+        recursive_struct: KitchenSink | None = None,
+        simple_struct: SimpleStruct | None = None,
+        string: str | None = None,
+        struct_with_json_name: StructWithJsonName | None = None,
+        timestamp: datetime | None = None,
+        unix_timestamp: datetime | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> KitchenSinkOperationOutput:
         """
         Invokes the KitchenSinkOperation operation.
 
         Args:
-            input:
-                An instance of `KitchenSinkOperationInput`.
+            blob:
+                The `blob` input member.
+            boolean:
+                The `boolean` input member.
+            double:
+                The `double` input member.
+            empty_struct:
+                The `empty_struct` input member.
+            float_:
+                The `float_` input member.
+            httpdate_timestamp:
+                The `httpdate_timestamp` input member.
+            integer:
+                The `integer` input member.
+            iso8601_timestamp:
+                The `iso8601_timestamp` input member.
+            json_value:
+                The `json_value` input member.
+            list_of_lists:
+                The `list_of_lists` input member.
+            list_of_maps_of_strings:
+                The `list_of_maps_of_strings` input member.
+            list_of_strings:
+                The `list_of_strings` input member.
+            list_of_structs:
+                The `list_of_structs` input member.
+            long:
+                The `long` input member.
+            map_of_lists_of_strings:
+                The `map_of_lists_of_strings` input member.
+            map_of_maps:
+                The `map_of_maps` input member.
+            map_of_strings:
+                The `map_of_strings` input member.
+            map_of_structs:
+                The `map_of_structs` input member.
+            recursive_list:
+                The `recursive_list` input member.
+            recursive_map:
+                The `recursive_map` input member.
+            recursive_struct:
+                The `recursive_struct` input member.
+            simple_struct:
+                The `simple_struct` input member.
+            string:
+                The `string` input member.
+            struct_with_json_name:
+                The `struct_with_json_name` input member.
+            timestamp:
+                The `timestamp` input member.
+            unix_timestamp:
+                The `unix_timestamp` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -927,6 +1065,34 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `KitchenSinkOperationOutput`.
         """
+        input = KitchenSinkOperationInput(
+            blob=blob,
+            boolean=boolean,
+            double=double,
+            empty_struct=empty_struct,
+            float_=float_,
+            httpdate_timestamp=httpdate_timestamp,
+            integer=integer,
+            iso8601_timestamp=iso8601_timestamp,
+            json_value=json_value,
+            list_of_lists=list_of_lists,
+            list_of_maps_of_strings=list_of_maps_of_strings,
+            list_of_strings=list_of_strings,
+            list_of_structs=list_of_structs,
+            long=long,
+            map_of_lists_of_strings=map_of_lists_of_strings,
+            map_of_maps=map_of_maps,
+            map_of_strings=map_of_strings,
+            map_of_structs=map_of_structs,
+            recursive_list=recursive_list,
+            recursive_map=recursive_map,
+            recursive_struct=recursive_struct,
+            simple_struct=simple_struct,
+            string=string,
+            struct_with_json_name=struct_with_json_name,
+            timestamp=timestamp,
+            unix_timestamp=unix_timestamp,
+        )
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -977,14 +1143,14 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def null_operation(
-        self, input: NullOperationInput, plugins: list[Plugin] | None = None
+        self, *, string: str | None = None, plugins: list[Plugin] | None = None
     ) -> NullOperationOutput:
         """
         Invokes the NullOperation operation.
 
         Args:
-            input:
-                An instance of `NullOperationInput`.
+            string:
+                The `string` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -994,6 +1160,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `NullOperationOutput`.
         """
+        input = NullOperationInput(string=string)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1044,16 +1211,14 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def operation_with_optional_input_output(
-        self,
-        input: OperationWithOptionalInputOutputInput,
-        plugins: list[Plugin] | None = None,
+        self, *, value: str | None = None, plugins: list[Plugin] | None = None
     ) -> OperationWithOptionalInputOutputOutput:
         """
         Invokes the OperationWithOptionalInputOutput operation.
 
         Args:
-            input:
-                An instance of `OperationWithOptionalInputOutputInput`.
+            value:
+                The `value` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1063,6 +1228,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `OperationWithOptionalInputOutputOutput`.
         """
+        input = OperationWithOptionalInputOutputInput(value=value)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1113,14 +1279,17 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def put_and_get_inline_documents(
-        self, input: PutAndGetInlineDocumentsInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        inline_document: Document | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> PutAndGetInlineDocumentsOutput:
         """
         This example serializes an inline document as part of the payload.
 
         Args:
-            input:
-                An instance of `PutAndGetInlineDocumentsInput`.
+            inline_document:
+                The `inline_document` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1130,6 +1299,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `PutAndGetInlineDocumentsOutput`.
         """
+        input = PutAndGetInlineDocumentsInput(inline_document=inline_document)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1180,14 +1350,20 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def put_with_content_encoding(
-        self, input: PutWithContentEncodingInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        encoding: str | None = None,
+        data: str | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> PutWithContentEncodingOutput:
         """
         Invokes the PutWithContentEncoding operation.
 
         Args:
-            input:
-                An instance of `PutWithContentEncodingInput`.
+            encoding:
+                The `encoding` input member.
+            data:
+                The `data` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1197,6 +1373,7 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `PutWithContentEncodingOutput`.
         """
+        input = PutWithContentEncodingInput(encoding=encoding, data=data)
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1247,14 +1424,20 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def simple_scalar_properties(
-        self, input: SimpleScalarPropertiesInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        float_value: float | None = None,
+        double_value: float | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> SimpleScalarPropertiesOutput:
         """
         Invokes the SimpleScalarProperties operation.
 
         Args:
-            input:
-                An instance of `SimpleScalarPropertiesInput`.
+            float_value:
+                The `float_value` input member.
+            double_value:
+                The `double_value` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1264,6 +1447,9 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `SimpleScalarPropertiesOutput`.
         """
+        input = SimpleScalarPropertiesInput(
+            float_value=float_value, double_value=double_value
+        )
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
@@ -1314,14 +1500,20 @@ class AsyncJsonProtocolClient:
         return await pipeline(call)
 
     async def sparse_nulls_operation(
-        self, input: SparseNullsOperationInput, plugins: list[Plugin] | None = None
+        self,
+        *,
+        sparse_string_list: list[str | None] | None = None,
+        sparse_string_map: dict[str, str | None] | None = None,
+        plugins: list[Plugin] | None = None,
     ) -> SparseNullsOperationOutput:
         """
         Invokes the SparseNullsOperation operation.
 
         Args:
-            input:
-                An instance of `SparseNullsOperationInput`.
+            sparse_string_list:
+                The `sparse_string_list` input member.
+            sparse_string_map:
+                The `sparse_string_map` input member.
             plugins:
                 A list of callables that modify the configuration dynamically.
                 Changes made by these plugins only apply for the duration of the
@@ -1331,6 +1523,9 @@ class AsyncJsonProtocolClient:
         Returns:
             An instance of `SparseNullsOperationOutput`.
         """
+        input = SparseNullsOperationInput(
+            sparse_string_list=sparse_string_list, sparse_string_map=sparse_string_map
+        )
         if self._closed:
             raise RuntimeError(
                 "Cannot invoke an operation on a client that has been closed."
