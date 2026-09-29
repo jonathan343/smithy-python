@@ -28,6 +28,9 @@ repositories {
     mavenCentral()
 }
 
+// The byte-frozen scope fixture is a smithy-build source in frozen-model/.
+// Keep the standard formatter enabled for every model in model/.
+
 dependencies {
     implementation(project(":core"))
     implementation(project(":aws:core"))

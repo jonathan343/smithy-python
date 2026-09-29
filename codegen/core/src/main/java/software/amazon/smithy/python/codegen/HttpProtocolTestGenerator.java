@@ -414,6 +414,8 @@ public final class HttpProtocolTestGenerator implements Runnable {
         if (isBinaryMediaType(testCase.getBodyMediaType().orElse(""))) {
             writer.addStdlibImport("base64");
             writer.writeInline("base64.b64decode(b$S)", body);
+        } else if (!body.chars().allMatch(c -> c < 128)) {
+            writer.writeInline("$S.encode(\"utf-8\")", body);
         } else {
             writer.writeInline("b$S", body);
         }
@@ -433,6 +435,12 @@ public final class HttpProtocolTestGenerator implements Runnable {
                     assert actual_body == expected_body
 
                     """);
+            return;
+        }
+        if (contentType.equals("application/xml") || contentType.endsWith("+xml")) {
+            writer.addDependency(SmithyPythonDependency.SMITHY_TEST);
+            writer.addImport("smithy_test.xml", "xml_equal");
+            writer.write("assert xml_equal(actual_body_content, expected_body_content)");
             return;
         }
         if (contentType.equals("application/x-www-form-urlencoded")) {

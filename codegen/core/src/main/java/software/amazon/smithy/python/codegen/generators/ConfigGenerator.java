@@ -341,6 +341,17 @@ public final class ConfigGenerator implements Runnable {
             args.add(service.getVersion());
         }
 
+        if (required.contains(ProtocolSettingsField.XML_NAMESPACE)) {
+            service.getTrait(software.amazon.smithy.model.traits.XmlNamespaceTrait.class).ifPresent(trait -> {
+                params.append(", xml_namespace=$S");
+                args.add(trait.getUri());
+                trait.getPrefix().ifPresent(prefix -> {
+                    params.append(", xml_namespace_prefix=$S");
+                    args.add(prefix);
+                });
+            });
+        }
+
         args.add(0, RuntimeTypes.PROTOCOL_SETTINGS);
         writer.write("_PROTOCOL_SETTINGS = $T(" + params + ")", args.toArray());
     }

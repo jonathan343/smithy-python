@@ -40,11 +40,14 @@ with Smithy, follow [this quickstart guide](https://smithy.io/2.0/quickstart.htm
 to learn the basics and create a simple Smithy model.
 
 Once you have a service defined in Smithy, you will need to define what protocol
-it uses. Currently, the only supported protocol is
-[restJson1](https://smithy.io/2.0/aws/protocols/aws-restjson1-protocol.html).
-This is a protocol based on AWS services, but is broadly applicable to any
-service that uses rest bindings with a JSON body type. Simply add the protocol
-trait to your service shape, and you'll be ready.
+it uses. The Java generator supports `restJson1`, `restXml`, `awsJson1_0`,
+`awsJson1_1`, and `awsQuery`. The example below uses
+[restJson1](https://smithy.io/2.0/aws/protocols/aws-restjson1-protocol.html),
+which combines REST bindings with JSON bodies. For XML bodies, use
+[restXml](https://smithy.io/2.0/aws/protocols/aws-restxml-protocol.html);
+see [the XML runtime documentation](packages/smithy-xml/README.md) for supported
+bindings and limitations, including buffered payloads and unsupported event streams.
+Add the appropriate protocol trait to your service shape.
 
 The following is a basic example service model that echoes messages sent to it.
 To use this model to generate a client, save it to a file called `main.smithy`

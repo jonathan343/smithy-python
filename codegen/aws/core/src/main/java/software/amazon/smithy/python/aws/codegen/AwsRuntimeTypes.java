@@ -21,6 +21,10 @@ public final class AwsRuntimeTypes {
             "aio.protocols",
             "AwsQueryClientProtocol");
 
+    public static final Symbol REST_XML_CLIENT_PROTOCOL = createSymbol(
+            "aio.restxml",
+            "RestXmlClientProtocol");
+
     // smithy_aws_core.aio.protocols
     public static final Symbol PROTOCOL_SETTINGS = createSymbol(
             "aio.protocols",

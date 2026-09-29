@@ -28,6 +28,7 @@ test-protocols: ## Generates and runs protocol tests for all supported protocols
 		uv pip install "$$projection_dir"; \
 		uv run pytest "$$projection_dir"; \
 	done
+	uv run pytest codegen/protocol-test/tests
 
 
 generate-protocol-tests: ## Generates protocol-test clients, copies them to ./codegen-output, and asserts no git diff.

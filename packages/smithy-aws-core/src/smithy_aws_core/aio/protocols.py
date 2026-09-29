@@ -114,6 +114,12 @@ class ProtocolSettings:
     service_target: str
     """The service shape name, used as the ``X-Amz-Target`` prefix by RPC protocols."""
 
+    xml_namespace: str | None = None
+    """Service XML namespace URI, if modeled."""
+
+    xml_namespace_prefix: str | None = None
+    """Optional prefix declared for the service XML namespace."""
+
     version: str | None = None
     """The service API version. Required by awsQuery; unused by other protocols."""
 

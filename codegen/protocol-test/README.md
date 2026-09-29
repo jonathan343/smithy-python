@@ -15,6 +15,14 @@ To run these tests, run `make test-protocols` from the repository root, ensuring
 you have a [Python virtual environment](https://docs.python.org/3/library/venv.html)
 active.
 
+REST XML also has focused generated-client regressions in `tests/`, run by the
+same target with the existing mock HTTP transport. Local models in `model/`
+remain covered by the standard `smithyFormat` task. Byte-frozen oracle fixtures
+live in `frozen-model/` and are loaded through `smithy-build.json` sources:
+Smithy Gradle 1.5.0's formatter accepts directories, not per-file exclusions.
+This keeps only the frozen fixtures outside formatting without disabling the
+task for other models.
+
 ### When should I change this package?
 
 This package should only be changed when support for a new protocol is initially

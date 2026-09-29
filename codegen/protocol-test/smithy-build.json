@@ -1,6 +1,85 @@
 {
     "version": "1.0",
+    "sources": ["frozen-model"],
     "projections": {
+        "parent-probe": {
+            "transforms": [
+                {"name": "includeServices", "args": {"services": ["parent.scope#Probe"]}},
+                {"name": "removeUnusedShapes"}
+            ],
+            "plugins": {
+                "python-client-codegen": {
+                    "service": "parent.scope#Probe",
+                    "module": "parentprobe",
+                    "moduleVersion": "0.0.1"
+                }
+            }
+        },
+        "xml-regressions": {
+            "transforms": [
+                {"name": "includeServices", "args": {"services": ["cleanroom.regressions#Regressions"]}},
+                {"name": "removeUnusedShapes"}
+            ],
+            "plugins": {
+                "python-client-codegen": {
+                    "service": "cleanroom.regressions#Regressions",
+                    "module": "xmlregressions",
+                    "moduleVersion": "0.0.1"
+                }
+            }
+        },
+        "rest-xml-namespace": {
+            "transforms": [
+                {"name": "includeServices", "args": {"services": ["aws.protocoltests.restxml.xmlns#RestXmlWithNamespace"]}},
+                {"name": "removeUnusedShapes"}
+            ],
+            "plugins": {
+                "python-client-codegen": {
+                    "service": "aws.protocoltests.restxml.xmlns#RestXmlWithNamespace",
+                    "module": "restxmlns",
+                    "moduleVersion": "0.0.1"
+                }
+            }
+        },
+        "xml-namespaces": {
+            "transforms": [
+                {"name": "includeServices", "args": {"services": ["cleanroom.namespaces#Namespaces"]}},
+                {"name": "removeUnusedShapes"}
+            ],
+            "plugins": {
+                "python-client-codegen": {
+                    "service": "cleanroom.namespaces#Namespaces",
+                    "module": "xmlnamespaces",
+                    "moduleVersion": "0.0.1"
+                }
+            }
+        },
+        "xml-scope": {
+            "transforms": [
+                {"name": "includeServices", "args": {"services": ["cleanroom.restxml#XmlScope"]}},
+                {"name": "removeUnusedShapes"}
+            ],
+            "plugins": {
+                "python-client-codegen": {
+                    "service": "cleanroom.restxml#XmlScope",
+                    "module": "xmlscope",
+                    "moduleVersion": "0.0.1"
+                }
+            }
+        },
+        "rest-xml": {
+            "transforms": [
+                {"name": "includeServices", "args": {"services": ["aws.protocoltests.restxml#RestXml"]}},
+                {"name": "removeUnusedShapes"}
+            ],
+            "plugins": {
+                "python-client-codegen": {
+                    "service": "aws.protocoltests.restxml#RestXml",
+                    "module": "restxml",
+                    "moduleVersion": "0.0.1"
+                }
+            }
+        },
         "rest-json-1": {
             "transforms": [
                 {
