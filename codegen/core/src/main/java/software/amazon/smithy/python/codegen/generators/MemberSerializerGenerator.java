@@ -30,6 +30,7 @@ import software.amazon.smithy.model.shapes.StructureShape;
 import software.amazon.smithy.model.shapes.TimestampShape;
 import software.amazon.smithy.model.shapes.UnionShape;
 import software.amazon.smithy.model.traits.StreamingTrait;
+import software.amazon.smithy.python.codegen.CodegenUtils;
 import software.amazon.smithy.python.codegen.GenerationContext;
 import software.amazon.smithy.python.codegen.SymbolProperties;
 import software.amazon.smithy.python.codegen.writer.PythonWriter;
@@ -102,19 +103,8 @@ public final class MemberSerializerGenerator extends ShapeVisitor.DataShapeVisit
         } else if (parent.isMapShape()) {
             writer.writeInline("value_schema");
         } else {
-            writer.writeInline("members[$L]", Integer.toString(memberIndex(parent)));
+            writer.writeInline("members[$L]", Integer.toString(CodegenUtils.getMemberIndex(context.model(), member)));
         }
-    }
-
-    private int memberIndex(Shape parent) {
-        int index = 0;
-        for (var m : parent.members()) {
-            if (m.getMemberName().equals(member.getMemberName())) {
-                return index;
-            }
-            index++;
-        }
-        throw new CodegenException("Member not found in container: " + member.getId());
     }
 
     @Override

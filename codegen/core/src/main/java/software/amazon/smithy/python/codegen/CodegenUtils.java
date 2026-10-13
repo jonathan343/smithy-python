@@ -206,6 +206,22 @@ public final class CodegenUtils {
     }
 
     /**
+     * Gets a member's position in its container, matching the member index of the
+     * generated schema.
+     *
+     * @param model The whole service model.
+     * @param member The member to locate.
+     * @return Returns the zero-based index of the member in its container.
+     */
+    public static int getMemberIndex(Model model, MemberShape member) {
+        int index = model.expectShape(member.getContainer()).getMemberNames().indexOf(member.getMemberName());
+        if (index < 0) {
+            throw new CodegenException("Member not found in container: " + member.getId());
+        }
+        return index;
+    }
+
+    /**
      * Executes a given shell command in a given directory.
      *
      * @param command The string command to execute, e.g. "python fmt".
