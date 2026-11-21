@@ -1,0 +1,4 @@
+{
+  "type": "feature",
+  "description": "Added `HTTPX2Client` and `AsyncHTTPX2Client`, synchronous and asynchronous HTTP clients built on httpx2 that support HTTP/1.1 and HTTP/2. Install them with the `httpx2` extra."
+}

@@ -56,6 +56,9 @@ aiohttp = [
 urllib3 = [
     "urllib3>=2.0, <3.0",
 ]
+httpx2 = [
+    "httpx2>=2.16.2, <3.0",
+]
 
 [build-system]
 requires = ["hatchling"]

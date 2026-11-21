@@ -1012,6 +1012,18 @@
     "read_streaming_blob_async": "rex-function[async]",
     "tuples_to_fields": "rex-function"
   },
+  "smithy_http.aio.httpx2": {
+    "AsyncBytesReader": "rex-class[async]",
+    "AsyncHTTPClient": "rex-protocol[async]",
+    "ClientTimeoutError": "rex-exception",
+    "HTTPRequest": "rex-protocol",
+    "HTTPRequestConfiguration": "rex-class",
+    "HTTPResponse": "rex-class",
+    "HTTPResponseInterface": "rex-protocol",
+    "HTTPX2ClientConfig": "rex-class",
+    "SmithyHTTPError": "rex-exception",
+    "read_streaming_blob_async": "rex-function[async]"
+  },
   "smithy_http.aio.identity.apikey": {
     "APIKeyIdentity": "rex-class",
     "APIKeyIdentityProperties": "rex-class",
@@ -1136,6 +1148,21 @@
   },
   "smithy_http.exceptions": {
     "SmithyError": "rex-exception"
+  },
+  "smithy_http.httpx2": {
+    "ClientTimeoutError": "rex-exception",
+    "Fields": "rex-protocol",
+    "HTTPClient": "rex-protocol",
+    "HTTPClientConfiguration": "rex-class",
+    "HTTPRequest": "rex-protocol",
+    "HTTPRequestConfiguration": "rex-class",
+    "HTTPResponse": "rex-class",
+    "HTTPResponseInterface": "rex-protocol",
+    "MissingDependencyError": "rex-exception",
+    "SmithyHTTPError": "rex-exception",
+    "URI": "rex-protocol",
+    "is_bytes_reader": "rex-function",
+    "tuples_to_fields": "rex-function"
   },
   "smithy_http.identity": {
     "Identity": "rex-protocol",

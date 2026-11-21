@@ -697,6 +697,9 @@
     "ConnectionPoolKey": "type_alias",
     "DEFAULT_READ_BUFFER_SIZE": "int"
   },
+  "smithy_http.aio.httpx2": {
+    "AsyncHTTPX2Client": "class[async]"
+  },
   "smithy_http.aio.identity": {},
   "smithy_http.aio.identity.apikey": {
     "AsyncAPIKeyIdentityResolver": "class[async]"
@@ -741,6 +744,10 @@
   },
   "smithy_http.exceptions": {
     "SmithyHTTPError": "exception"
+  },
+  "smithy_http.httpx2": {
+    "HTTPX2Client": "class",
+    "HTTPX2ClientConfig": "class"
   },
   "smithy_http.identity": {
     "APIKeyIdentity": "class",
