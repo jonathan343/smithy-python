@@ -25,7 +25,6 @@ from smithy_core.interfaces import (
 )
 from smithy_core.interfaces.auth import AuthSchemeResolver
 from smithy_core.shapes import ShapeID
-from smithy_http.aio.aiohttp import AIOHTTPClient
 
 from awsjson11_client._private.endpoints import BDD
 from awsjson11_client._private.schemas import JSON_PROTOCOL
@@ -95,7 +94,6 @@ class AsyncJsonProtocolConfig(AsyncAwsConfig):
         ),
         "auth_scheme_resolver": FieldSpec(default_factory=DefaultAuthResolver),
         "disable_host_prefix_injection": FieldSpec(default=None),
-        "transport": FieldSpec(default_factory=lambda: AIOHTTPClient()),
     }
 
     def set_auth_scheme(self, scheme: AsyncAuthScheme[Any, Any, Any, Any]) -> None:

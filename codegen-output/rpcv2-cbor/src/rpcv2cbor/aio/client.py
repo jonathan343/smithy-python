@@ -6,6 +6,7 @@ import logging
 from typing import Unpack as _Unpack, overload as _overload
 
 from smithy_core.aio.client import AsyncClient
+from smithy_http.aio.transports import ASYNC_HTTP_TRANSPORTS
 from smithy_http.plugins import user_agent_plugin
 
 from .. import models as _models
@@ -40,6 +41,8 @@ class AsyncRpcV2Protocol(AsyncClient[AsyncConfig]):
     """Client for RpcV2Protocol"""
 
     _client_plugins = (aws_user_agent_plugin, user_agent_plugin)
+
+    _transport_hooks = ASYNC_HTTP_TRANSPORTS
 
     @_overload
     async def empty_input_output(

@@ -2,6 +2,7 @@
 #  SPDX-License-Identifier: Apache-2.0
 from collections.abc import AsyncIterable, AsyncIterator
 from copy import copy, deepcopy
+from dataclasses import dataclass
 from itertools import chain
 from typing import TYPE_CHECKING, Any, Self, cast
 
@@ -22,7 +23,7 @@ except ImportError:
 
 from smithy_core.aio.interfaces import StreamingBlob
 from smithy_core.aio.types import AsyncBytesReader
-from smithy_core.exceptions import MissingDependencyError
+from smithy_core.exceptions import ClientTimeoutError, MissingDependencyError
 from smithy_core.interfaces import URI
 
 from smithy_http import HTTPResponse
@@ -30,6 +31,7 @@ from smithy_http.interfaces import HTTPRequest
 from smithy_http.interfaces import HTTPResponse as HTTPResponseInterface
 
 from .. import tuples_to_fields
+from .._settings import read_timeout
 from ..exceptions import SmithyHTTPError
 from ..interfaces import (
     HTTPClientConfiguration,
@@ -42,8 +44,15 @@ __all__ = ["HAS_AIOHTTP", "AIOHTTPClient", "AIOHTTPClientConfig"]
 _UPLOAD_CHUNK_SIZE = 128 * 1024
 
 
+@dataclass(kw_only=True)
 class AIOHTTPClientConfig(HTTPClientConfiguration):
-    """Configuration for the aiohttp HTTP client."""
+    """Configuration for the aiohttp HTTP client.
+
+    :param connect_timeout: How long, in seconds, to wait for a connection, or None
+        to wait indefinitely.
+    """
+
+    connect_timeout: float | None = 30.0
 
     def __post_init__(self) -> None:
         _assert_aiohttp()
@@ -77,6 +86,7 @@ class AIOHTTPClient(AsyncHTTPClient):
         self._session = _session or aiohttp.ClientSession(
             auto_decompress=False,
             headers={"Accept-Encoding": "identity"},
+            timeout=self._timeout(None),
         )
 
     async def __aenter__(self) -> Self:
@@ -108,8 +118,6 @@ class AIOHTTPClient(AsyncHTTPClient):
             raise SmithyHTTPError(
                 "Cannot send a request after the HTTP client has been closed."
             )
-
-        request_config = request_config or HTTPRequestConfiguration()
 
         # aiohttp chunks a body itself when asked with chunked=True, and rejects a
         # Transfer-Encoding: chunked header, so the header becomes that flag.
@@ -143,6 +151,9 @@ class AIOHTTPClient(AsyncHTTPClient):
             chunked=True if chunked else None,
             allow_redirects=False,
             skip_auto_headers={"Content-Type"},
+            # Set on every request, so a session passed in has no total deadline
+            # either.
+            timeout=self._timeout(request_config),
         )
         try:
             return self._marshal_response(resp)
@@ -156,6 +167,20 @@ class AIOHTTPClient(AsyncHTTPClient):
             return
         self._closed = True
         await self._session.close()
+
+    def _timeout(
+        self, request_config: HTTPRequestConfiguration | None
+    ) -> "aiohttp.ClientTimeout":
+        """Bound connecting and each read, but not the whole request.
+
+        A total deadline would end a long download or event stream that is still
+        receiving data.
+        """
+        return aiohttp.ClientTimeout(
+            total=None,
+            sock_connect=self._config.connect_timeout,
+            sock_read=read_timeout(request_config, None),
+        )
 
     async def _prepare_body(self, body: StreamingBlob) -> AsyncBytesReader | None:
         """Convert a body for aiohttp, omitting seekable bodies with no data."""
@@ -225,14 +250,25 @@ class _AIOHTTPStreamingBody(AsyncIterable[bytes]):
         self._reader: AsyncBytesReader | None = None
 
     def __aiter__(self) -> AsyncIterator[bytes]:
-        # The reader iterates by line, so use iter_any to get raw chunks.
-        return self._response.content.iter_any()
+        return self._chunks()
 
     async def read(self, size: int = -1) -> bytes:
         if self._reader is None:
-            self._reader = AsyncBytesReader(self._response.content.iter_any())
+            self._reader = AsyncBytesReader(self._chunks())
         return await self._reader.read(size)
 
     async def close(self) -> None:
         # Pools the connection if the body was read to completion, closes it if not.
         self._response.release()
+
+    async def _chunks(self) -> AsyncIterator[bytes]:
+        # The reader iterates by line, so use iter_any to get raw chunks.
+        try:
+            async for chunk in self._response.content.iter_any():
+                yield chunk
+        except TimeoutError as e:
+            # Raised as the client raises timeouts while sending, so it's retried
+            # while the client reads an error or non-streaming response.
+            raise ClientTimeoutError(
+                message=f"A timeout error occurred ({type(e).__name__}: {e})."
+            ) from e

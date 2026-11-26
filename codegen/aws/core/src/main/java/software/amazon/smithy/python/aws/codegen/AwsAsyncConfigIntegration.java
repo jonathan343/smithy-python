@@ -55,6 +55,7 @@ public class AwsAsyncConfigIntegration implements PythonIntegration {
             "sdk_ua_app_id",
             "user_agent_extra",
             "interceptors",
+            "http",
             "http_request_config",
             "transport",
             "retry_strategy",
@@ -389,16 +390,8 @@ public class AwsAsyncConfigIntegration implements PythonIntegration {
                 writer.write("),");
             }
 
-            // transport FieldSpec
-            writer.write("\"transport\": $T(", fieldSpecSymbol);
-            writer.indent();
-            if (!sync) {
-                writer.addDependency(SmithyPythonDependency.SMITHY_HTTP.withOptionalDependencies("aiohttp"));
-            }
-            writer.write("default_factory=lambda: $T(),", RuntimeTypes.AIOHTTP_CLIENT);
-            writer.dedent();
-            writer.write("),");
-
+            // The base fields resolve transport and http. The client's transport hooks
+            // create the transport they select when the client is set up.
             writer.closeBlock("}");
             writer.write("");
 

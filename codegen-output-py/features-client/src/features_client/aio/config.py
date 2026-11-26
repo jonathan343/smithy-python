@@ -29,7 +29,6 @@ from smithy_core.interfaces import (
 from smithy_core.interfaces.auth import AuthSchemeResolver
 from smithy_core.shapes import ShapeID
 from smithy_core.traits import APIKeyLocation
-from smithy_http.aio.aiohttp import AIOHTTPClient
 from smithy_http.aio.auth.apikey import AsyncAPIKeyAuthScheme
 from smithy_http.aio.auth.bearer import AsyncBearerAuthScheme
 from smithy_http.aio.identity.apikey import AsyncAPIKeyIdentityResolver
@@ -157,7 +156,6 @@ class AsyncFieldNotesConfig(AsyncAwsConfig):
         "use_fips_endpoint": FieldSpec(
             default=None, resolver=resolve_use_fips_endpoint_program
         ),
-        "transport": FieldSpec(default_factory=lambda: AIOHTTPClient()),
     }
 
     _SHARED_FIELDS: ClassVar[tuple[str, ...]] = (

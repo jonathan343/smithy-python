@@ -96,6 +96,15 @@ public final class ConfigGenerator implements Runnable {
     // service client, except for the http client itself.
     private static final List<ConfigProperty> HTTP_PROPERTIES = List.of(
             ConfigProperty.builder()
+                    .name("http")
+                    .type(RuntimeTypes.HTTP_SETTINGS)
+                    .documentation("HTTP settings, such as timeouts. On a transport the client "
+                            + "creates, a timeout left out defaults to 60 seconds, except for "
+                            + "some streaming and long poll calls; a transport instance keeps its "
+                            + "own defaults. A timeout of None disables it, except the crt "
+                            + "transport's connect_timeout. See HTTPSettings for details.")
+                    .build(),
+            ConfigProperty.builder()
                     .name("http_request_config")
                     .type(Symbol.builder()
                             .name("HTTPRequestConfiguration")
@@ -311,13 +320,24 @@ public final class ConfigGenerator implements Runnable {
 
         if (context.applicationProtocol().isHttpProtocol()) {
             properties.addAll(HTTP_PROPERTIES);
+            // The client's transport hooks create the transport a name selects, or the
+            // default one, when the client is set up; see ClientGenerator.
             transportBuilder
-                    .initialize(writer -> {
-                        writer.addDependency(
-                                SmithyPythonDependency.SMITHY_HTTP.withOptionalDependencies("aiohttp"));
-                        writer.write("self.transport = transport or $T()",
-                                RuntimeTypes.AIOHTTP_CLIENT);
-                    });
+                    .type(Symbol.builder()
+                            .name("AsyncClientTransport[Any, Any] | AsyncTransportName")
+                            .addReference(Symbol.builder()
+                                    .name("AsyncClientTransport")
+                                    .namespace("smithy_core.aio.interfaces", ".")
+                                    .build())
+                            .addReference(RuntimeTypes.ASYNC_TRANSPORT_NAME)
+                            .build())
+                    .documentation("Sends requests: a transport instance, such as an HTTP client, or "
+                            + "the name of a transport the client creates when it is set up. Async "
+                            + "clients create 'aiohttp' (the default) or 'crt', and sync clients "
+                            + "'urllib3' (the default). Operations with bidirectional event streams "
+                            + "require a AsyncDuplexClientTransport, such as AWSCRTHTTPClient. "
+                            + "Transports are assumed not to support duplex streaming unless they "
+                            + "explicitly set SUPPORTS_DUPLEX_STREAMING to True.");
         }
 
         properties.add(protocolBuilder.build());

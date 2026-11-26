@@ -10,6 +10,7 @@ from smithy_core.aio.client import AsyncClient
 from smithy_core.aio.pagination import AsyncItemPaginator
 from smithy_http.aio.identity.token import AsyncStaticTokenResolver
 from smithy_http.aio.interfaces import AsyncHTTPClient
+from smithy_http.aio.transports import ASYNC_HTTP_TRANSPORTS
 from smithy_http.identity import TokenIdentity
 from smithy_http.plugins import user_agent_plugin
 
@@ -28,6 +29,7 @@ class AsyncFieldNotesClient(AsyncClient[AsyncFieldNotesConfig]):
     """
 
     _client_plugins = (aws_user_agent_plugin, user_agent_plugin)
+    _transport_hooks = ASYNC_HTTP_TRANSPORTS
 
     @overload
     async def echo(

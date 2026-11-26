@@ -18,9 +18,10 @@ from smithy_core.interfaces.auth import AuthSchemeResolver
 from smithy_core.interfaces.retries import RetryStrategy
 from smithy_core.retries import RetryStrategyOptions
 from smithy_core.shapes import ShapeID
-from smithy_http.aio.aiohttp import AIOHTTPClient
 from smithy_http.aio.protocols import AsyncRpcV2JsonClientProtocol
+from smithy_http.aio.transports import AsyncTransportName
 from smithy_http.interfaces import HTTPRequestConfiguration
+from smithy_http.transports import HTTPSettings
 
 from .._private.endpoints import BDD
 from .._private.schemas import RPC_V2_JSON_PROTOCOL
@@ -122,6 +123,15 @@ class AsyncConfig:
     endpoint_uri: str | URI | None
     """A static URI to route requests to."""
 
+    http: HTTPSettings | None
+    """
+    HTTP settings, such as timeouts. On a transport the client creates, a
+    timeout left out defaults to 60 seconds, except for some streaming and
+    long poll calls; a transport instance keeps its own defaults. A timeout
+    of None disables it, except the crt transport's connect_timeout. See
+    HTTPSettings for details.
+    """
+
     http_request_config: HTTPRequestConfiguration | None
     """Configuration for individual HTTP requests."""
 
@@ -156,12 +166,15 @@ class AsyncConfig:
     header.
     """
 
-    transport: AsyncClientTransport[Any, Any] | None
+    transport: AsyncClientTransport[Any, Any] | AsyncTransportName | None
     """
-    The transport to use to send requests (e.g. an HTTP client). Operations
-    with bidirectional event streams require a AsyncDuplexClientTransport,
-    such as AWSCRTHTTPClient. Transports are assumed not to support duplex
-    streaming unless they explicitly set SUPPORTS_DUPLEX_STREAMING to True.
+    Sends requests: a transport instance, such as an HTTP client, or the
+    name of a transport the client creates when it is set up. Async clients
+    create 'aiohttp' (the default) or 'crt', and sync clients
+    'urllib3' (the default). Operations with bidirectional event streams
+    require a AsyncDuplexClientTransport, such as AWSCRTHTTPClient.
+    Transports are assumed not to support duplex streaming unless they
+    explicitly set SUPPORTS_DUPLEX_STREAMING to True.
     """
 
     user_agent_extra: str | None
@@ -174,6 +187,7 @@ class AsyncConfig:
         auth_schemes: dict[ShapeID, AsyncAuthScheme[Any, Any, Any, Any]] | None = None,
         endpoint_resolver: EndpointResolver | AsyncEndpointResolver | None = None,
         endpoint_uri: str | URI | None = None,
+        http: HTTPSettings | None = None,
         http_request_config: HTTPRequestConfiguration | None = None,
         interceptors: list[_ServiceInterceptor] | None = None,
         protocol: ClientProtocol[Any, Any]
@@ -182,13 +196,14 @@ class AsyncConfig:
         region: str | None = None,
         retry_strategy: RetryStrategy | RetryStrategyOptions | None = None,
         sdk_ua_app_id: str | None = None,
-        transport: AsyncClientTransport[Any, Any] | None = None,
+        transport: AsyncClientTransport[Any, Any] | AsyncTransportName | None = None,
         user_agent_extra: str | None = None,
     ):
         self.auth_scheme_resolver = auth_scheme_resolver or DefaultAuthResolver()
         self.auth_schemes = auth_schemes or {}
         self.endpoint_resolver = endpoint_resolver or BddEndpointResolver(BDD)
         self.endpoint_uri = endpoint_uri
+        self.http = http
         self.http_request_config = http_request_config
         self.interceptors = interceptors or []
         if isinstance(protocol, type):
@@ -199,7 +214,7 @@ class AsyncConfig:
         self.region = region
         self.retry_strategy = retry_strategy
         self.sdk_ua_app_id = sdk_ua_app_id
-        self.transport = transport or AIOHTTPClient()
+        self.transport = transport
         self.user_agent_extra = user_agent_extra
 
 

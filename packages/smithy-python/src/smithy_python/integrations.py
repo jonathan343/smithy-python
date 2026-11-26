@@ -60,6 +60,9 @@ class ClientMode:
     protocol: TypeReference
     transport: TypeReference
     transport_type: TypeReference
+    transport_name: TypeReference
+    """The type of the transport names the config takes. It carries the
+    dependencies of the default transport, which setup creates from its name."""
     auth_scheme: TypeReference
     endpoint_resolver: tuple[TypeReference, ...]
     is_async: bool

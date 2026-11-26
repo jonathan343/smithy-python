@@ -183,6 +183,11 @@ final class ClientGenerator implements Runnable {
                                 )
                                 """, writer.consumer(w -> writeDefaultPlugins(w, servicePlugins)));
                     }
+                    if (context.applicationProtocol().isHttpProtocol()) {
+                        // Creates the transport the config selects during setup, before
+                        // _post_setup, and gives each send the config's HTTP settings.
+                        writer.write("_transport_hooks = $T\n", RuntimeTypes.ASYNC_HTTP_TRANSPORTS);
+                    }
 
                     var topDownIndex = TopDownIndex.of(model);
                     var eventStreamIndex = EventStreamIndex.of(model);

@@ -18,8 +18,9 @@ from smithy_core.interfaces.auth import AuthSchemeResolver
 from smithy_core.interfaces.retries import RetryStrategy
 from smithy_core.retries import RetryStrategyOptions
 from smithy_core.shapes import ShapeID
-from smithy_http.aio.aiohttp import AIOHTTPClient
 from smithy_http.aio.protocols import AsyncRpcV2CborClientProtocol
+from smithy_http.aio.transports import AsyncTransportName
+from smithy_http.transports import HTTPSettings
 
 from rpcv2cbor_client._private.endpoints import BDD
 from rpcv2cbor_client._private.schemas import RPC_V2_PROTOCOL
@@ -48,6 +49,9 @@ class AsyncConfig:
     endpoint_uri: str | URI | None
     "The endpoint URI, read by the endpoint rules as `SDK::Endpoint`."
 
+    http: HTTPSettings | None
+    "HTTP settings, such as timeouts. On a transport the client creates, a timeout left out defaults to 60 seconds, except for some streaming and long poll calls; a transport instance keeps its own defaults. A timeout of None disables it, except the crt transport's connect_timeout. See HTTPSettings for details."
+
     interceptors: list[Interceptor[Any, Any, Any, Any]]
     "Hooks called during the execution of a request."
 
@@ -57,8 +61,8 @@ class AsyncConfig:
     retry_strategy: RetryStrategy | RetryStrategyOptions | None
     "The retry strategy, or options to create one."
 
-    transport: AsyncClientTransport[Any, Any]
-    "Sends requests, such as an HTTP client."
+    transport: AsyncClientTransport[Any, Any] | AsyncTransportName | None
+    "Sends requests: the name of a transport the client creates when it is set up, or a transport instance. Defaults to 'aiohttp'."
 
     def __init__(
         self,
@@ -67,17 +71,19 @@ class AsyncConfig:
         auth_schemes: dict[ShapeID, AsyncAuthScheme[Any, Any, Any, Any]] | None = None,
         endpoint_resolver: EndpointResolver | AsyncEndpointResolver | None = None,
         endpoint_uri: str | URI | None = None,
+        http: HTTPSettings | None = None,
         interceptors: list[Interceptor[Any, Any, Any, Any]] | None = None,
         protocol: ClientProtocol[Any, Any]
         | ProtocolConstructor[ClientProtocol[Any, Any]]
         | None = None,
         retry_strategy: RetryStrategy | RetryStrategyOptions | None = None,
-        transport: AsyncClientTransport[Any, Any] | None = None,
+        transport: AsyncClientTransport[Any, Any] | AsyncTransportName | None = None,
     ) -> None:
         self.auth_scheme_resolver = auth_scheme_resolver or DefaultAuthResolver()
         self.auth_schemes = auth_schemes or {}
         self.endpoint_resolver = endpoint_resolver or BddEndpointResolver(BDD)
         self.endpoint_uri = endpoint_uri
+        self.http = http
         self.interceptors = interceptors or []
         if isinstance(protocol, type):
             protocol = protocol(_PROTOCOL_SETTINGS)
@@ -85,7 +91,7 @@ class AsyncConfig:
             ClientProtocol[Any, Any], protocol
         ) or AsyncRpcV2CborClientProtocol(_PROTOCOL_SETTINGS)
         self.retry_strategy = retry_strategy
-        self.transport = transport or AIOHTTPClient()
+        self.transport = transport
 
 
 type Plugin = Callable[[AsyncConfig], None]

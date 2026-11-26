@@ -66,7 +66,10 @@ def take_over(
     elif target._config is not None:
         # Copied so the caller's config, possibly shared, keeps its own values.
         target._config = deepcopy(target._config)
-        install(target._config, transport)
+        # Installed by _post_setup below, once setup has created the transport the
+        # config names. Checked now, so a config that can't be mocked fails early.
+        if isinstance(install, _MockInstall):
+            _check_config(target._config)
 
     post_setup = target._post_setup
     build_call = target._build_call
@@ -136,11 +139,17 @@ def mock_install(
     :param static_token_resolver: Builds the sync or async static token resolver
         that replaces an AWS bearer client's, from its ``identity`` keyword.
     """
+    return _MockInstall(static_token_resolver)
 
-    def install(config: Any, transport: MockTransport) -> None:
-        _scrub_config(config, transport, static_token_resolver)
 
-    return install
+class _MockInstall:
+    """The ``install`` of a mock, which :py:func:`take_over` checks configs for."""
+
+    def __init__(self, static_token_resolver: Callable[..., Any]) -> None:
+        self._static_token_resolver = static_token_resolver
+
+    def __call__(self, config: Any, transport: MockTransport) -> None:
+        _scrub_config(config, transport, self._static_token_resolver)
 
 
 def _check_client(client: ClientBase[Any]) -> None:

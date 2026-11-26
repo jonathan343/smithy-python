@@ -1,0 +1,4 @@
+{
+  "type": "enhancement",
+  "description": "Mocked and recorded clients use the transport and HTTP settings the client's setup creates from its config."
+}

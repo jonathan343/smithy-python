@@ -29,14 +29,15 @@ public final class SyncVariant {
     private static final Pattern ASYNC_KEYWORD = Pattern.compile("\\basync (?=def |with |for )");
     private static final Pattern AWAIT_KEYWORD = Pattern.compile("\\bawait ");
 
-    // Sync twins that don't follow the naming convention.
+    // Sync twins that don't follow the naming convention, or that depend on the sync
+    // default transport rather than the async one.
     private static final Map<String, Symbol> SPECIAL_CASES = Map.of(
             "smithy_http.aio.aiohttp.AIOHTTPClient",
-            Symbol.builder()
-                    .name("Urllib3HTTPClient")
-                    .namespace("smithy_http.urllib3", ".")
-                    .addDependency(SmithyPythonDependency.SMITHY_HTTP.withOptionalDependencies("urllib3"))
-                    .build());
+            urllib3Symbol("Urllib3HTTPClient", "smithy_http.urllib3"),
+            "smithy_http.aio.transports.AsyncTransportName",
+            urllib3Symbol("TransportName", "smithy_http.transports"),
+            "smithy_http.aio.transports.ASYNC_HTTP_TRANSPORTS",
+            urllib3Symbol("HTTP_TRANSPORTS", "smithy_http.transports"));
 
     private SyncVariant() {}
 
@@ -154,6 +155,14 @@ public final class SyncVariant {
                     writer.write(toSyncCode(template), args);
                 });
         return syncPlugin.getDefinitionFile();
+    }
+
+    private static Symbol urllib3Symbol(String name, String namespace) {
+        return Symbol.builder()
+                .name(name)
+                .namespace(namespace, ".")
+                .addDependency(SmithyPythonDependency.SMITHY_HTTP.withOptionalDependencies("urllib3"))
+                .build();
     }
 
     private static boolean isAioNamespace(String namespace) {

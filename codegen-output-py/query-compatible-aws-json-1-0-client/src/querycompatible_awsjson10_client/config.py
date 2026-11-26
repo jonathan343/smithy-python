@@ -20,7 +20,6 @@ from smithy_core.interfaces import (
 )
 from smithy_core.interfaces.auth import AuthScheme, AuthSchemeResolver
 from smithy_core.shapes import ShapeID
-from smithy_http.urllib3 import Urllib3HTTPClient
 
 from querycompatible_awsjson10_client._private.endpoints import BDD
 from querycompatible_awsjson10_client._private.schemas import (
@@ -90,7 +89,6 @@ class QueryCompatibleJSONRPC10Config(AwsConfig):
             }
         ),
         "auth_scheme_resolver": FieldSpec(default_factory=DefaultAuthResolver),
-        "transport": FieldSpec(default_factory=lambda: Urllib3HTTPClient()),
     }
 
     def set_auth_scheme(self, scheme: AuthScheme[Any, Any, Any, Any]) -> None:

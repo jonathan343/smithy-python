@@ -3,7 +3,7 @@
 import logging
 import threading
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, Self
 
@@ -95,9 +95,18 @@ class RequestPipeline[TRequest, TResponse](RequestPipelineBase[TRequest, TRespon
         self,
         protocol: ClientProtocol[TRequest, TResponse],
         transport: ClientTransport[TRequest, TResponse],
+        transport_options: Mapping[str, Any] | None = None,
     ) -> None:
+        """
+        :param protocol: Serializes requests and deserializes responses.
+        :param transport: Sends requests and receives responses.
+        :param transport_options: Keyword arguments given to the transport's
+            ``send`` with every request. A transport that can't take them is
+            rejected rather than sent requests without them.
+        :raises UnsupportedTransportError: If the transport can't take the options.
+        """
         self.protocol = protocol
-        self.transport = transport
+        self._set_transport(transport, transport_options)
 
     def __call__[I: SerializeableShape, O: DeserializeableShape](
         self, call: ClientCall[I, O], /
@@ -118,7 +127,9 @@ class RequestPipeline[TRequest, TResponse](RequestPipelineBase[TRequest, TRespon
     def _transmit(
         self, request_context: RequestContext[Any, TRequest], request_future: None
     ) -> TResponse:
-        return self.transport.send(request_context.transport_request)
+        return self.transport.send(
+            request_context.transport_request, **self.transport_options
+        )
 
 
 class Client[C](_ClientBase[C]):

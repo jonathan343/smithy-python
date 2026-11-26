@@ -25,7 +25,7 @@ classifiers = [
 
 dependencies = [
     "smithy_core~=0.13.0",
-    "smithy_http[json, aiohttp, urllib3]~=0.10.0"
+    "smithy_http[aiohttp, json, urllib3]~=0.10.0"
 ]
 
 [project.optional-dependencies]

@@ -4,6 +4,7 @@ import logging
 
 from smithy_core.client import Client
 from smithy_http.plugins import user_agent_plugin
+from smithy_http.transports import HTTP_TRANSPORTS
 
 from .config import Config
 from .user_agent import aws_user_agent_plugin
@@ -22,6 +23,8 @@ class MyHandwrittenJsonModel(Client[Config]):
     """
 
     _client_plugins = (aws_user_agent_plugin, user_agent_plugin)
+
+    _transport_hooks = HTTP_TRANSPORTS
 
     def _new_config(self) -> Config:
         return Config()

@@ -20,7 +20,6 @@ from smithy_core.interfaces import (
 )
 from smithy_core.interfaces.auth import AuthScheme, AuthSchemeResolver
 from smithy_core.shapes import ShapeID
-from smithy_http.urllib3 import Urllib3HTTPClient
 
 from ec2query_client._private.endpoints import BDD
 from ec2query_client._private.schemas import AWS_EC2
@@ -91,7 +90,6 @@ class EC2ProtocolConfig(AwsConfig):
         ),
         "auth_scheme_resolver": FieldSpec(default_factory=DefaultAuthResolver),
         "disable_host_prefix_injection": FieldSpec(default=None),
-        "transport": FieldSpec(default_factory=lambda: Urllib3HTTPClient()),
     }
 
     def set_auth_scheme(self, scheme: AuthScheme[Any, Any, Any, Any]) -> None:

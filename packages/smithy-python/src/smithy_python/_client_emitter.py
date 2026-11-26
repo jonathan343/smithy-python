@@ -228,6 +228,22 @@ _USER_AGENT_PLUGIN: Final = TypeReference(
     "smithy_http.plugins",
     dependencies=(_dependencies.SMITHY_HTTP,),
 )
+_HTTP_SETTINGS: Final = TypeReference(
+    "HTTPSettings",
+    "smithy_http.transports",
+    dependencies=(_dependencies.SMITHY_HTTP,),
+)
+_HTTP_DOCS: Final = (
+    "HTTP settings, such as timeouts. On a transport the client creates, a "
+    "timeout left out defaults to 60 seconds, except for some streaming and "
+    "long poll calls; a transport instance keeps its own defaults. A timeout of "
+    "None disables it, except the crt transport's connect_timeout. See "
+    "HTTPSettings for details."
+)
+_TRANSPORT_DOCS: Final = (
+    "Sends requests: the name of a transport the client creates when it is set "
+    "up, or a transport instance. Defaults to {default!r}."
+)
 
 
 def _generic(reference: TypeReference, *arguments: TypeReference) -> TypeReference:
@@ -273,6 +289,11 @@ def _modes(
             protocol=protocol.protocol,
             transport=protocol.transport,
             transport_type=_generic(_core("ClientTransport", "interfaces"), _ANY, _ANY),
+            transport_name=TypeReference(
+                "TransportName",
+                "smithy_http.transports",
+                dependencies=protocol.transport.dependencies,
+            ),
             auth_scheme=_generic(_core("AuthScheme", "interfaces.auth"), *_ANY4),
             endpoint_resolver=(endpoint_resolver,),
             is_async=False,
@@ -286,6 +307,11 @@ def _modes(
             transport=protocol.async_transport,
             transport_type=_generic(
                 _core("AsyncClientTransport", "aio.interfaces"), _ANY, _ANY
+            ),
+            transport_name=TypeReference(
+                "AsyncTransportName",
+                "smithy_http.aio.transports",
+                dependencies=protocol.async_transport.dependencies,
             ),
             auth_scheme=_generic(
                 _core("AsyncAuthScheme", "aio.interfaces.auth"), *_ANY4
@@ -315,6 +341,7 @@ _CONFIG_FIELDS: Final = frozenset(
         HOST_PREFIX_FIELD[0],
         "endpoint_resolver",
         "endpoint_uri",
+        "http",
         "interceptors",
         "protocol",
         "retry_strategy",
@@ -434,6 +461,11 @@ def _write_core_config(writer: PythonWriter, config: ConfigPlan) -> None:
             "The endpoint URI, read by the endpoint rules as `SDK::Endpoint`.",
         ),
         (
+            "http",
+            (_HTTP_SETTINGS, " | None"),
+            _HTTP_DOCS,
+        ),
+        (
             "interceptors",
             ("list[", interceptor, "]"),
             "Hooks called during the execution of a request.",
@@ -450,8 +482,8 @@ def _write_core_config(writer: PythonWriter, config: ConfigPlan) -> None:
         ),
         (
             "transport",
-            (mode.transport_type,),
-            "Sends requests, such as an HTTP client.",
+            (mode.transport_type, " | ", mode.transport_name, " | None"),
+            _TRANSPORT_DOCS.format(default="aiohttp" if mode.is_async else "urllib3"),
         ),
         *(
             (field.attribute, (field.type, " | None"), field.documentation)
@@ -487,6 +519,7 @@ def _write_core_config(writer: PythonWriter, config: ConfigPlan) -> None:
             writer.line("auth_schemes: ", *auth_schemes, " | None = None,")
             writer.line("endpoint_resolver: ", *endpoint_resolver, " | None = None,")
             writer.line("endpoint_uri: str | ", _URI, " | None = None,")
+            writer.line("http: ", _HTTP_SETTINGS, " | None = None,")
             writer.line("interceptors: list[", interceptor, "] | None = None,")
             writer.line(
                 "protocol: ",
@@ -496,7 +529,13 @@ def _write_core_config(writer: PythonWriter, config: ConfigPlan) -> None:
                 " | None = None,",
             )
             writer.line("retry_strategy: ", *retry, " | None = None,")
-            writer.line("transport: ", mode.transport_type, " | None = None,")
+            writer.line(
+                "transport: ",
+                mode.transport_type,
+                " | ",
+                mode.transport_name,
+                " | None = None,",
+            )
             for field in endpoints.client_context_fields:
                 writer.line(field.attribute, ": ", field.type, " | None = None,")
             if config.host_prefix:
@@ -541,6 +580,7 @@ def _write_core_config(writer: PythonWriter, config: ConfigPlan) -> None:
                 *endpoints.default_resolver(bdd),
             )
             writer.line("self.endpoint_uri = endpoint_uri")
+            writer.line("self.http = http")
             writer.line("self.interceptors = interceptors or []")
             writer.line("if isinstance(protocol, type):")
             with writer.indent():
@@ -555,7 +595,7 @@ def _write_core_config(writer: PythonWriter, config: ConfigPlan) -> None:
                 "(_PROTOCOL_SETTINGS)",
             )
             writer.line("self.retry_strategy = retry_strategy")
-            writer.line("self.transport = transport or ", mode.transport, "()")
+            writer.line("self.transport = transport")
             for field in endpoints.client_context_fields:
                 writer.line("self.", field.attribute, " = ", field.attribute)
             if config.host_prefix:
@@ -623,6 +663,17 @@ def _write_client(
             )
         ]
         writer.line("_client_plugins = (", *_items((*plugins, _USER_AGENT_PLUGIN)), ")")
+        # The hooks create the default transport, so they carry its dependencies.
+        writer.line(
+            "_transport_hooks = ",
+            TypeReference(
+                "ASYNC_HTTP_TRANSPORTS" if mode.is_async else "HTTP_TRANSPORTS",
+                "smithy_http.aio.transports"
+                if mode.is_async
+                else "smithy_http.transports",
+                dependencies=mode.transport.dependencies,
+            ),
+        )
         for operation, export, paginator in zip(
             plan.operations, plan.models.operations, paginators, strict=True
         ):

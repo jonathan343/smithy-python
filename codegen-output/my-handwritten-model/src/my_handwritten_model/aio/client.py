@@ -12,6 +12,7 @@ from smithy_core.aio.eventstream import (
     AsyncOutputEventStream,
 )
 from smithy_core.aio.pagination import AsyncItemPaginator
+from smithy_http.aio.transports import ASYNC_HTTP_TRANSPORTS
 from smithy_http.plugins import user_agent_plugin
 
 from .. import models as _models
@@ -41,6 +42,8 @@ class AsyncMyHandwrittenModel(AsyncClient[AsyncConfig]):
     """Client for MyHandwrittenModel"""
 
     _client_plugins = (aws_user_agent_plugin, user_agent_plugin)
+
+    _transport_hooks = ASYNC_HTTP_TRANSPORTS
 
     @_overload
     async def list_items(

@@ -306,13 +306,6 @@ def _write_config(writer: PythonWriter, config: ConfigPlan) -> None:
             )
             for name, _annotation, _docs, spec in fields:
                 writer.line(_quote(name), ": ", _FIELD_SPEC, "(", *spec, "),")
-            writer.line(
-                '"transport": ',
-                _FIELD_SPEC,
-                "(default_factory=lambda: ",
-                mode.transport,
-                "()),",
-            )
         writer.line("}")
         # Identity resolvers added by auth schemes hold caches and locks, so a
         # deep copy of the config must share them like the base resolvers.
@@ -442,6 +435,7 @@ _BASE_FIELDS: Final = frozenset(
         "aws_secret_access_key",
         "aws_session_token",
         "endpoint_uri",
+        "http",
         "http_request_config",
         "interceptors",
         "max_attempts",

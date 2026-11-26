@@ -1,0 +1,4 @@
+{
+  "type": "feature",
+  "description": "AWS configs resolve an `http` field of HTTP settings and accept a transport name as `transport`. When `transport` is unset, the client creates its default transport when it is set up. `http_request_config` was previously not passed to the transport; it now is."
+}

@@ -1,0 +1,4 @@
+{
+  "type": "feature",
+  "description": "Added `smithy_http.transports` and `smithy_http.aio.transports`, which let generated clients create their transport by name (`\"urllib3\"` for sync clients, `\"aiohttp\"` or `\"crt\"` for async clients) and apply `http` settings: `connect_timeout`, `read_timeout` and `crt.read_buffer_size`. A timeout of None disables it. Unknown settings, invalid values and `crt` settings for another transport are rejected. `AIOHTTPClientConfig` and `AWSCRTHTTPClientConfig` take a `connect_timeout`."
+}

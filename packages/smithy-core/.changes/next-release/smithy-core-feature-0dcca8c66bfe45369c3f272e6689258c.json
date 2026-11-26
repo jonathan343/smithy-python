@@ -1,0 +1,4 @@
+{
+  "type": "feature",
+  "description": "Clients may set `_transport_hooks`, which create the transport a config selects during setup and give each send of a call keyword options, such as its request config, including event stream sends. A transport whose `send` can't take those options is rejected rather than sent requests without them; transports are otherwise still called as `send(request)`."
+}

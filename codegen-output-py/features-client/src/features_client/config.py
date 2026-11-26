@@ -34,7 +34,6 @@ from smithy_http.identity import (
 )
 from smithy_http.identity.apikey import APIKeyIdentityResolver
 from smithy_http.protocols import RpcV2CborClientProtocol
-from smithy_http.urllib3 import Urllib3HTTPClient
 
 from features_client._private.endpoints import BDD
 from features_client._private.schemas import FIELD_NOTES
@@ -152,7 +151,6 @@ class FieldNotesConfig(AwsConfig):
         "use_fips_endpoint": FieldSpec(
             default=None, resolver=resolve_use_fips_endpoint_program
         ),
-        "transport": FieldSpec(default_factory=lambda: Urllib3HTTPClient()),
     }
 
     _SHARED_FIELDS: ClassVar[tuple[str, ...]] = (

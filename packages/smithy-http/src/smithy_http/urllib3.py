@@ -24,6 +24,7 @@ from smithy_http.interfaces import HTTPRequest
 from smithy_http.interfaces import HTTPResponse as HTTPResponseInterface
 
 from . import tuples_to_fields
+from ._settings import read_timeout
 from .exceptions import SmithyHTTPError
 from .interfaces import HTTPClient, HTTPClientConfiguration, HTTPRequestConfiguration
 
@@ -112,11 +113,9 @@ class Urllib3HTTPClient(HTTPClient):
             raise SmithyHTTPError(
                 "Cannot send a request after the HTTP client has been closed."
             )
-        request_config = request_config or HTTPRequestConfiguration()
-        read_timeout = request_config.read_timeout
         timeout = urllib3.Timeout(
             connect=self._config.connect_timeout,
-            read=self._config.read_timeout if read_timeout is None else read_timeout,
+            read=read_timeout(request_config, self._config.read_timeout),
         )
         # urllib3 can't send request trailers, and a trailer is never a header.
         headers = urllib3.HTTPHeaderDict()

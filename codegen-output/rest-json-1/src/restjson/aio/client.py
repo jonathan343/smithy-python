@@ -16,6 +16,7 @@ from smithy_core.aio.eventstream import (
     AsyncOutputEventStream,
 )
 from smithy_http.aio.interfaces import AsyncHTTPClient
+from smithy_http.aio.transports import ASYNC_HTTP_TRANSPORTS
 from smithy_http.plugins import user_agent_plugin
 
 from .. import models as _models
@@ -153,6 +154,8 @@ class AsyncRestJsonProtocolClient(AsyncClient[AsyncRestJsonProtocolConfig]):
     """Client for RestJson"""
 
     _client_plugins = (aws_user_agent_plugin, user_agent_plugin)
+
+    _transport_hooks = ASYNC_HTTP_TRANSPORTS
 
     @_overload
     async def all_query_string_types(

@@ -1,13 +1,14 @@
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: Apache-2.0
 #  pyright: reportMissingTypeStubs=false,reportUnknownMemberType=false
-from asyncio import gather
-from collections.abc import AsyncGenerator, AsyncIterable
+from asyncio import CancelledError, Future, ensure_future, gather, shield, wait
+from collections.abc import AsyncGenerator, AsyncIterable, Coroutine
+from contextlib import suppress
 from copy import deepcopy
 from dataclasses import dataclass
 from inspect import iscoroutinefunction
 from io import BytesIO
-from typing import TYPE_CHECKING, Any, Self
+from typing import TYPE_CHECKING, Any, Self, cast
 
 from awscrt.exceptions import AwsCrtError
 
@@ -38,9 +39,10 @@ from smithy_core import interfaces as core_interfaces
 from smithy_core.aio import interfaces as core_aio_interfaces
 from smithy_core.aio.types import AsyncBytesReader
 from smithy_core.aio.utils import read_streaming_blob_async
-from smithy_core.exceptions import MissingDependencyError
+from smithy_core.exceptions import ClientTimeoutError, MissingDependencyError
 
 from .. import Field, Fields, tuples_to_fields
+from .. import _settings as http_settings
 from .. import interfaces as http_interfaces
 from ..exceptions import SmithyHTTPError
 from . import interfaces as http_aio_interfaces
@@ -58,6 +60,8 @@ __all__ = [
 # Default buffer size for reading from streams (8 KB)
 DEFAULT_READ_BUFFER_SIZE = 8192
 """Default number of bytes read from a request body at a time."""
+
+_MAX_TIMEOUT_MS = 2**31 - 1
 
 
 class _AWSCRTEventLoop:
@@ -77,11 +81,25 @@ class AsyncAWSCRTHTTPResponse(http_aio_interfaces.HTTPResponse):
         status: int,
         fields: Fields,
         stream: "AIOHttpClientStreamUnified",
+        read_timeout: float | None = None,
+        connection: "AIOHttpClientConnectionUnified | None" = None,
     ) -> None:
+        """
+        :param status: The response's status code.
+        :param fields: The response's header fields.
+        :param stream: The stream the body arrives on.
+        :param read_timeout: How long, in seconds, to wait for each chunk of the
+            body, or None to wait indefinitely.
+        :param connection: The stream's connection, which is closed if a read times
+            out or is cancelled, since the CRT can't cancel one stream. Without it,
+            reads aren't bounded.
+        """
         _assert_crt()
         self._status = status
         self._fields = fields
         self._stream = stream
+        self._read_timeout = read_timeout
+        self._connection = connection
         self._body = AsyncBytesReader(self.chunks())
 
     def __repr__(self) -> str:
@@ -110,9 +128,24 @@ class AsyncAWSCRTHTTPResponse(http_aio_interfaces.HTTPResponse):
         return None
 
     async def chunks(self) -> AsyncGenerator[bytes, None]:
-        """Yield the response body chunks as they arrive."""
+        """Yield the response body chunks as they arrive.
+
+        :raises ClientTimeoutError: If a chunk takes longer than the read timeout.
+        """
         while True:
-            chunk = await self._stream.get_next_response_chunk()
+            if self._connection is None:
+                chunk = await self._stream.get_next_response_chunk()
+            else:
+                try:
+                    chunk = await _within(
+                        self._stream.get_next_response_chunk(),
+                        self._read_timeout,
+                        self._connection,
+                    )
+                except _CRTTimeoutError as e:
+                    # Raised as urllib3's body raises it, so it's retried while the
+                    # client reads an error or non-streaming response.
+                    raise ClientTimeoutError(message=str(e)) from e
             if chunk:
                 yield chunk
             else:
@@ -132,13 +165,30 @@ class AWSCRTHTTPClientConfig(http_interfaces.HTTPClientConfiguration):
     :param trust_store_path: Path to a PEM CA bundle that overrides the default system
         trust store when verifying TLS peers. Enables connecting to a server whose
         certificate chains to a private CA.
+    :param connect_timeout: How long, in seconds, to wait for a connection. The CRT
+        can't wait indefinitely, so it must be more than 0 and at most 2147483.647
+        (2**31 - 1 milliseconds). It's rounded to the nearest millisecond, and at
+        least 1.
     """
 
     read_buffer_size: int = DEFAULT_READ_BUFFER_SIZE
     trust_store_path: str | None = None
+    connect_timeout: float = 5.0
 
     def __post_init__(self) -> None:
         _assert_crt()
+        # Typed settings still allow None, which the CRT can't honor.
+        timeout = cast(object, self.connect_timeout)
+        # Compared in milliseconds, which can be inf but never overflows.
+        if not (
+            isinstance(timeout, int | float) and 0 < timeout * 1000 <= _MAX_TIMEOUT_MS
+        ):
+            raise SmithyHTTPError(
+                "The crt transport's connect_timeout must be a number of seconds "
+                f"more than 0 and at most {_MAX_TIMEOUT_MS / 1000}, got "
+                f"{self.connect_timeout!r}. The CRT can't wait indefinitely to "
+                "connect, so None isn't supported."
+            )
 
 
 class _CRTTimeoutError(SmithyHTTPError):
@@ -218,7 +268,11 @@ class AWSCRTHTTPClient(http_aio_interfaces.AsyncHTTPClient):
                     crt_request.body_stream = body_stream
                 crt_stream = connection.request(crt_request)
 
-            return await self._await_response(crt_stream)
+            return await self._await_response(
+                crt_stream,
+                connection,
+                http_settings.read_timeout(request_config, None),
+            )
         except AwsCrtError as e:
             if e.name in self._TIMEOUT_ERROR_NAMES:
                 raise _CRTTimeoutError(f"CRT {e.name}: {e.message}") from e
@@ -251,18 +305,28 @@ class AWSCRTHTTPClient(http_aio_interfaces.AsyncHTTPClient):
             )
         self._tls_ctx = crt_io.ClientTlsContext(tls_ctx_options)
         self._socket_options = crt_io.SocketOptions()
+        # The config checked that this is in the CRT's range.
+        self._socket_options.connect_timeout_ms = max(
+            1, round(self._config.connect_timeout * 1000)
+        )
         self._connections: ConnectionPoolDict = {}
         self._closed = False
 
     async def _await_response(
-        self, stream: "AIOHttpClientStreamUnified"
+        self,
+        stream: "AIOHttpClientStreamUnified",
+        connection: "AIOHttpClientConnectionUnified",
+        read_timeout: float | None,
     ) -> AsyncAWSCRTHTTPResponse:
+        # The CRT sets the status and headers together.
+        headers = await _within(stream.get_response_headers(), read_timeout, connection)
         status_code = await stream.get_response_status_code()
-        headers = await stream.get_response_headers()
         return AsyncAWSCRTHTTPResponse(
             status=status_code,
             fields=tuples_to_fields(headers),
             stream=stream,
+            read_timeout=read_timeout,
+            connection=connection,
         )
 
     async def _create_connection(
@@ -416,6 +480,58 @@ class AWSCRTHTTPClient(http_aio_interfaces.AsyncHTTPClient):
                     yield bytes(chunk)
                 else:
                     yield chunk
+
+
+async def _within[T](
+    awaitable: Coroutine[Any, Any, T],
+    seconds: float | None,
+    connection: "AIOHttpClientConnectionUnified",
+) -> T:
+    """Wait for a stream's response data, closing its connection if it's abandoned.
+
+    The CRT can't cancel a single stream, and it sets the result of the future it
+    holds for each wait even if that future was cancelled, which fails in its own
+    thread. So a wait that times out or is cancelled closes the connection, which
+    ends the stream, before the wait's future is cancelled.
+
+    :raises _CRTTimeoutError: If the data takes longer than ``seconds``.
+    """
+    task = ensure_future(awaitable)
+    try:
+        done, _ = await wait({task}, timeout=seconds)
+    except BaseException:
+        await _abandon(task, connection)
+        raise
+    if not done:
+        await _abandon(task, connection)
+        raise _CRTTimeoutError(
+            f"No response data arrived within the read timeout of {seconds} seconds."
+        )
+    return task.result()
+
+
+async def _abandon(task: "Future[Any]", connection: Any) -> None:
+    """Close the connection, then cancel and await the wait's task.
+
+    Finishes even if cancelled meanwhile, and then raises the cancellation.
+    """
+
+    async def cleanup() -> None:
+        with suppress(Exception):
+            await connection.close()
+        task.cancel()
+        with suppress(Exception, CancelledError):
+            await task
+
+    cleaning = ensure_future(cleanup())
+    cancelled = False
+    while not cleaning.done():
+        try:
+            await shield(cleaning)
+        except CancelledError:
+            cancelled = True
+    if cancelled:
+        raise CancelledError
 
 
 def _assert_crt() -> None:

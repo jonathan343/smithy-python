@@ -9,6 +9,7 @@ from smithy_aws_core.identity.components import AWSCredentialsIdentity
 from smithy_core.client import Client
 from smithy_http.interfaces import HTTPClient
 from smithy_http.plugins import user_agent_plugin
+from smithy_http.transports import HTTP_TRANSPORTS
 
 from restjson_client import models
 from restjson_client.config import Plugin, RestJsonProtocolConfig
@@ -19,6 +20,7 @@ class RestJsonProtocolClient(Client[RestJsonProtocolConfig]):
     "Client for RestJson."
 
     _client_plugins = (aws_user_agent_plugin, user_agent_plugin)
+    _transport_hooks = HTTP_TRANSPORTS
 
     @overload
     def all_query_string_types(

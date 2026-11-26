@@ -1,9 +1,9 @@
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: Apache-2.0
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from copy import copy
 from types import FunctionType
-from typing import Any, ClassVar, cast, get_overloads
+from typing import Any, ClassVar, Protocol, cast, get_overloads
 
 from .deserializers import DeserializeableShape
 from .exceptions import ExpectationNotMetError, ResourceLifecycleError
@@ -14,10 +14,46 @@ from .schemas import APIOperation
 from .serializers import SerializeableShape
 from .types import PropertyKey, TypedProperties
 
-__all__ = ["OPERATION", "ClientBase"]
+__all__ = ["OPERATION", "ClientBase", "TransportHooks"]
 
 OPERATION = PropertyKey(key="operation", value_type=APIOperation[Any, Any])
 """The operation being invoked by the call."""
+
+
+class TransportHooks(Protocol):
+    """Connects a client's config to its transport.
+
+    A generated client sets one as ``_transport_hooks`` when its config holds
+    transport settings, such as timeouts, that the client must apply.
+    """
+
+    def setup(self, config: Any) -> Any:
+        """Return the transport for a client's base config.
+
+        Called once, after the client's plugins are applied.
+
+        :param config: The client's base config.
+        """
+        ...
+
+    def send_options(
+        self,
+        config: Any,
+        base: Any,
+        *,
+        operation: APIOperation[Any, Any] | None = None,
+        created: bool = False,
+    ) -> Mapping[str, Any]:
+        """Return the keyword arguments each send of a call gives the transport.
+
+        :param config: The call's config, which operation plugins may have changed.
+        :param base: The client's base config, which the transport was set up from.
+        :param operation: The operation being called.
+        :param created: Whether the call sends with the transport ``setup``
+            created, rather than one the caller or a plugin set.
+        """
+        ...
+
 
 _CLOSED_MESSAGE = "Cannot invoke an operation on a client that has been closed."
 
@@ -31,6 +67,7 @@ class ClientBase[C]:
     """
 
     _client_plugins: ClassVar[tuple[Callable[[Any], None], ...]] = ()
+    _transport_hooks: ClassVar["TransportHooks | None"] = None
     _pipeline_type: ClassVar[type[Any]]
     _call_type: ClassVar[type[Any]]
 
@@ -63,6 +100,9 @@ class ClientBase[C]:
         self._setup_done = False
         self._closed = False
         self._transport: Any = None
+        # Whether hooks created the client's transport. Calls that send with a
+        # transport set in its place, such as by a plugin, don't get its defaults.
+        self._transport_created = False
         self._retry_strategy_resolver = RetryStrategyResolver()
 
     def _new_config(self) -> Any:
@@ -90,8 +130,19 @@ class ClientBase[C]:
         retry_strategy: Any,
     ) -> tuple[Any, Any]:
         """Build the pipeline and call from a resolved config and retry strategy."""
+        hooks = self._transport_hooks
+        options = None
+        if hooks is not None:
+            options = hooks.send_options(
+                config,
+                self._config,
+                operation=operation,
+                created=self._transport_created and config.transport is self._transport,
+            )
         pipeline = self._pipeline_type(
-            protocol=config.protocol, transport=config.transport
+            protocol=config.protocol,
+            transport=config.transport,
+            transport_options=options,
         )
         context = TypedProperties({"config": config})
         context[RETRY_STRATEGY] = retry_strategy
@@ -194,11 +245,26 @@ class ClientBase[C]:
                 plugin(config)
             for plugin in self._plugins or ():
                 plugin(config)
+            created = None
+            if (hooks := self._transport_hooks) is not None:
+                transport = hooks.setup(config)
+                if transport is not config.transport:
+                    created = transport
+                    # CAUTION: object.__setattr__ skips AwsConfig.__setattr__, so a
+                    # transport the SDK selected keeps its default source.
+                    object.__setattr__(config, "transport", transport)
             # Publish state only after setup fully succeeds, so a failed _post_setup
             # leaves the caller's config untouched (no re-applied plugins) and the
             # transport closeable.
-            yield lambda: self._post_setup(config)
+            try:
+                yield lambda: self._post_setup(config)
+            except BaseException:
+                # The caller can't reach a transport setup created, so close it here.
+                if (close := getattr(created, "close", None)) is not None:
+                    yield close
+                raise
             self._transport = config.transport
+            self._transport_created = created is not None
             self._config = config
             self._setup_done = True
         return self._config
@@ -238,16 +304,52 @@ class ClientBase[C]:
 def _copy_config[T](config: T) -> T:
     """Copy a config and its container fields, sharing the components they hold.
 
-    Configured components such as interceptors, resolvers and retry strategies
-    carry state the caller expects to observe, so they must not be copied.
+    Containers nested in a container field, such as ``http={"crt": {...}}``, are
+    copied too. Configured components such as interceptors, resolvers and retry
+    strategies carry state the caller expects to observe, so they must not be
+    copied.
 
     CAUTION: a plugin that mutates a component in place, rather than replacing
     it, changes the caller's component.
     """
     new = copy(config)
+    # Copies by the id of their original, which the config keeps alive.
+    memo: dict[int, Any] = {}
     for name, value in list(vars(new).items()):
         if isinstance(value, list | dict | set):
             # CAUTION: object.__setattr__ skips AwsConfig.__setattr__, which would
             # record the copy as a plugin override and reject credential fields.
-            object.__setattr__(new, name, copy(cast(Any, value)))
+            object.__setattr__(new, name, _copy_containers(value, memo))
+    return new
+
+
+def _copy_containers(value: Any, memo: dict[int, Any]) -> Any:
+    """Copy lists, dicts and sets, and those they hold, sharing all else.
+
+    Copies keep their type, so a ``defaultdict`` keeps its default factory. A
+    container held in several places, or in itself, is copied once.
+    """
+    key = id(value)
+    if key in memo:
+        return memo[key]
+    if not isinstance(value, list | dict | set):
+        return value
+    new = memo[key] = copy(cast(Any, value))
+    if new is value:
+        # A copy hook returned the original, so changing it would change the
+        # caller's container.
+        return new
+    if isinstance(new, dict):
+        items = cast(dict[Any, Any], new)
+        for k, v in list(items.items()):
+            if isinstance(v, list | dict | set):
+                items[k] = _copy_containers(v, memo)
+        return items
+    if isinstance(new, list):
+        elements = cast(list[Any], new)
+        for i, v in enumerate(elements):
+            if isinstance(v, list | dict | set):
+                elements[i] = _copy_containers(v, memo)
+        return elements
+    # Sets hold only hashable values, which share no containers to copy.
     return new

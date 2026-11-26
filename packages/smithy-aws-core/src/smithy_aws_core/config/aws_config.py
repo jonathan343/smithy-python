@@ -14,13 +14,14 @@ if TYPE_CHECKING:
     from smithy_core.interfaces.identity import IdentityResolver
     from smithy_core.interfaces.retries import RetryStrategy
     from smithy_http.interfaces import HTTPRequestConfiguration
+    from smithy_http.transports import HTTPSettings, TransportName
 
     from smithy_aws_core.identity.components import (
         AWSCredentialsIdentity,
         AWSIdentityProperties,
     )
 
-    type _Transport = ClientTransport[Any, Any]
+    type _Transport = ClientTransport[Any, Any] | TransportName
     type _CredentialsResolver = IdentityResolver[
         AWSCredentialsIdentity, AWSIdentityProperties
     ]
@@ -108,6 +109,9 @@ _BASE_FIELDS: dict[str, FieldSpec] = {
     ),
     "interceptors": FieldSpec(
         default_factory=list,
+    ),
+    "http": FieldSpec(
+        default=None,
     ),
     "http_request_config": FieldSpec(
         default=None,
@@ -381,6 +385,7 @@ class _AwsConfigOverridesBase[TTransport, TCredentialsResolver](TypedDict, total
     sdk_ua_app_id: str | None
     user_agent_extra: str | None
     interceptors: list[Any]
+    http: "HTTPSettings | None"
     http_request_config: "HTTPRequestConfiguration | None"
     transport: TTransport | None
     retry_strategy: "RetryStrategy | RetryStrategyOptions | None"
@@ -457,11 +462,27 @@ class _AwsConfigFields[TTransport, TCredentialsResolver, TContext](_AwsConfigBas
     """The list of interceptors, which are hooks that are called during the
     execution of a request."""
 
+    http: "HTTPSettings | None" = None
+    """HTTP settings, such as timeouts.
+
+    A setting left out keeps the transport's default, and a timeout of None
+    disables it, except the crt transport's ``connect_timeout``, which must be at
+    most 2147483.647 seconds. Operation plugins may change ``read_timeout`` for
+    one call.
+    """
+
     http_request_config: "HTTPRequestConfiguration | None" = None
-    """Configuration for individual HTTP requests."""
+    """Configuration for individual HTTP requests.
+
+    Prefer ``http``, which sets the same read timeout.
+    """
 
     transport: TTransport | None = None
-    """The transport to use to send requests"""
+    """The transport that sends requests.
+
+    Either the name of a transport the client creates when it is set up, or a
+    transport instance. When unset, the client creates its default transport.
+    """
 
     retry_strategy: Any | None = None
     """The retry strategy or options for configuring retry behavior.

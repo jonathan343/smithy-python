@@ -419,6 +419,7 @@ _CLIENT_METHOD_NAMES = frozenset(
         "_new_config",
         "_post_setup",
         "_client_plugins",
+        "_transport_hooks",
         "_pipeline_type",
         "_call_type",
         "_config",

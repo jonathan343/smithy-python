@@ -187,6 +187,21 @@ public final class RuntimeTypes {
     public static final Symbol AIOHTTP_CLIENT =
             createSymbol("aio.aiohttp", "AIOHTTPClient", SmithyPythonDependency.SMITHY_HTTP);
 
+    // smithy_http.transports
+    public static final Symbol HTTP_SETTINGS =
+            createSymbol("transports", "HTTPSettings", SmithyPythonDependency.SMITHY_HTTP);
+
+    // smithy_http.aio.transports. Setup creates the default transport from its name,
+    // so these carry its dependencies. SyncVariant maps them to their sync twins.
+    public static final Symbol ASYNC_TRANSPORT_NAME = createSymbol(
+            "aio.transports",
+            "AsyncTransportName",
+            SmithyPythonDependency.SMITHY_HTTP.withOptionalDependencies("aiohttp"));
+    public static final Symbol ASYNC_HTTP_TRANSPORTS = createSymbol(
+            "aio.transports",
+            "ASYNC_HTTP_TRANSPORTS",
+            SmithyPythonDependency.SMITHY_HTTP.withOptionalDependencies("aiohttp"));
+
     // smithy_http.aio.identity.apikey
     public static final Symbol API_KEY_IDENTITY_RESOLVER =
             createSymbol("aio.identity.apikey", "AsyncAPIKeyIdentityResolver", SmithyPythonDependency.SMITHY_HTTP);

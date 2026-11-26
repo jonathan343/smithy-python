@@ -5,6 +5,7 @@ import asyncio
 import base64
 import importlib
 import json
+import os
 import struct
 import subprocess
 import sys
@@ -17,17 +18,23 @@ from typing import Any
 import pytest
 from smithy_cbor import loads
 from smithy_core.aio.types import AsyncBytesReader
-from smithy_core.exceptions import EndpointResolutionError
+from smithy_core.exceptions import (
+    EndpointResolutionError,
+    MissingDependencyError,
+    UnsupportedTransportError,
+)
 from smithy_core.interceptors import InputContext
 from smithy_core.interceptors import Interceptor as SmithyInterceptor
 from smithy_core.retries import SimpleRetryStrategy
 from smithy_http import HTTPResponse, tuples_to_fields
+from smithy_http.exceptions import SmithyHTTPError
 from smithy_http.interfaces import HTTPRequest, HTTPRequestConfiguration
 from smithy_python import aws as _aws
 from smithy_python.clients import ClientGenerator, ClientPlan
 from smithy_python.exceptions import CodegenError
 from smithy_python.generation import ClientSettings
 from smithy_python.model import ShapeId, load_model
+from smithy_test import instrument, mock
 
 _CBOR = "smithy.protocols#rpcv2Cbor"
 
@@ -1551,6 +1558,555 @@ def test_aws_clients_with_dashed_package_names_import(
     assert package.AsyncGreeterClient._client_plugins[0].__module__ == (
         "aws_greeter_dashed.aio.user_agent"
     )
+
+
+class _ConfigRecordingTransport(_Transport):
+    def __init__(self) -> None:
+        super().__init__()
+        self.request_configs: list[HTTPRequestConfiguration | None] = []
+
+    def send(
+        self,
+        request: HTTPRequest,
+        *,
+        request_config: HTTPRequestConfiguration | None = None,
+    ) -> HTTPResponse:
+        self.request_configs.append(request_config)
+        return super().send(request, request_config=request_config)
+
+
+class _AsyncConfigRecordingTransport(_ConfigRecordingTransport):
+    async def send(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+        request: HTTPRequest,
+        *,
+        request_config: HTTPRequestConfiguration | None = None,
+    ) -> HTTPResponse:
+        response = super().send(request, request_config=request_config)
+        response.body = AsyncBytesReader(response.body)  # pyright: ignore[reportArgumentType]
+        return response
+
+
+@pytest.mark.parametrize("aio", [False, True], ids=["sync", "async"])
+async def test_aws_http_request_config_reaches_the_transport(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, aio: bool
+) -> None:
+    for name in list(os.environ):
+        if name.startswith("AWS_"):
+            monkeypatch.delenv(name)
+    shapes = _shapes()
+    shapes["example#Greeter"]["traits"]["aws.api#service"] = {"sdkId": "Greeter"}
+    name = "greeter_http_config" + ("_aio" if aio else "")
+    _aws_generate(tmp_path / "out", name, shapes)
+    monkeypatch.syspath_prepend(  # pyright: ignore[reportUnknownMemberType]
+        str(tmp_path / "out" / "src")
+    )
+    package = importlib.import_module(name)
+    transport = (_AsyncConfigRecordingTransport if aio else _ConfigRecordingTransport)()
+    missing = str(tmp_path / "missing")
+    settings: dict[str, Any] = {
+        "config_file_path": missing,
+        "credentials_file_path": missing,
+        "region": "us-west-2",
+        "endpoint_uri": "https://example.com",
+        "transport": transport,
+        "retry_strategy": SimpleRetryStrategy(max_attempts=1),
+        "http_request_config": HTTPRequestConfiguration(read_timeout=7.5),
+    }
+    if aio:
+        config = await package.AsyncGreeterConfig.resolve(**settings)
+        await package.AsyncGreeterClient(config).ping()
+    else:
+        config = package.GreeterConfig.resolve(**settings)
+        package.GreeterClient(config).ping()
+
+    assert len(transport.requests) == 1
+    assert transport.request_configs == [HTTPRequestConfiguration(read_timeout=7.5)]
+
+
+def _http_client(
+    package: ModuleType, transport: Any, *, aio: bool, **settings: Any
+) -> Any:
+    config = (package.AsyncConfig if aio else package.Config)(
+        endpoint_uri="https://example.com",
+        transport=transport,
+        retry_strategy=SimpleRetryStrategy(max_attempts=1),
+        **settings,
+    )
+    return (package.AsyncGreeter if aio else package.Greeter)(config)
+
+
+def _ping(client: Any, aio: bool, **kwargs: Any) -> None:
+    call = client.ping(**kwargs)
+    if aio:
+        asyncio.run(call)
+
+
+@pytest.mark.parametrize("aio", [False, True], ids=["sync", "async"])
+def test_http_read_timeout_reaches_the_transport(
+    package: ModuleType, aio: bool
+) -> None:
+    transport = (_AsyncConfigRecordingTransport if aio else _ConfigRecordingTransport)()
+    client = _http_client(package, transport, aio=aio, http={"read_timeout": 5})
+    _ping(client, aio)
+    (request_config,) = transport.request_configs
+    assert request_config is not None
+    assert request_config.read_timeout == 5
+
+
+@pytest.mark.parametrize("aio", [False, True], ids=["sync", "async"])
+def test_http_read_timeout_overrides_are_scoped_to_their_call(
+    package: ModuleType, aio: bool
+) -> None:
+    transport = (_AsyncConfigRecordingTransport if aio else _ConfigRecordingTransport)()
+    settings: dict[str, Any] = {"read_timeout": 30}
+    client = _http_client(package, transport, aio=aio, http=settings)
+
+    def shorten(config: Any) -> None:
+        config.http["read_timeout"] = 5
+
+    def disable(config: Any) -> None:
+        config.http = {"read_timeout": None}
+
+    _ping(client, aio, plugins=[shorten])
+    _ping(client, aio, plugins=[disable])
+    _ping(client, aio)
+    timeouts: list[float | None] = []
+    for request_config in transport.request_configs:
+        assert request_config is not None
+        timeouts.append(request_config.read_timeout)
+    assert timeouts == [5, None, 30]
+    # Neither the caller's settings nor the client's base config changed.
+    assert settings == {"read_timeout": 30}
+    assert client._config.http == {"read_timeout": 30}  # pyright: ignore[reportPrivateUsage]
+    assert client._config.transport is transport  # pyright: ignore[reportPrivateUsage]
+
+
+class _LegacyTransport(_Transport):
+    """A custom transport whose send takes only the request."""
+
+    def send(self, request: HTTPRequest) -> HTTPResponse:  # pyright: ignore[reportIncompatibleMethodOverride]
+        return self._respond(request, self.body)
+
+
+class _AsyncLegacyTransport(_Transport):
+    async def send(self, request: HTTPRequest) -> HTTPResponse:  # pyright: ignore[reportIncompatibleMethodOverride]
+        return self._respond(request, AsyncBytesReader(self.body))
+
+
+@pytest.mark.parametrize("aio", [False, True], ids=["sync", "async"])
+def test_custom_transports_without_request_options_keep_working(
+    package: ModuleType, aio: bool
+) -> None:
+    transport = (_AsyncLegacyTransport if aio else _LegacyTransport)()
+    _ping(_http_client(package, transport, aio=aio), aio)
+    assert len(transport.requests) == 1
+
+    # A deadline the transport can't take fails the call instead of vanishing.
+    client = _http_client(package, transport, aio=aio, http={"read_timeout": 5})
+    with pytest.raises(UnsupportedTransportError, match="request_config"):
+        _ping(client, aio)
+    assert len(transport.requests) == 1
+
+
+@pytest.mark.parametrize("aio", [False, True], ids=["sync", "async"])
+@pytest.mark.parametrize(
+    ("http", "message"),
+    [
+        ({"read_timout": 5}, r"Unknown HTTP setting 'read_timout'.*read_timeout"),
+        ({"read_timeout": -1}, "read_timeout must be a positive number or None"),
+        ({"read_timeout": "5"}, "read_timeout must be a positive number or None"),
+        ({"connect_timeout": True}, "connect_timeout must be a positive number"),
+        ({"read_timeout": float("nan")}, "read_timeout must be a positive number"),
+        # Connection settings apply to transports the SDK creates.
+        ({"connect_timeout": 5}, "connect_timeout .* transport the SDK creates"),
+        ({"crt": {"read_buffer_size": 1}}, "'crt' settings .* the crt transport"),
+    ],
+)
+def test_invalid_http_settings_fail_before_sending(
+    package: ModuleType, aio: bool, http: dict[str, Any], message: str
+) -> None:
+    transport = (_AsyncConfigRecordingTransport if aio else _ConfigRecordingTransport)()
+    client = _http_client(package, transport, aio=aio, http=http)
+    with pytest.raises(SmithyHTTPError, match=message):
+        _ping(client, aio)
+    assert not transport.requests
+
+
+def _record_default_sends(
+    monkeypatch: pytest.MonkeyPatch, aio: bool
+) -> list[HTTPRequestConfiguration | None]:
+    """Record the request settings each send of the default transport is given.
+
+    The transports are created as usual, but send nothing.
+    """
+    from smithy_http.aio.aiohttp import AIOHTTPClient
+    from smithy_http.urllib3 import Urllib3HTTPClient
+
+    configs: list[HTTPRequestConfiguration | None] = []
+
+    def respond(request_config: HTTPRequestConfiguration | None) -> HTTPResponse:
+        configs.append(request_config)
+        return HTTPResponse(status=200, fields=tuples_to_fields(_HEADERS), body=b"")
+
+    def send(self: Any, request: Any, *, request_config: Any = None) -> HTTPResponse:
+        return respond(request_config)
+
+    async def send_async(
+        self: Any, request: Any, *, request_config: Any = None
+    ) -> HTTPResponse:
+        response = respond(request_config)
+        response.body = AsyncBytesReader(b"")
+        return response
+
+    if aio:
+        monkeypatch.setattr(AIOHTTPClient, "send", send_async)
+    else:
+        monkeypatch.setattr(Urllib3HTTPClient, "send", send)
+    return configs
+
+
+def _call_and_close(
+    client: Any, aio: bool, operation: str = "ping", **kwargs: Any
+) -> None:
+    async def call_async() -> None:
+        async with client:
+            await getattr(client, operation)(**kwargs)
+
+    if aio:
+        asyncio.run(call_async())
+        return
+    with client:
+        getattr(client, operation)(**kwargs)
+
+
+@pytest.mark.parametrize("aio", [False, True], ids=["sync", "async"])
+def test_sdk_selected_transports_get_the_default_read_timeout(
+    package: ModuleType, monkeypatch: pytest.MonkeyPatch, aio: bool
+) -> None:
+    configs = _record_default_sends(monkeypatch, aio)
+    _call_and_close(_http_client(package, None, aio=aio), aio)
+    assert [c and c.read_timeout for c in configs] == [60.0]
+
+
+@pytest.mark.parametrize("aio", [False, True], ids=["sync", "async"])
+def test_default_read_timeouts_leave_the_base_config_and_transport_unchanged(
+    package: ModuleType, monkeypatch: pytest.MonkeyPatch, aio: bool
+) -> None:
+    configs = _record_default_sends(monkeypatch, aio)
+    client = _http_client(package, None, aio=aio)
+
+    def shorten(config: Any) -> None:
+        config.http = {"read_timeout": 5}
+
+    async def calls_async() -> Any:
+        async with client:
+            await client.ping()
+            transport = client._config.transport  # pyright: ignore[reportPrivateUsage]
+            await client.ping(plugins=[shorten])
+            await client.ping()
+            return transport
+
+    if aio:
+        transport = asyncio.run(calls_async())
+    else:
+        with client:
+            client.ping()
+            transport = client._config.transport  # pyright: ignore[reportPrivateUsage]
+            client.ping(plugins=[shorten])
+            client.ping()
+    assert [c and c.read_timeout for c in configs] == [60.0, 5, 60.0]
+    # The defaults aren't written into the config, which keeps its transport.
+    assert client._config.http is None  # pyright: ignore[reportPrivateUsage]
+    assert client._config.transport is transport  # pyright: ignore[reportPrivateUsage]
+
+
+@pytest.mark.parametrize("aio", [False, True], ids=["sync", "async"])
+def test_transports_replacing_the_default_get_no_default_read_timeout(
+    package: ModuleType, monkeypatch: pytest.MonkeyPatch, aio: bool
+) -> None:
+    configs = _record_default_sends(monkeypatch, aio)
+    legacy = (_AsyncLegacyTransport if aio else _LegacyTransport)()
+    recording = (_AsyncConfigRecordingTransport if aio else _ConfigRecordingTransport)()
+
+    def replace(transport: Any) -> Callable[[Any], None]:
+        def plugin(config: Any) -> None:
+            config.transport = transport
+
+        return plugin
+
+    client = _http_client(package, None, aio=aio)
+    _call_and_close(client, aio, plugins=[replace(legacy)])
+    client = _http_client(package, None, aio=aio)
+    _call_and_close(client, aio, plugins=[replace(recording)])
+    # A transport a client plugin sets is the caller's, not the SDK's.
+    _call_and_close(
+        (package.AsyncGreeter if aio else package.Greeter)(
+            (package.AsyncConfig if aio else package.Config)(
+                endpoint_uri="https://example.com",
+                retry_strategy=SimpleRetryStrategy(max_attempts=1),
+            ),
+            plugins=[replace(recording)],
+        ),
+        aio,
+    )
+    assert len(legacy.requests) == 1
+    assert recording.request_configs == [None, None]
+    assert configs == []
+
+
+@pytest.mark.parametrize("aio", [False, True], ids=["sync", "async"])
+def test_recorded_clients_keep_the_default_read_timeout(
+    package: ModuleType, monkeypatch: pytest.MonkeyPatch, aio: bool
+) -> None:
+    from smithy_test.aio import instrument_async
+
+    configs = _record_default_sends(monkeypatch, aio)
+    client = _http_client(package, None, aio=aio)
+
+    async def call_async() -> Any:
+        recorder: Any = await instrument_async(client, mode="record")
+        async with client:
+            await client.ping()
+        return recorder
+
+    recorder: Any
+    if aio:
+        recorder = asyncio.run(call_async())
+    else:
+        recorder = instrument(client, mode="record")
+        with client:
+            client.ping()
+    # The recorder sent with the transport setup created, as the client would.
+    inner = recorder._transport._inner  # pyright: ignore[reportPrivateUsage]
+    assert type(inner).__name__ in ("Urllib3HTTPClient", "AIOHTTPClient")
+    assert [c and c.read_timeout for c in configs] == [60.0]
+
+
+def _setup_transport(package: ModuleType, *, aio: bool, **settings: Any) -> Any:
+    config = (package.AsyncConfig if aio else package.Config)(
+        endpoint_uri="https://example.com", **settings
+    )
+    client = (package.AsyncGreeter if aio else package.Greeter)(config)
+    # Creating the config creates no transport: setup does.
+    assert config.transport == settings.get("transport")
+
+    async def setup_async() -> Any:
+        async with client:
+            return (await client._ensure_setup()).transport  # pyright: ignore[reportPrivateUsage]
+
+    if aio:
+        return asyncio.run(setup_async())
+    with client:
+        return client._ensure_setup().transport  # pyright: ignore[reportPrivateUsage]
+
+
+def test_sync_clients_create_the_transport_they_name(package: ModuleType) -> None:
+    default = _setup_transport(package, aio=False)
+    assert type(default).__name__ == "Urllib3HTTPClient"
+    named = _setup_transport(
+        package, aio=False, transport="urllib3", http={"connect_timeout": 3}
+    )
+    assert type(named).__name__ == "Urllib3HTTPClient"
+    assert named._config.connect_timeout == 3  # pyright: ignore[reportPrivateUsage]
+    # None disables the timeout, rather than keeping the default.
+    disabled = _setup_transport(package, aio=False, http={"connect_timeout": None})
+    assert disabled._config.connect_timeout is None  # pyright: ignore[reportPrivateUsage]
+
+
+def test_async_clients_create_the_transport_they_name(package: ModuleType) -> None:
+    default = _setup_transport(package, aio=True)
+    assert type(default).__name__ == "AIOHTTPClient"
+    aiohttp = _setup_transport(
+        package, aio=True, transport="aiohttp", http={"connect_timeout": 3}
+    )
+    assert aiohttp._config.connect_timeout == 3  # pyright: ignore[reportPrivateUsage]
+    crt = _setup_transport(
+        package,
+        aio=True,
+        transport="crt",
+        http={"connect_timeout": 2, "crt": {"read_buffer_size": 65536}},
+    )
+    assert type(crt).__name__ == "AWSCRTHTTPClient"
+    assert crt._config.read_buffer_size == 65536  # pyright: ignore[reportPrivateUsage]
+    assert crt._socket_options.connect_timeout_ms == 2000  # pyright: ignore[reportPrivateUsage]
+
+
+@pytest.mark.parametrize(
+    ("aio", "settings", "message"),
+    [
+        (
+            False,
+            {"transport": "crt"},
+            "Unknown transport 'crt'. Choose one of: 'urllib3'",
+        ),
+        (True, {"transport": "requests"}, "Choose one of: 'aiohttp', 'crt'"),
+        (
+            True,
+            {"transport": "aiohttp", "http": {"crt": {"read_buffer_size": 1}}},
+            "'crt' settings apply only to the crt transport, but the client uses the "
+            "aiohttp transport",
+        ),
+        (True, {"transport": "crt", "http": {"crt": {"size": 1}}}, "Unknown CRT"),
+    ],
+)
+def test_unsupported_transport_choices_fail_at_setup(
+    package: ModuleType, aio: bool, settings: dict[str, Any], message: str
+) -> None:
+    with pytest.raises(SmithyHTTPError, match=message):
+        _setup_transport(package, aio=aio, **settings)
+
+
+def test_missing_transport_dependencies_name_the_extra(
+    package: ModuleType, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import smithy_http.urllib3
+
+    monkeypatch.setattr(smithy_http.urllib3, "HAS_URLLIB3", False)
+    with pytest.raises(MissingDependencyError, match=r"smithy-http\[urllib3\]"):
+        _setup_transport(package, aio=False)
+    monkeypatch.setitem(sys.modules, "smithy_http.aio.crt", None)
+    with pytest.raises(MissingDependencyError, match=r"smithy-http\[awscrt\]"):
+        _setup_transport(package, aio=True, transport="crt")
+
+
+def test_connection_settings_cannot_change_for_one_call(package: ModuleType) -> None:
+    config = package.Config(
+        endpoint_uri="https://example.com", http={"connect_timeout": 3}
+    )
+    client = package.Greeter(config)
+
+    def reconnect(config: Any) -> None:
+        config.http["connect_timeout"] = 1
+
+    with pytest.raises(SmithyHTTPError, match="connect_timeout can't be changed"):
+        client.ping(plugins=[reconnect])
+    client.close()
+
+
+def test_plugins_change_only_their_own_nested_http_settings(
+    package: ModuleType,
+) -> None:
+    settings = {"read_timeout": 5, "crt": {"read_buffer_size": 4096}}
+    config = package.AsyncConfig(
+        endpoint_uri="https://example.com", transport="crt", http=settings
+    )
+
+    def grow_buffer(config: Any) -> None:
+        config.http["crt"]["read_buffer_size"] = 8192
+
+    def shrink_buffer(config: Any) -> None:
+        config.http["crt"]["read_buffer_size"] = 1
+
+    client = package.AsyncGreeter(config, plugins=[grow_buffer])
+
+    async def call() -> Any:
+        async with client:
+            with pytest.raises(SmithyHTTPError, match="crt can't be changed"):
+                await client.ping(plugins=[shrink_buffer])
+            return client._config  # pyright: ignore[reportPrivateUsage]
+
+    base = asyncio.run(call())
+    # The client plugin changed the client's settings, not the caller's, and the
+    # rejected call's plugin changed neither.
+    assert settings == {"read_timeout": 5, "crt": {"read_buffer_size": 4096}}
+    assert base.http == {"read_timeout": 5, "crt": {"read_buffer_size": 8192}}
+    assert base.transport._config.read_buffer_size == 8192
+
+
+def test_http_settings_type_check_for_consumers(tmp_path: Path) -> None:
+    _generate(tmp_path, "greeter_http_typing")
+    (tmp_path / "pyrightconfig.json").write_text(
+        json.dumps({"typeCheckingMode": "strict"})
+    )
+    (tmp_path / "src" / "consumer.py").write_text(
+        # An ignore comment that hides no error is itself an error.
+        "# pyright: reportUnnecessaryTypeIgnoreComment=true\n"
+        "from greeter_http_typing import AsyncConfig, Config\n\n"
+        "Config(transport='urllib3', http={'connect_timeout': 5, 'read_timeout': None})\n"
+        "AsyncConfig(\n"
+        "    transport='crt',\n"
+        "    http={'read_timeout': 30, 'crt': {'read_buffer_size': 65536}},\n"
+        ")\n"
+        "AsyncConfig(transport='aiohttp')\n"
+        "Config(transport='crt')  # pyright: ignore\n"
+        "AsyncConfig(transport='urllib3')  # pyright: ignore\n"
+        "Config(http={'conect_timeout': 5})  # pyright: ignore\n"
+        "Config(http={'read_timeout': '5'})  # pyright: ignore\n"
+        "AsyncConfig(http={'crt': {'buffer': 1}})  # pyright: ignore\n"
+    )
+    checked = subprocess.run(
+        [sys.executable, "-m", "pyright", "src"],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert checked.returncode == 0, checked.stdout + checked.stderr
+
+
+async def test_aws_configs_resolve_a_transport_name_and_http_settings(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    for name in list(os.environ):
+        if name.startswith("AWS_"):
+            monkeypatch.delenv(name)
+    shapes = _shapes()
+    shapes["example#Greeter"]["traits"]["aws.api#service"] = {"sdkId": "Greeter"}
+    _aws_generate(tmp_path / "out", "greeter_aws_transport", shapes)
+    monkeypatch.syspath_prepend(  # pyright: ignore[reportUnknownMemberType]
+        str(tmp_path / "out" / "src")
+    )
+    package = importlib.import_module("greeter_aws_transport")
+    missing = str(tmp_path / "missing")
+    config = await package.AsyncGreeterConfig.resolve(
+        config_file_path=missing,
+        credentials_file_path=missing,
+        region="us-west-2",
+        transport="crt",
+        http={"connect_timeout": 2, "crt": {"read_buffer_size": 4096}},
+    )
+    # Resolving creates no transport, and the SDK's choice keeps its source.
+    assert config.transport == "crt"
+    async with package.AsyncGreeterClient(config) as client:
+        transport = (await client._ensure_setup()).transport  # pyright: ignore[reportPrivateUsage]
+        assert type(transport).__name__ == "AWSCRTHTTPClient"
+        assert transport._config.read_buffer_size == 4096  # pyright: ignore[reportPrivateUsage]
+    default = await package.AsyncGreeterConfig.resolve(
+        config_file_path=missing, credentials_file_path=missing, region="us-west-2"
+    )
+    assert default.transport is None
+    async with package.AsyncGreeterClient(default) as client:
+        setup = await client._ensure_setup()  # pyright: ignore[reportPrivateUsage]
+        assert type(setup.transport).__name__ == "AIOHTTPClient"
+        assert setup.source_of("transport") == "default"
+
+
+def test_mocked_clients_keep_their_http_settings(package: ModuleType) -> None:
+    config = package.Config(
+        endpoint_uri="https://example.com",
+        retry_strategy=SimpleRetryStrategy(max_attempts=1),
+        http={"connect_timeout": 5, "read_timeout": 7},
+    )
+    client = package.Greeter(config)
+    with mock(client) as controller:
+        controller.expect_request().respond_with(
+            headers=dict(_HEADERS), body=_cbor_map({})
+        )
+        client.ping()
+    # The mock closes the transport setup created in its place.
+    assert controller.requests[0].method == "POST"
+
+
+def test_recorded_clients_send_with_the_transport_setup_creates(
+    package: ModuleType,
+) -> None:
+    client = package.Greeter(package.Config(endpoint_uri="https://example.com"))
+    recorder: Any = instrument(client, mode="record")
+    client._ensure_setup()  # pyright: ignore[reportPrivateUsage]
+    inner = recorder._transport._inner
+    assert type(inner).__name__ == "Urllib3HTTPClient"
+    client.close()
 
 
 def _add_sigv4(shapes: dict[str, Any]) -> None:

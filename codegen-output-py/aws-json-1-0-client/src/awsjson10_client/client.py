@@ -9,6 +9,7 @@ from smithy_aws_core.identity.components import AWSCredentialsIdentity
 from smithy_core.client import Client
 from smithy_http.interfaces import HTTPClient
 from smithy_http.plugins import user_agent_plugin
+from smithy_http.transports import HTTP_TRANSPORTS
 
 from awsjson10_client import models
 from awsjson10_client.config import JSONRPC10Config, Plugin
@@ -19,6 +20,7 @@ class JSONRPC10Client(Client[JSONRPC10Config]):
     "Client for JsonRpc10."
 
     _client_plugins = (aws_user_agent_plugin, user_agent_plugin)
+    _transport_hooks = HTTP_TRANSPORTS
 
     @overload
     def content_type_parameters(

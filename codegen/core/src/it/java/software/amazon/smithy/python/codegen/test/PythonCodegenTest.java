@@ -57,9 +57,19 @@ public class PythonCodegenTest {
         assertTrue(client.contains("from .. import models as _models"));
         assertTrue(client.contains("_models.GET_CITY,"));
 
+        // Setup creates the transport the config names, so the config only holds it,
+        // and the client's transport hooks carry its HTTP settings to it.
+        assertTrue(client.contains("_transport_hooks = ASYNC_HTTP_TRANSPORTS"));
+        assertTrue(client.contains("from smithy_http.aio.transports import ASYNC_HTTP_TRANSPORTS"));
         var config = Files.readString(tempDir.resolve("src/weather/aio/config.py"));
-        assertTrue(config.contains("self.transport = transport or AIOHTTPClient()"));
-        assertFalse(config.contains("self.transport = transport or AWSCRTHTTPClient()"));
+        // Neither imports nor creates a backend: the transport docs may still name one.
+        assertTrue(config.contains("self.transport = transport\n"));
+        assertNoBackend(config);
+        assertGenerated(config, "transport: AsyncClientTransport[Any, Any] | AsyncTransportName | None = None");
+        assertGenerated(config, "http: HTTPSettings | None = None,");
+        assertTrue(config.contains("self.http = http"));
+        assertTrue(config.contains("from smithy_http.aio.transports import AsyncTransportName"));
+        assertTrue(config.contains("from smithy_http.transports import HTTPSettings"));
 
         // The service models both @httpApiKeyAuth and @httpBearerAuth, so the config
         // carries each scheme's identity settings and the resolver offers both.
@@ -205,10 +215,22 @@ public class PythonCodegenTest {
         assertTrue(config.contains("endpoint_resolver: EndpointResolver | AsyncEndpointResolver"));
 
         var syncConfig = Files.readString(tempDir.resolve("src/weather/config.py"));
-        assertTrue(syncConfig.contains("self.transport = transport or Urllib3HTTPClient()"));
         // The sync config maps the bearer scheme and resolver to their sync twins.
         assertTrue(syncConfig.contains("token_identity_resolver or StaticTokenResolver()"));
         assertTrue(syncConfig.contains("BearerAuthScheme()"));
+        // The sync twins name only the transports a sync client can create.
+        assertTrue(syncConfig.contains("self.transport = transport\n"));
+        assertNoBackend(syncConfig);
+        assertGenerated(syncConfig, "transport: ClientTransport[Any, Any] | TransportName | None = None");
+        assertTrue(syncConfig.contains("from smithy_http.transports import HTTPSettings, TransportName"));
+        assertFalse(Pattern.compile("(?m)^\\s*(from|import) smithy_http\\.aio\\b").matcher(syncConfig).find());
+        assertTrue(syncClient.contains("_transport_hooks = HTTP_TRANSPORTS"));
+        assertTrue(syncClient.contains("from smithy_http.transports import HTTP_TRANSPORTS"));
+        assertFalse(syncClient.contains("ASYNC_HTTP_TRANSPORTS"));
+        // The extras of both default transports stay declared.
+        var pyproject = Files.readString(tempDir.resolve("pyproject.toml"));
+        assertTrue(Pattern.compile("\"smithy_http\\[[^\\]]*\\baiohttp\\b").matcher(pyproject).find());
+        assertTrue(Pattern.compile("\"smithy_http\\[[^\\]]*\\burllib3\\b").matcher(pyproject).find());
 
         // An output that models a "responseMetadata" member gets both the SDK-reserved
         // response_metadata attribute and the escaped modeled member, so neither shadows
@@ -641,6 +663,16 @@ public class PythonCodegenTest {
             }
         }
         throw new AssertionError("No schema partition contained " + declarations[0]);
+    }
+
+    // Asserts a config neither imports a transport backend nor creates a transport, so
+    // only setup, through the client's transport hooks, loads and creates one.
+    private static void assertNoBackend(String config) {
+        var backendImport = Pattern.compile(
+                "(?m)^\\s*(from|import) smithy_http\\.(aio\\.aiohttp|aio\\.crt|urllib3)\\b");
+        assertFalse(backendImport.matcher(config).find(), () -> "config imports a transport backend");
+        var construction = Pattern.compile("\\b(AIOHTTPClient|AWSCRTHTTPClient|Urllib3HTTPClient)\\s*\\(");
+        assertFalse(construction.matcher(config).find(), () -> "config creates a transport");
     }
 
     // Compares ignoring layout, so the assertions hold whether or not a formatter

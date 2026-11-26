@@ -1,0 +1,4 @@
+{
+  "type": "feature",
+  "description": "Generated HTTP clients take `transport` as a transport instance or the name of a transport to create, and an `http` config field of HTTP settings, such as `http={\"connect_timeout\": 5, \"read_timeout\": 30}`. The default transport is created when the client is set up, and `http_request_config` still works."
+}

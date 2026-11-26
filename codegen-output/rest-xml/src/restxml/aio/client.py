@@ -11,6 +11,7 @@ from smithy_aws_core.config.types import ConfigSource
 from smithy_aws_core.identity.components import AWSCredentialsIdentity
 from smithy_core.aio.client import AsyncClient
 from smithy_http.aio.interfaces import AsyncHTTPClient
+from smithy_http.aio.transports import ASYNC_HTTP_TRANSPORTS
 from smithy_http.plugins import user_agent_plugin
 
 from .. import models as _models
@@ -96,6 +97,8 @@ class AsyncRestXmlProtocolClient(AsyncClient[AsyncRestXmlProtocolConfig]):
     """A REST XML service that sends XML requests and responses."""
 
     _client_plugins = (aws_user_agent_plugin, user_agent_plugin)
+
+    _transport_hooks = ASYNC_HTTP_TRANSPORTS
 
     @_overload
     async def all_query_string_types(

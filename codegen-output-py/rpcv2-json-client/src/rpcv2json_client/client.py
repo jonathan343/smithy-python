@@ -4,6 +4,7 @@ from typing import Unpack, overload
 
 from smithy_core.client import Client
 from smithy_http.plugins import user_agent_plugin
+from smithy_http.transports import HTTP_TRANSPORTS
 
 from rpcv2json_client import models
 from rpcv2json_client.config import Config, Plugin
@@ -13,6 +14,7 @@ class RpcV2JsonProtocol(Client[Config]):
     "Client for RpcV2JsonProtocol."
 
     _client_plugins = (user_agent_plugin,)
+    _transport_hooks = HTTP_TRANSPORTS
 
     @overload
     def big_decimal_operation(

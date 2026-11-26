@@ -989,6 +989,7 @@
   "smithy_http.aio.aiohttp": {
     "AsyncBytesReader": "rex-class[async]",
     "AsyncHTTPClient": "rex-protocol[async]",
+    "ClientTimeoutError": "rex-exception",
     "HTTPClientConfiguration": "rex-class",
     "HTTPRequest": "rex-protocol",
     "HTTPRequestConfiguration": "rex-class",
@@ -998,6 +999,7 @@
     "SmithyHTTPError": "rex-exception",
     "StreamingBlob": "rex-type_alias",
     "URI": "rex-protocol",
+    "read_timeout": "rex-function",
     "tuples_to_fields": "rex-function"
   },
   "smithy_http.aio.auth.apikey": {
@@ -1018,6 +1020,7 @@
   },
   "smithy_http.aio.crt": {
     "AsyncBytesReader": "rex-class[async]",
+    "ClientTimeoutError": "rex-exception",
     "Field": "rex-class",
     "Fields": "rex-class",
     "MissingDependencyError": "rex-exception",
@@ -1026,6 +1029,7 @@
     "core_interfaces": "rex-module",
     "http_aio_interfaces": "rex-module",
     "http_interfaces": "rex-module",
+    "http_settings": "rex-module",
     "read_streaming_blob_async": "rex-function[async]",
     "tuples_to_fields": "rex-function"
   },
@@ -1092,6 +1096,14 @@
     "HTTPResponse": "rex-class",
     "MockHTTPClientBase": "rex-class",
     "list_async": "rex-function"
+  },
+  "smithy_http.aio.transports": {
+    "AsyncTransportName": "rex-type_alias",
+    "HTTPOptions": "rex-class",
+    "HTTPTransportHooks": "rex-class",
+    "MissingDependencyError": "rex-exception",
+    "UNSET": "rex-Unset",
+    "connect_timeout": "rex-function"
   },
   "smithy_http.auth": {
     "apikey": "rex-module",
@@ -1343,6 +1355,13 @@
     "URI": "rex-class",
     "tuples_to_fields": "rex-function"
   },
+  "smithy_http.transports": {
+    "HTTPOptions": "rex-class",
+    "HTTPTransportHooks": "rex-class",
+    "MissingDependencyError": "rex-exception",
+    "TransportName": "rex-type_alias",
+    "connect_timeout": "rex-function"
+  },
   "smithy_http.urllib3": {
     "ClientTimeoutError": "rex-exception",
     "HTTPClient": "rex-protocol",
@@ -1354,6 +1373,7 @@
     "MissingDependencyError": "rex-exception",
     "SmithyHTTPError": "rex-exception",
     "is_bytes_reader": "rex-function",
+    "read_timeout": "rex-function",
     "tuples_to_fields": "rex-function"
   },
   "smithy_http.utils": {

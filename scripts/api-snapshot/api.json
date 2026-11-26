@@ -737,6 +737,9 @@
   "smithy_http.aio.testing": {
     "AsyncMockHTTPClient": "class[async]"
   },
+  "smithy_http.aio.transports": {
+    "ASYNC_HTTP_TRANSPORTS": "HTTPTransportHooks"
+  },
   "smithy_http.auth": {},
   "smithy_http.auth.apikey": {
     "APIKeyAuthScheme": "class",
@@ -845,6 +848,11 @@
   },
   "smithy_http.testing.utils": {
     "create_test_request": "function"
+  },
+  "smithy_http.transports": {
+    "CRTSettings": "class",
+    "HTTPSettings": "class",
+    "HTTP_TRANSPORTS": "HTTPTransportHooks"
   },
   "smithy_http.urllib3": {
     "Urllib3HTTPClient": "class",

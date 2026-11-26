@@ -33,6 +33,9 @@ class Reply:
     gate: threading.Event | None = None
     """Send the headers, then wait for this event before sending the body."""
 
+    stall_headers: bool = False
+    """Send nothing until the server stops."""
+
 
 class _QuietServer(ThreadingHTTPServer):
     daemon_threads = True
@@ -113,6 +116,10 @@ class LocalHTTPServer:
     def _reply(self, handler: BaseHTTPRequestHandler) -> None:
         self.ports.append(handler.client_address[1])
         reply = self.replies.pop(0) if self.replies else Reply()
+        if reply.stall_headers:
+            self._stopping.wait(timeout=10)
+            handler.close_connection = True
+            return
         handler.send_response(reply.status)
         if reply.chunked:
             handler.send_header("Transfer-Encoding", "chunked")

@@ -205,8 +205,10 @@ they read the service version from `ProtocolSettings`.
 All also use:
 
 * `ProtocolSettings` with the service namespace, target, version, and schema.
-* `Urllib3HTTPClient` and `AIOHTTPClient` as default sync/async transports,
-  which add the `urllib3` and `aiohttp` extras.
+* `HTTP_TRANSPORTS` and `ASYNC_HTTP_TRANSPORTS` as the clients'
+  `_transport_hooks`. During setup they create the transport the config names,
+  `Urllib3HTTPClient` and `AIOHTTPClient` by default, which add the `urllib3`
+  and `aiohttp` extras.
 * `BddEndpointResolver` over the generated endpoint BDD.
 
 ## Endpoints
@@ -433,11 +435,33 @@ tests/test_endpoints.py, for services with endpoint tests
 ```
 
 Package initialization lazily exports both clients and configs. Each config
-exposes protocol/transport overrides, endpoint URI/resolver, auth
+exposes protocol/transport overrides, HTTP settings, endpoint URI/resolver, auth
 resolver/schemes, retries, interceptors, and client context fields. Both
-configs default to `DefaultAuthResolver`, `BddEndpointResolver(BDD)`, the
-contribution's protocol,
-and its transport: `Urllib3HTTPClient` for sync and `AIOHTTPClient` for async.
+configs default to `DefaultAuthResolver`, `BddEndpointResolver(BDD)`, and the
+contribution's protocol.
+
+`transport` takes a transport instance or a transport name: `"urllib3"` for
+sync clients, and `"aiohttp"` or `"crt"` for async clients. It defaults to
+None, and the client's transport hooks create the named or default transport
+during setup, before `_post_setup`. `http` takes `connect_timeout`,
+`read_timeout`, and `crt.read_buffer_size`. On a transport the client creates,
+by name or by default, an omitted `connect_timeout` or `read_timeout` defaults
+to 60 seconds for every transport, and no timeout bounds a whole call. An
+omitted `read_timeout` is None instead for calls with a streaming input, blob
+or event stream, or an output event stream; output-only blob downloads keep
+60. An operation modeled as a long poll gets the longer of 60 seconds and its
+modeled hold time, unless it streams. The client doesn't guess at other long
+holds from service or operation names; callers set a longer timeout or None. A
+timeout of None disables it, except the `crt` transport's `connect_timeout`: it
+rejects None and values above 2147483.647 seconds, and rounds to the nearest
+millisecond, at least 1. Unknown settings, invalid values, `crt` settings for
+another transport, and `connect_timeout` with a transport instance fail at
+setup. A transport instance keeps its own defaults, though an explicit
+`read_timeout` still applies to it. An explicit `read_timeout`, a number or
+None, from the client or an operation plugin always wins; connection settings
+can't change per call. The legacy `http_request_config` still sets a numeric
+read timeout, but its None means the default applies, not that the timeout is
+disabled.
 Client and types artifacts share package metadata emission, dependency
 tracking, README generation, and manifest ownership.
 

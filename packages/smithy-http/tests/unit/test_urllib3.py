@@ -15,6 +15,7 @@ from smithy_core.exceptions import ClientTimeoutError
 from smithy_core.interfaces import is_bytes_reader
 from smithy_core.utils import read_streaming_blob
 from smithy_http import Field, Fields, HTTPRequest
+from smithy_http._settings import ExactRequestConfiguration
 from smithy_http.exceptions import SmithyHTTPError
 from smithy_http.interfaces import HTTPRequestConfiguration
 from smithy_http.urllib3 import Urllib3HTTPClient, Urllib3HTTPClientConfig
@@ -59,6 +60,15 @@ def test_request_read_timeout_takes_precedence(
         HTTPRequestConfiguration(read_timeout=5.0),
     )
     assert timeout.read_timeout == 5.0
+
+
+def test_an_exact_request_config_disables_the_client_read_timeout() -> None:
+    # The SDK sends this when a config's http["read_timeout"] is None.
+    timeout = _send(
+        Urllib3HTTPClientConfig(read_timeout=30.0),
+        ExactRequestConfiguration(read_timeout=None),
+    )
+    assert timeout.read_timeout is None
 
 
 @pytest.mark.parametrize(
@@ -257,6 +267,21 @@ def test_truncated_body_raises_http_error(server: LocalHTTPServer) -> None:
 
     with pytest.raises(SmithyHTTPError, match="Failed to read the response body"):
         body.read()
+
+
+def test_request_read_timeout_bounds_the_wait_for_headers(
+    server: LocalHTTPServer,
+) -> None:
+    server.replies = [Reply(stall_headers=True)]
+    client = Urllib3HTTPClient()
+    request = HTTPRequest(
+        destination=URI(scheme="http", host="127.0.0.1", port=server.port),
+        method="GET",
+        fields=Fields(),
+    )
+    with pytest.raises(Urllib3HTTPClient.TIMEOUT_EXCEPTIONS):
+        client.send(request, request_config=HTTPRequestConfiguration(read_timeout=0.2))
+    client.close()
 
 
 def test_stalled_body_raises_client_timeout(server: LocalHTTPServer) -> None:

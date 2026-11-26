@@ -7,12 +7,14 @@ async pipeline run identical logic and differ only in how effects are driven and
 the few hooks below.
 """
 
+import inspect
 import logging
 import uuid
 from collections.abc import Mapping, Sequence
 from copy import copy
 from dataclasses import fields, replace
 from functools import partial
+from types import MappingProxyType
 from typing import Any, ClassVar, Protocol
 
 from . import URI
@@ -34,6 +36,7 @@ from .exceptions import (
     RetryError,
     SmithyError,
     UnsupportedAuthSchemeError,
+    UnsupportedTransportError,
 )
 from .interceptors import (
     InputContext,
@@ -105,7 +108,29 @@ class RequestPipelineBase[TRequest, TResponse]:
     protocol: Any
     transport: Any
 
+    transport_options: Mapping[str, Any]
+    """Keyword arguments given to the transport's ``send`` with every request."""
+
     _logger: ClassVar[logging.Logger]
+
+    def _set_transport(
+        self, transport: Any, transport_options: Mapping[str, Any] | None
+    ) -> None:
+        """Set the transport and the options each send passes it.
+
+        :raises UnsupportedTransportError: If the transport's ``send`` can't take
+            the options, which are never dropped.
+        """
+        options = MappingProxyType(dict(transport_options or {}))
+        if options and not _takes_keywords(transport.send, options):
+            raise UnsupportedTransportError(
+                f"The configured transport ({type(transport).__name__}) can't take "
+                f"{', '.join(sorted(options))}, which the config sets. Use a "
+                "transport whose send method accepts them, or remove them from "
+                "the config."
+            )
+        self.transport = transport
+        self.transport_options = options
 
     def _read_body(self, body: Any) -> Any:
         """Effect: read a whole response body into bytes."""
@@ -657,6 +682,21 @@ class RequestPipelineBase[TRequest, TResponse]:
             output_context = replace(output_context, response=e)
 
         return output_context
+
+
+def _takes_keywords(send: Any, names: Mapping[str, Any]) -> bool:
+    """Whether ``send`` accepts each of ``names`` as a keyword argument."""
+    try:
+        parameters = inspect.signature(send).parameters
+    except (TypeError, ValueError):
+        # Without a signature to read, let the call itself report a mismatch.
+        return True
+    if any(p.kind is inspect.Parameter.VAR_KEYWORD for p in parameters.values()):
+        return True
+    keywords = (inspect.Parameter.KEYWORD_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD)
+    return all(
+        name in parameters and parameters[name].kind in keywords for name in names
+    )
 
 
 def _timeout_message(error: Exception) -> str:

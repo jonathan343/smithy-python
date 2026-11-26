@@ -11,7 +11,7 @@ from typing import Any, cast
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
-from smithy_core.aio.client import AsyncClient
+from smithy_core.aio.client import AsyncClient, AsyncRequestPipeline
 from smithy_core.aio.eventstream import AsyncDuplexEventStream, AsyncInputEventStream
 from smithy_core.aio.interfaces import AsyncClientTransport
 from smithy_core.aio.types import AsyncBytesReader
@@ -67,6 +67,7 @@ from ._pipeline_harness import (
     StubInput,
     StubOutput,
     StubRequest,
+    StubResponse,
     TokenInput,
     UndeclaredTransport,
     client_call,
@@ -122,6 +123,46 @@ async def test_input_stream_does_not_require_duplex_support() -> None:
 
     assert isinstance(stream, AsyncInputEventStream)
     assert isinstance(await stream.await_output(), StubOutput)
+
+
+class _OptionsTransport(DuplexTransport):
+    """Records the options each send gets."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.options: list[dict[str, Any]] = []
+
+    async def send(self, request: Any, **options: Any) -> StubResponse:  # pyright: ignore[reportIncompatibleMethodOverride]
+        self.options.append(options)
+        return await super().send(request)
+
+
+async def test_transport_options_reach_ordinary_and_event_stream_sends() -> None:
+    transport = _OptionsTransport()
+    pipeline = AsyncRequestPipeline(
+        protocol=pipeline_harness(transport).pipeline.protocol,
+        transport=transport,
+        transport_options={"request_config": "per-call"},
+    )
+
+    await pipeline(client_call())
+    await (await pipeline.input_stream(client_call(), StubEvent)).await_output()
+    await pipeline.output_stream(client_call(), StubEvent, StubEvent.deserialize)
+    duplex = await pipeline.duplex_stream(
+        client_call(), StubEvent, StubEvent, StubEvent.deserialize
+    )
+    await duplex.await_output()
+
+    assert transport.options == [{"request_config": "per-call"}] * 4
+
+
+async def test_transports_that_cant_take_the_options_are_rejected() -> None:
+    with pytest.raises(UnsupportedTransportError, match="request_config"):
+        AsyncRequestPipeline(
+            protocol=pipeline_harness(NonDuplexTransport()).pipeline.protocol,
+            transport=NonDuplexTransport(),
+            transport_options={"request_config": "per-call"},
+        )
 
 
 async def test_response_metadata_attached_to_output() -> None:

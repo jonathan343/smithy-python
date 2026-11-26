@@ -1,5 +1,6 @@
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: Apache-2.0
+from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, cast
@@ -23,6 +24,7 @@ class _Config:
     interceptors: list[Any] = field(default_factory=list[Any])
     retry_strategy: Any = None
     applied: list[str] = field(default_factory=list[str])
+    settings: Any = None
 
 
 def _plugin(name: str) -> Callable[[_Config], None]:
@@ -138,6 +140,37 @@ def test_configured_components_are_shared_with_every_call() -> None:
     config = call.context["config"]
     for name in ("protocol", "transport", "endpoint_resolver", "retry_strategy"):
         assert getattr(config, name) is getattr(caller_config, name)
+
+
+def _call_config(caller_config: _Config) -> tuple[_Config, _Config]:
+    """Return a client's base config and the config of one call with a plugin."""
+    client = _SyncClient(caller_config)
+    _, call = client._prepare_call(Mock(), _operation(), [_plugin("default")], None)  # pyright: ignore[reportPrivateUsage]
+    return client._config, call.context["config"]  # pyright: ignore[reportPrivateUsage]
+
+
+def test_nested_settings_in_dict_subclasses_are_isolated() -> None:
+    settings = defaultdict[str, dict[str, int]](dict, crt={"read_buffer_size": 4})
+    base, call = _call_config(_Config(settings=settings))
+
+    copied: defaultdict[str, dict[str, int]] = call.settings
+    copied["crt"]["read_buffer_size"] = 9
+    # The copy keeps its type and default factory.
+    assert type(copied) is defaultdict
+    assert copied["new"] == {}
+    assert settings == base.settings == {"crt": {"read_buffer_size": 4}}
+
+
+def test_cyclic_settings_are_copied_with_their_cycles() -> None:
+    component = object()
+    state: dict[str, Any] = {"component": component}
+    state["self"] = state
+    base, call = _call_config(_Config(settings=state))
+
+    for copied in (base.settings, call.settings):
+        assert copied is not state
+        assert copied["self"] is copied
+        assert copied["component"] is component
 
 
 def test_operation_plugin_interceptors_do_not_persist() -> None:

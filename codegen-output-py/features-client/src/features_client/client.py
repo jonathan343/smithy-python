@@ -12,6 +12,7 @@ from smithy_http.identity import TokenIdentity
 from smithy_http.identity.token import StaticTokenResolver
 from smithy_http.interfaces import HTTPClient
 from smithy_http.plugins import user_agent_plugin
+from smithy_http.transports import HTTP_TRANSPORTS
 
 from features_client import models
 from features_client.config import FieldNotesConfig, Plugin
@@ -28,6 +29,7 @@ class FieldNotesClient(Client[FieldNotesConfig]):
     """
 
     _client_plugins = (aws_user_agent_plugin, user_agent_plugin)
+    _transport_hooks = HTTP_TRANSPORTS
 
     @overload
     def echo(

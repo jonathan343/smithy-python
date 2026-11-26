@@ -2,21 +2,29 @@
 #  SPDX-License-Identifier: Apache-2.0
 #  pyright: reportPrivateUsage=false
 import asyncio
+import time
 from collections.abc import AsyncIterator
 from copy import deepcopy
 from io import BytesIO
+from typing import Any
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 from awscrt import http as crt_http  # type: ignore
 from smithy_core import URI
 from smithy_core.aio.types import AsyncBytesReader
+from smithy_core.exceptions import ClientTimeoutError
 from smithy_http import Field, Fields, HTTPRequest
 from smithy_http.aio.crt import (
     AsyncAWSCRTHTTPResponse,
     AWSCRTHTTPClient,
+    AWSCRTHTTPClientConfig,
+    _within,
 )
 from smithy_http.exceptions import SmithyHTTPError
+from smithy_http.interfaces import HTTPRequestConfiguration
+
+from .._local_server import LocalHTTPServer, Reply
 
 
 def test_deepcopy_client() -> None:
@@ -581,6 +589,120 @@ async def test_response_body_property() -> None:
         chunks.append(chunk)
 
     assert chunks == [b"data"]
+
+
+def _local_request(server: LocalHTTPServer) -> HTTPRequest:
+    return HTTPRequest(
+        destination=URI(scheme="http", host="127.0.0.1", port=server.port),
+        method="GET",
+        fields=Fields(),
+    )
+
+
+def _open_connections(client: AWSCRTHTTPClient) -> int:
+    return sum(c.is_open() for c in client._connections.values())
+
+
+async def test_read_timeout_bounds_the_wait_for_headers() -> None:
+    with LocalHTTPServer() as server:
+        server.replies = [Reply(stall_headers=True)]
+        async with AWSCRTHTTPClient() as client:
+            start = time.monotonic()
+            with pytest.raises(AWSCRTHTTPClient.TIMEOUT_EXCEPTIONS):
+                await asyncio.wait_for(
+                    client.send(
+                        _local_request(server),
+                        request_config=HTTPRequestConfiguration(read_timeout=0.2),
+                    ),
+                    timeout=5,
+                )
+            # The read timeout ended the wait, not the test's own bound.
+            assert time.monotonic() - start < 2
+            # The stream can't be cancelled alone, so its connection is closed.
+            assert _open_connections(client) == 0
+
+
+async def test_read_timeout_bounds_each_body_read() -> None:
+    with LocalHTTPServer() as server:
+        server.replies = [Reply(body=b"x" * 100, stall_after=10)]
+        async with AWSCRTHTTPClient() as client:
+            response = await client.send(
+                _local_request(server),
+                request_config=HTTPRequestConfiguration(read_timeout=0.2),
+            )
+            assert await response.body.read(10) == b"x" * 10
+            with pytest.raises(ClientTimeoutError):
+                await asyncio.wait_for(response.body.read(), timeout=5)
+            assert _open_connections(client) == 0
+
+
+async def test_cancelling_a_send_closes_its_connection() -> None:
+    with LocalHTTPServer() as server:
+        server.replies = [Reply(stall_headers=True)]
+        async with AWSCRTHTTPClient() as client:
+            task = asyncio.create_task(client.send(_local_request(server)))
+            # The CRT signals no event when it connects, so poll for up to 5s.
+            for _ in range(500):
+                if client._connections:
+                    break
+                await asyncio.sleep(0.01)
+            assert client._connections
+            task.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+            assert _open_connections(client) == 0
+
+
+async def test_a_second_cancellation_still_ends_the_abandoned_wait() -> None:
+    loop = asyncio.get_running_loop()
+    response_data = loop.create_future()
+    close_started = asyncio.Event()
+    release_close = asyncio.Event()
+
+    class Connection:
+        closed = False
+
+        async def close(self) -> None:
+            close_started.set()
+            await release_close.wait()
+            self.closed = True
+
+    async def get_response_data() -> None:
+        await response_data
+
+    connection: Any = Connection()
+    task = asyncio.create_task(_within(get_response_data(), None, connection))
+    await asyncio.sleep(0)
+    task.cancel()
+    await close_started.wait()
+    task.cancel()
+    await asyncio.sleep(0)
+    release_close.set()
+    with pytest.raises(asyncio.CancelledError):
+        await task
+    # The connection closed before the wait was cancelled, and nothing is left
+    # running.
+    assert connection.closed
+    assert response_data.cancelled()
+    assert asyncio.all_tasks() == {asyncio.current_task()}
+
+
+@pytest.mark.parametrize(
+    "connect_timeout",
+    # The CRT can't wait indefinitely, nor longer than 2**31 - 1 milliseconds.
+    [None, 2**31 / 1000, 1e308, float("inf"), float("nan"), 0, -1],
+)
+def test_connect_timeouts_the_crt_cannot_honor_are_rejected(
+    connect_timeout: Any,
+) -> None:
+    with pytest.raises(SmithyHTTPError, match="connect_timeout"):
+        AWSCRTHTTPClient(AWSCRTHTTPClientConfig(connect_timeout=connect_timeout))
+
+
+def test_connect_timeouts_convert_to_milliseconds() -> None:
+    assert AWSCRTHTTPClient()._socket_options.connect_timeout_ms == 5000
+    longest = AWSCRTHTTPClientConfig(connect_timeout=(2**31 - 1) / 1000)
+    assert AWSCRTHTTPClient(longest)._socket_options.connect_timeout_ms == 2**31 - 1
 
 
 def test_response_properties() -> None:

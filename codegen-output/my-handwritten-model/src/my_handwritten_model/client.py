@@ -8,6 +8,7 @@ from typing import Unpack as _Unpack, overload as _overload
 from smithy_core.client import Client
 from smithy_core.pagination import ItemPaginator
 from smithy_http.plugins import user_agent_plugin
+from smithy_http.transports import HTTP_TRANSPORTS
 
 from . import models as _models
 from .config import Config, Plugin
@@ -26,6 +27,8 @@ class MyHandwrittenModel(Client[Config]):
     """Client for MyHandwrittenModel"""
 
     _client_plugins = (aws_user_agent_plugin, user_agent_plugin)
+
+    _transport_hooks = HTTP_TRANSPORTS
 
     @_overload
     def list_items(

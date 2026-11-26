@@ -9,6 +9,7 @@ from smithy_aws_core.identity.components import AWSCredentialsIdentity
 from smithy_core.client import Client
 from smithy_http.interfaces import HTTPClient
 from smithy_http.plugins import user_agent_plugin
+from smithy_http.transports import HTTP_TRANSPORTS
 
 from awsquery_client import models
 from awsquery_client.config import Plugin, QueryProtocolConfig
@@ -19,6 +20,7 @@ class QueryProtocolClient(Client[QueryProtocolConfig]):
     "A query service that sends query requests and XML responses."
 
     _client_plugins = (aws_user_agent_plugin, user_agent_plugin)
+    _transport_hooks = HTTP_TRANSPORTS
 
     @overload
     def datetime_offsets(

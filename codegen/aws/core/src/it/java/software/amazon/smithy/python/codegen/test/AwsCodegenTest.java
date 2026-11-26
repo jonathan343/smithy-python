@@ -54,14 +54,19 @@ public class AwsCodegenTest {
         assertTrue(config.contains("auth_schemes = dict(self.auth_schemes or {})"));
         assertTrue(config.contains("auth_schemes[scheme.scheme_id] = scheme"));
         assertTrue(config.contains("self.auth_schemes = auth_schemes"));
-        assertTrue(config.contains("default_factory=lambda: AIOHTTPClient()"));
-        assertFalse(config.contains("from smithy_http.aio.crt import AWSCRTHTTPClient"));
+        // The base config's transport and http fields apply; setup creates the
+        // transport, so the config doesn't.
+        assertFalse(config.contains("\"transport\": FieldSpec("));
+        assertFalse(config.contains("\"http\": FieldSpec("));
+        assertFalse(config.contains("AIOHTTPClient"));
+        assertFalse(config.contains("AWSCRTHTTPClient"));
 
         var client = Files.readString(tempDir.resolve("src/restjson/aio/client.py"));
         assertInOrder(
                 client,
                 "(AsyncClient[AsyncRESTJSONConfig]):",
                 "_client_plugins = (",
+                "_transport_hooks = ASYNC_HTTP_TRANSPORTS",
                 "await self._invoke(",
                 "async def _new_config(self) -> AsyncRESTJSONConfig:",
                 "return await AsyncRESTJSONConfig.resolve()");

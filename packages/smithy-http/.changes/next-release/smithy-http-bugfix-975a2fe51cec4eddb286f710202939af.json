@@ -1,0 +1,4 @@
+{
+  "type": "bugfix",
+  "description": "`AIOHTTPClient` no longer ends a request after aiohttp's default total timeout, so long downloads and event streams that are still receiving data continue. A request's read timeout now bounds the wait for the response headers and for each read of the body in `AIOHTTPClient` and `AWSCRTHTTPClient`, and a cancelled or timed-out CRT read closes its connection."
+}

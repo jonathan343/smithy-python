@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Unpack, overload
 
 from smithy_core.aio.client import AsyncClient
+from smithy_http.aio.transports import ASYNC_HTTP_TRANSPORTS
 from smithy_http.plugins import user_agent_plugin
 
 from rpcv2cbor_client import models
@@ -13,6 +14,7 @@ class AsyncRpcV2Protocol(AsyncClient[AsyncConfig]):
     "Client for RpcV2Protocol."
 
     _client_plugins = (user_agent_plugin,)
+    _transport_hooks = ASYNC_HTTP_TRANSPORTS
 
     @overload
     async def empty_input_output(

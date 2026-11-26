@@ -4,6 +4,60 @@ This package provides primitives and interfaces for http functionality in toolin
 
 ---
 
+## Transport settings
+
+Generated HTTP clients create their transport when they are set up. A config
+names the transport and its settings without importing either:
+
+```python
+config = AsyncConfig(
+    transport="crt",
+    http={"connect_timeout": 5, "read_timeout": 30, "crt": {"read_buffer_size": 65536}},
+)
+```
+
+Sync clients take `"urllib3"`, the default. Async clients take `"aiohttp"`, the
+default, or `"crt"`. Unknown settings, and `crt` settings for another
+transport, are rejected.
+
+When the client creates the transport, from its name or by default, a timeout
+left out defaults to 60 seconds, whichever transport it is. No timeout bounds
+a whole call: `read_timeout` bounds the wait for the response headers and for
+each read of the body, not the whole response. A timeout of None disables it,
+except that the CRT can't wait indefinitely to connect, so the `crt` transport
+rejects a `connect_timeout` of None or above 2147483.647 seconds, and rounds it
+to the nearest millisecond, at least 1.
+
+Some calls get a different `read_timeout` when it's left out:
+
+- A call that streams its request body, as a blob upload or an input event
+  stream, or that receives an output event stream, has no read timeout. A
+  call that only downloads a streaming blob keeps the 60 second default, which
+  bounds each wait for more of the body.
+- An operation modeled as a long poll waits at least as long as its model says
+  the service may hold it, and never less than 60 seconds, unless it streams as
+  above.
+- Other calls the service may hold open longer aren't detected. Set a longer
+  `read_timeout`, or None, for them.
+
+A `read_timeout` you set, for the client or for one call, always wins. An
+operation plugin can change it for one call:
+
+```python
+def wait_longer(config):
+    config.http = {"read_timeout": 300}  # or {"read_timeout": None}
+
+# Pass plugins=[wait_longer] to an operation method.
+```
+
+The legacy `http_request_config` still sets the read timeout with a number, but
+its `read_timeout` of None means "use the default", not "disable".
+
+A transport instance can still be passed as `transport`. It keeps its own
+defaults. A `read_timeout` you set still applies to it, but settings used to
+create a transport, such as `connect_timeout`, can't apply to an instance and
+can't change for one call.
+
 ## Testing
 
 The `smithy_http.testing` module provides shared utilities for testing HTTP functionality in smithy-python clients.

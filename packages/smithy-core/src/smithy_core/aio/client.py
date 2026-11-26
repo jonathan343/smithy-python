@@ -4,7 +4,7 @@ import asyncio
 import contextlib
 import logging
 from asyncio import Future, sleep
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Mapping
 from typing import TYPE_CHECKING, Any, ClassVar, Self
 
 from smithy_core.interfaces import ClientProtocol, Request, Response
@@ -68,9 +68,19 @@ class AsyncRequestPipeline[TRequest: Request, TResponse: Response](
         self,
         protocol: ClientProtocol[TRequest, TResponse],
         transport: AsyncClientTransport[TRequest, TResponse],
+        transport_options: Mapping[str, Any] | None = None,
     ) -> None:
+        """
+        :param protocol: Serializes requests and deserializes responses.
+        :param transport: Sends requests and receives responses.
+        :param transport_options: Keyword arguments given to the transport's
+            ``send`` with every request, including event stream requests. A
+            transport that can't take them is rejected rather than sent requests
+            without them.
+        :raises UnsupportedTransportError: If the transport can't take the options.
+        """
         self.protocol = protocol
-        self.transport = transport
+        self._set_transport(transport, transport_options)
 
     async def __call__[I: SerializeableShape, O: DeserializeableShape](
         self, call: ClientCall[I, O], /
@@ -264,14 +274,18 @@ class AsyncRequestPipeline[TRequest: Request, TResponse: Response](
         if request_future is None:
             # If we don't have an input stream, there's no point in creating a
             # task, so we just immediately await the coroutine.
-            return await self.transport.send(request=request_context.transport_request)
+            return await self.transport.send(
+                request=request_context.transport_request, **self.transport_options
+            )
         # If we have an input event stream (or duplex event stream) then we need to
         # let the client return ASAP so that it can start sending events. So here we
         # start the transport send in a background task then set the result of the
         # request future. It's important to sequence it just like that so that the
         # client gets a stream that's ready to send.
         transport_task = asyncio.create_task(
-            self.transport.send(request=request_context.transport_request)
+            self.transport.send(
+                request=request_context.transport_request, **self.transport_options
+            )
         )
         request_future.set_result(request_context)
         return await transport_task

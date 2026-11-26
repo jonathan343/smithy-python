@@ -1,6 +1,8 @@
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: Apache-2.0
 #  pyright: reportPrivateUsage=false
+import asyncio
+import time
 from collections.abc import AsyncIterator
 from io import BytesIO
 from typing import Any, cast
@@ -10,9 +12,16 @@ import pytest
 from smithy_core import URI
 from smithy_core.aio.types import AsyncBytesReader
 from smithy_core.aio.utils import read_streaming_blob_async
+from smithy_core.exceptions import ClientTimeoutError
 from smithy_http import Field, Fields, HTTPRequest
-from smithy_http.aio.aiohttp import AIOHTTPClient, _AIOHTTPStreamingBody
+from smithy_http._settings import ExactRequestConfiguration
+from smithy_http.aio.aiohttp import (
+    AIOHTTPClient,
+    AIOHTTPClientConfig,
+    _AIOHTTPStreamingBody,
+)
 from smithy_http.exceptions import SmithyHTTPError
+from smithy_http.interfaces import HTTPRequestConfiguration
 
 from .._local_server import LocalHTTPServer, Reply
 
@@ -312,6 +321,75 @@ async def test_prepare_body_does_not_consume_nonseekable_body() -> None:
     assert started is False
     assert prepared is not None
     assert await prepared.read() == b"request body"
+
+
+@pytest.mark.parametrize(
+    ("request_config", "sock_read"),
+    [
+        (None, None),
+        (HTTPRequestConfiguration(), None),
+        (HTTPRequestConfiguration(read_timeout=5.0), 5.0),
+        (ExactRequestConfiguration(read_timeout=None), None),
+    ],
+)
+async def test_requests_have_no_total_deadline(
+    request_config: HTTPRequestConfiguration | None, sock_read: float | None
+) -> None:
+    # A total deadline would end a long download or event stream that is still
+    # receiving data, so only connecting and each read are bounded.
+    client = AIOHTTPClient(client_config=AIOHTTPClientConfig(connect_timeout=3.0))
+    try:
+        session_timeout = client._session.timeout
+        assert session_timeout.total is None
+        with patch.object(client._session, "request", AsyncMock()) as request:
+            request.return_value = MagicMock(status=200, headers={}, reason="OK")
+            await client.send(_create_request(), request_config=request_config)
+        timeout = request.call_args.kwargs["timeout"]
+        assert timeout.total is None
+        assert timeout.sock_connect == 3.0
+        assert timeout.sock_read == sock_read
+    finally:
+        await client.close()
+
+
+def _local_request(server: LocalHTTPServer) -> HTTPRequest:
+    return HTTPRequest(
+        destination=URI(scheme="http", host="127.0.0.1", port=server.port),
+        method="GET",
+        fields=Fields(),
+    )
+
+
+async def test_read_timeout_bounds_the_wait_for_headers() -> None:
+    with LocalHTTPServer() as server:
+        server.replies = [Reply(stall_headers=True)]
+        async with AIOHTTPClient() as client:
+            start = time.monotonic()
+            with pytest.raises(AIOHTTPClient.TIMEOUT_EXCEPTIONS):
+                await asyncio.wait_for(
+                    client.send(
+                        _local_request(server),
+                        request_config=HTTPRequestConfiguration(read_timeout=0.2),
+                    ),
+                    timeout=5,
+                )
+            # The read timeout ended the wait, not the test's own bound.
+            assert time.monotonic() - start < 2
+
+
+async def test_read_timeout_bounds_each_body_read() -> None:
+    with LocalHTTPServer() as server:
+        server.replies = [Reply(body=b"x" * 100, stall_after=10)]
+        async with AIOHTTPClient() as client:
+            response = await client.send(
+                _local_request(server),
+                request_config=HTTPRequestConfiguration(read_timeout=0.2),
+            )
+            body = cast(Any, response.body)
+            assert await body.read(10) == b"x" * 10
+            with pytest.raises(ClientTimeoutError):
+                await asyncio.wait_for(body.read(), timeout=5)
+            await body.close()
 
 
 def test_does_not_support_duplex_streaming() -> None:
